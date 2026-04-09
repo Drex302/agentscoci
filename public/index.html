@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agent SCOCI — Self-Care of Chronic Illness</title>
+  <meta name="description" content="The only chronic illness self-care companion built on occupational therapy principles. Supports your ADLs, IADLs, and meaningful occupations — not just your lab values." />
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Agent SCOCI" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+  <!-- OG -->
+  <meta property="og:title" content="Agent SCOCI — Self-Care of Chronic Illness" />
+  <meta property="og:description" content="Occupation-centered AI companion for people living with chronic illness. Built by an OT." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://agentscoci.site" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #1D9E75;
+      --teal-dark: #0F6E56;
+      --teal-deeper: #085041;
+      --teal-light: #E1F5EE;
+      --text: #1a1a1a;
+      --text-muted: #6b7280;
+      --text-faint: #9ca3af;
+      --border: rgba(0,0,0,0.1);
+      --border-mid: rgba(0,0,0,0.18);
+      --bg: #ffffff;
+      --bg-soft: #f9fafb;
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 16px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text: #f3f4f6;
+        --text-muted: #9ca3af;
+        --text-faint: #6b7280;
+        --border: rgba(255,255,255,0.1);
+        --border-mid: rgba(255,255,255,0.18);
+        --bg: #111827;
+        --bg-soft: #1f2937;
+        --teal-light: #052e1c;
+      }
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* NAV */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 0.5px solid var(--border); max-width: 1100px; margin: 0 auto; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-mark { width: 34px; height: 34px; border-radius: 9px; background: var(--teal); display: flex; align-items: center; justify-content: center; }
+    .logo-mark svg { display: block; }
+    .logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+    .logo-agent { font-size: 10px; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+    .logo-scoci { font-size: 16px; font-weight: 600; color: var(--text); }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--teal); color: white !important; padding: 7px 18px; border-radius: var(--radius-sm); font-weight: 500; }
+    .nav-cta:hover { background: var(--teal-dark) !important; }
+
+    /* HERO */
+    .hero { text-align: center; padding: 5rem 1.5rem 4rem; max-width: 680px; margin: 0 auto; }
+    .eyebrow { display: inline-block; background: var(--teal-light); color: var(--teal-deeper); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; padding: 5px 16px; border-radius: 20px; margin-bottom: 1.5rem; }
+    h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 700; line-height: 1.15; margin-bottom: 1.25rem; color: var(--text); }
+    h1 em { font-style: normal; color: var(--teal); }
+    .hero-sub { font-size: 17px; color: var(--text-muted); max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.7; }
+    .acronym-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem; }
+    .acronym-pill { border: 0.5px solid var(--border-mid); border-radius: 20px; padding: 5px 14px; font-size: 13px; color: var(--text-muted); background: var(--bg-soft); }
+    .acronym-pill b { color: var(--teal); }
+    .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
+    .btn-primary { background: var(--teal); color: white; border: none; border-radius: var(--radius-sm); padding: 13px 28px; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.15s; }
+    .btn-primary:hover { background: var(--teal-dark); }
+    .btn-ghost { background: transparent; color: var(--text); border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); padding: 13px 28px; font-size: 15px; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.15s; }
+    .btn-ghost:hover { background: var(--bg-soft); }
+    .privacy-note { font-size: 12px; color: var(--text-faint); }
+
+    /* SECTIONS */
+    .section { padding: 4rem 1.5rem; max-width: 900px; margin: 0 auto; }
+    .section-inner { max-width: 760px; margin: 0 auto; }
+    hr.divider { border: none; border-top: 0.5px solid var(--border); }
+    .section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--teal); margin-bottom: 8px; }
+    h2 { font-size: clamp(20px, 3vw, 26px); font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
+    .section-sub { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 2rem; }
+
+    /* OT STRIP */
+    .ot-strip { background: var(--bg-soft); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 2rem; }
+    .ot-strip h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .ot-strip p { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+
+    /* FEATURE GRID */
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .feature-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+    .feature-icon { width: 38px; height: 38px; border-radius: var(--radius-sm); background: var(--teal-light); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .feature-card h3 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .feature-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* HOW IT WORKS */
+    .steps { display: flex; flex-direction: column; gap: 12px; }
+    .step-row { display: flex; gap: 16px; align-items: flex-start; }
+    .step-num { min-width: 30px; height: 30px; border-radius: 50%; background: var(--teal-light); color: var(--teal-deeper); font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+    .step-row h4 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .step-row p { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+
+    /* PWA INSTALL */
+    .pwa-box { border: 2px solid var(--teal); border-radius: var(--radius-lg); padding: 2rem; text-align: center; }
+    .pwa-box h3 { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+    .pwa-box p { font-size: 14px; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.7; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .pwa-instructions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 1.75rem; }
+    .pwa-step { background: var(--bg-soft); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 16px; font-size: 12px; color: var(--text-muted); text-align: left; min-width: 180px; }
+    .pwa-step strong { display: block; color: var(--text); font-size: 13px; margin-bottom: 3px; }
+    .privacy-strip { margin-top: 1.25rem; border-left: 3px solid var(--teal); padding: 1rem 1.25rem; background: var(--bg-soft); text-align: left; }
+    .privacy-strip h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .privacy-strip p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* PRICING */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .price-card { border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; background: var(--bg); }
+    .price-card.featured { border: 2px solid var(--teal); }
+    .best-badge { background: var(--teal-light); color: var(--teal-deeper); font-size: 11px; font-weight: 600; border-radius: 20px; padding: 3px 12px; display: inline-block; margin-bottom: 10px; }
+    .plan-name { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+    .price { font-size: 32px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .price span { font-size: 14px; font-weight: 400; color: var(--text-muted); }
+    .plan-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5; }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .plan-features li { font-size: 13px; color: var(--text-muted); display: flex; gap: 8px; }
+    .check { color: var(--teal); font-weight: 700; }
+
+    /* TESTIMONIALS */
+    .testi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 2.5rem; }
+    .testimonial { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.25rem; background: var(--bg); }
+    .testimonial p { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 10px; font-style: italic; }
+    .testi-author { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+    /* FOOTER */
+    footer { border-top: 0.5px solid var(--border); padding: 2rem 1.5rem; text-align: center; }
+    footer p { font-size: 12px; color: var(--text-faint); line-height: 1.8; max-width: 600px; margin: 0 auto; }
+
+    /* INSTALL BANNER */
+    #install-banner { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--teal); color: white; padding: 14px 20px; text-align: center; z-index: 999; }
+    #install-banner p { font-size: 14px; margin-bottom: 10px; }
+    #install-banner .banner-btns { display: flex; gap: 10px; justify-content: center; }
+    .banner-install { background: white; color: var(--teal); border: none; border-radius: 6px; padding: 8px 20px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .banner-dismiss { background: transparent; color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.4); border-radius: 6px; padding: 8px 16px; font-size: 13px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <!-- Install Banner (shown when PWA installable) -->
+  <div id="install-banner">
+    <p>Install Agent SCOCI on your device for the full app experience — works offline, no app store needed.</p>
+    <div class="banner-btns">
+      <button class="banner-install" id="install-btn">Install App</button>
+      <button class="banner-dismiss" id="dismiss-btn">Maybe later</button>
+    </div>
+  </div>
+
+  <nav>
+    <a href="/" class="nav-logo">
+      <div class="logo-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-agent">Agent</span>
+        <span class="logo-scoci">SCOCI</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="/app/" class="nav-cta">Open app</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <span class="eyebrow">Occupation-centered · HIPAA-conscious · Built by an OT</span>
+    <h1>Live your life,<br>not just your <em>diagnosis</em></h1>
+    <p class="hero-sub">Agent SCOCI is the only chronic illness self-care companion built on occupational therapy principles — supporting what you <em>do</em> every day, not just your lab values.</p>
+    <div class="acronym-row">
+      <div class="acronym-pill"><b>S</b>elf-care</div>
+      <div class="acronym-pill"><b>C</b>are of</div>
+      <div class="acronym-pill"><b>C</b>hronic</div>
+      <div class="acronym-pill"><b>I</b>llness</div>
+    </div>
+    <div class="btn-group">
+      <a href="/app/" class="btn-primary">Get Agent SCOCI — free</a>
+      <a href="#how-it-works" class="btn-ghost">See how it works</a>
+    </div>
+    <p class="privacy-note">Your health data never leaves your device. Ever.</p>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="section" id="features">
+    <div class="section-inner">
+      <div class="section-label">Why Agent SCOCI</div>
+      <h2>Built around what matters to you</h2>
+      <p class="section-sub">Most health apps track your numbers. Agent SCOCI tracks your life — your ability to cook, drive, care for your family, and do the things that give your days meaning.</p>
+      <div class="ot-strip">
+        <h3>Grounded in occupational therapy science</h3>
+        <p>Agent SCOCI is built on the Middle-Range Theory of Self-Care of Chronic Illness (Riegel et al.) and OT's occupation-centered practice framework — the same evidence base used in clinical OT practice, now in your pocket between appointments.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 6v6l4 2"/></svg></div>
+          <h3>ADL & IADL tracking</h3>
+          <p>Rate your independence across all activities of daily living and get personalized strategies to maintain or improve them.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h3>Role & occupation focus</h3>
+          <p>Tell SCOCI the roles that matter — parent, caregiver, worker — and get guidance that fits your actual life, not a generic patient profile.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <h3>Maintenance · Monitoring · Management</h3>
+          <p>Guided by the three pillars of chronic illness self-care — building habits, tracking changes, and knowing when and how to respond.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <h3>Private by design</h3>
+          <p>In PWA mode, your entire health profile lives only on your device. No cloud uploads, no account required, no data sold — ever.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <h3>Appointment-ready reports</h3>
+          <p>Generate a summary of your ADL performance, symptoms, and occupational goals to bring to your OT or care team visit.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+          <h3>Daily check-ins</h3>
+          <p>Short daily prompts track energy, pain, mood, and activity — building a picture of your health over time, not just a snapshot.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="section" id="how-it-works">
+    <div class="section-inner">
+      <div class="section-label">How it works</div>
+      <h2>From intake to insight in minutes</h2>
+      <p class="section-sub">A one-time 7-step profile sets up your personalized SCOCI agent. Then it's there whenever you need it — online or offline.</p>
+      <div class="steps">
+        <div class="step-row"><div class="step-num">1</div><div><h4>Diagnosis & medications</h4><p>Share your condition, how long you've had it, and what you're currently taking.</p></div></div>
+        <div class="step-row"><div class="step-num">2</div><div><h4>ADL assessment</h4><p>Rate your independence in bathing, dressing, mobility, eating, and other basic self-care tasks.</p></div></div>
+        <div class="step-row"><div class="step-num">3</div><div><h4>IADL assessment</h4><p>Rate your ability to manage meals, medications, driving, finances, home, and community life.</p></div></div>
+        <div class="step-row"><div class="step-num">4</div><div><h4>Occupational profile</h4><p>Share the roles and activities that give your life meaning — and which ones your illness has disrupted.</p></div></div>
+        <div class="step-row"><div class="step-num">5</div><div><h4>Routine, environment & support</h4><p>Describe your home setup, adaptive equipment, daily schedule, and support network.</p></div></div>
+        <div class="step-row"><div class="step-num">6</div><div><h4>Care team</h4><p>Add your OT, physician, and specialists so SCOCI reinforces your clinical goals between visits.</p></div></div>
+        <div class="step-row"><div class="step-num">7</div><div><h4>Meet Agent SCOCI</h4><p>Your AI companion is ready — personalized to your condition, your life, and your meaningful occupations.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="section" id="install">
+    <div class="section-inner">
+      <div class="section-label">Get the app</div>
+      <h2>Install it like an app. No app store needed.</h2>
+      <p class="section-sub">Agent SCOCI is a Progressive Web App — add it to your home screen directly from your browser. Works on iPhone, Android, and desktop. Works offline once installed.</p>
+      <div class="pwa-box">
+        <h3>Agent SCOCI — free to install</h3>
+        <p>Your profile and all health data are saved only on your device. Completely private, no account required to get started.</p>
+        <div class="pwa-instructions">
+          <div class="pwa-step"><strong>iPhone / iPad</strong>Safari → tap Share → "Add to Home Screen"</div>
+          <div class="pwa-step"><strong>Android</strong>Chrome → tap Menu → "Add to Home Screen"</div>
+          <div class="pwa-step"><strong>Desktop</strong>Chrome or Edge → install icon in address bar</div>
+        </div>
+        <a href="/app/" class="btn-primary">Open Agent SCOCI</a>
+      </div>
+      <div class="privacy-strip" style="margin-top:1.25rem;">
+        <h4>HIPAA-conscious architecture</h4>
+        <p>In local PWA mode, Agent SCOCI stores your health profile and AI conversation history exclusively in your device's local storage using IndexedDB. Nothing is transmitted to any external server. Your health information is private by design — not just by policy.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="section" id="pricing">
+    <div class="section-inner">
+      <div class="section-label">Pricing</div>
+      <h2>Start free. Upgrade when you're ready.</h2>
+      <p class="section-sub">The core SCOCI agent is always free. Premium features unlock deeper tracking, reports, and care team tools.</p>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="plan-name">Free</div>
+          <div class="price">$0 <span>/ forever</span></div>
+          <div class="plan-desc">Everything you need to get started with SCOCI.</div>
+          <ul class="plan-features">
+            <li><span class="check">+</span>Full 7-step OT intake</li>
+            <li><span class="check">+</span>AI self-care companion</li>
+            <li><span class="check">+</span>ADL & IADL assessment</li>
+            <li><span class="check">+</span>Occupational profile</li>
+            <li><span class="check">+</span>Local device storage</li>
+            <li><span class="check">+</span>PWA install &amp; offline use</li>
+          </ul>
+        </div>
+        <div class="price-card featured">
+          <div class="best-badge">Most popular</div>
+          <div class="plan-name">Plus</div>
+          <div class="price">$12 <span>/ month</span></div>
+          <div class="plan-desc">For people actively managing their condition day to day.</div>
+          <ul class="plan-features">
+            <li><span class="check">+</span>Everything in Free</li>
+            <li><span class="check">+</span>Daily check-in tracking</li>
+            <li><span class="check">+</span>Symptom trend charts</li>
+            <li><span class="check">+</span>Appointment-ready PDF reports</li>
+            <li><span class="check">+</span>Energy &amp; pacing planner</li>
+            <li><span class="check">+</span>Medication adherence reminders</li>
+          </ul>
+        </div>
+        <div class="price-card">
+          <div class="plan-name">OT Practice</div>
+          <div class="price">$49 <span>/ month</span></div>
+          <div class="plan-desc">For OT clinicians using SCOCI with their patients.</div>
+          <ul class="plan-features">
+            <li><span class="check">+</span>Everything in Plus</li>
+            <li><span class="check">+</span>Multi-patient dashboard</li>
+            <li><span class="check">+</span>Goal tracking aligned to OT tx</li>
+            <li><span class="check">+</span>Between-session support tool</li>
+            <li><span class="check">+</span>White-label option</li>
+            <li><span class="check">+</span>Priority support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="section-label">What people say</div>
+      <h2>Designed for real lives</h2>
+      <div class="testi-grid">
+        <div class="testimonial">
+          <p>"Finally an app that understands I'm not just a patient — I'm a mom, a caregiver, and a person who wants her life back."</p>
+          <div class="testi-author">— Beta user, RA diagnosis, 6 years</div>
+        </div>
+        <div class="testimonial">
+          <p>"The ADL and IADL questions were exactly what my OT asks me. It felt like having a session between appointments."</p>
+          <div class="testi-author">— Beta user, MS diagnosis, 3 years</div>
+        </div>
+        <div class="testimonial">
+          <p>"I love that my data doesn't go anywhere. I was always worried about health apps selling my information."</p>
+          <div class="testi-author">— Beta user, COPD diagnosis, 8 years</div>
+        </div>
+      </div>
+      <div style="text-align:center;">
+        <a href="/app/" class="btn-primary" style="font-size:16px;padding:14px 36px;">Get Agent SCOCI free →</a>
+        <p class="privacy-note" style="margin-top:12px;">No account needed · No data uploaded · Install in 30 seconds</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      Agent SCOCI is not a medical device and does not provide medical advice, diagnosis, or treatment.<br>
+      Always consult your occupational therapist, physician, or qualified health provider regarding your condition.<br><br>
+      &copy; 2026 Agent SCOCI &nbsp;·&nbsp; Self-Care of Chronic Illness &nbsp;·&nbsp; <a href="mailto:hello@agentscoci.site" style="color:var(--text-faint);">hello@agentscoci.site</a>
+    </p>
+  </footer>
+
+  <script>
+    // Service worker registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+
+    // PWA install prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('install-banner').style.display = 'block';
+    });
+
+    document.getElementById('install-btn').addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.getElementById('install-banner').style.display = 'none';
+    });
+
+    document.getElementById('dismiss-btn').addEventListener('click', () => {
+      document.getElementById('install-banner').style.display = 'none';
+    });
+  </script>
+</body>
+</html>
