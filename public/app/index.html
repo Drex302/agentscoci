@@ -10,972 +10,930 @@
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#1D9E75" />
   <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --teal: #1D9E75; --teal-dark: #0F6E56; --teal-deeper: #085041;
-      --teal-light: #E1F5EE; --teal-mid: #5DCAA5;
-      --text: #1a1a1a; --text-muted: #6b7280; --text-faint: #9ca3af;
-      --border: rgba(0,0,0,0.1); --border-mid: rgba(0,0,0,0.18);
-      --bg: #ffffff; --bg-soft: #f9fafb; --bg-secondary: #f3f4f6;
-      --radius-sm: 8px; --radius: 12px; --radius-lg: 16px;
-      --danger: #E24B4A; --danger-bg: #FCEBEB;
-      --warn-bg: #FAEEDA; --warn: #BA7517;
+      --teal: #1D9E75;
+      --teal-dark: #0F6E56;
+      --teal-light: #E1F5EE;
+      --teal-mid: #5DCAA5;
+      --text: #1a1a1a;
+      --text-muted: #4a5568;
+      --border: rgba(0,0,0,0.12);
+      --bg: #ffffff;
+      --bg-soft: #f7faf9;
+      --bg-secondary: #edf2f0;
+      --radius: 20px;
+      --radius-lg: 28px;
+      --radius-xl: 36px;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --text: #f3f4f6; --text-muted: #9ca3af; --text-faint: #6b7280;
-        --border: rgba(255,255,255,0.1); --border-mid: rgba(255,255,255,0.18);
-        --bg: #111827; --bg-soft: #1f2937; --bg-secondary: #374151;
-        --teal-light: #052e1c; --danger-bg: #2d1212; --warn-bg: #2d2008;
+        --text: #f0faf6;
+        --text-muted: #a0bfb4;
+        --border: rgba(255,255,255,0.12);
+        --bg: #0d1f1a;
+        --bg-soft: #142b23;
+        --bg-secondary: #1a3329;
+        --teal-light: #0a2e22;
       }
     }
-    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+    html, body { height: 100%; font-family: 'Nunito', system-ui, sans-serif; background: var(--bg); color: var(--text); }
     body { display: flex; flex-direction: column; }
 
-    /* APP SHELL */
-    #app-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 0.5px solid var(--border); background: var(--bg); }
-    .app-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    .logo-mark { width: 30px; height: 30px; border-radius: 7px; background: var(--teal); display: flex; align-items: center; justify-content: center; }
-    .logo-text { line-height: 1.1; }
-    .logo-agent { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
-    .logo-scoci { font-size: 15px; font-weight: 600; color: var(--text); }
-    .header-right { display: flex; gap: 8px; align-items: center; }
-    .icon-btn { background: none; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); padding: 6px 12px; font-size: 12px; color: var(--text-muted); cursor: pointer; font-family: inherit; transition: background 0.15s; }
-    .icon-btn:hover { background: var(--bg-soft); }
+    /* HEADER */
+    #app-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; background: var(--bg);
+      border-bottom: 2px solid var(--teal-light);
+    }
+    .app-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-mark { width: 48px; height: 48px; border-radius: 0; background: transparent; display: flex; align-items: center; justify-content: center; }
+    .logo-mark img { width: 48px; height: 48px; object-fit: contain; }
+    .logo-text .logo-agent { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; display: block; }
+    .logo-text .logo-scoci { font-size: 20px; font-weight: 800; color: var(--text); line-height: 1; }
+    .home-btn { background: var(--bg-secondary); border: none; border-radius: var(--radius); padding: 10px 18px; font-size: 16px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-family: inherit; }
 
     /* PROGRESS */
-    #progress-bar { height: 3px; background: var(--bg-secondary); }
-    #progress-fill { height: 100%; background: var(--teal); transition: width 0.3s ease; width: 0%; }
+    #progress-wrap { padding: 12px 20px 0; background: var(--bg); }
+    #progress-label { font-size: 15px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+    #progress-bar { height: 12px; background: var(--bg-secondary); border-radius: 10px; overflow: hidden; }
+    #progress-fill { height: 100%; background: var(--teal); border-radius: 10px; transition: width 0.4s ease; width: 0%; }
 
     /* MAIN */
-    #main { flex: 1; overflow-y: auto; padding: 1.25rem 1rem 2rem; max-width: 680px; margin: 0 auto; width: 100%; }
+    #main { flex: 1; overflow-y: auto; padding: 20px 20px 40px; max-width: 680px; margin: 0 auto; width: 100%; }
 
     /* SCREENS */
     .screen { display: none; }
     .screen.active { display: block; }
 
-    /* TYPOGRAPHY */
-    .screen-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--teal); margin-bottom: 4px; }
-    .screen-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .screen-sub { font-size: 14px; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.6; }
-    .ot-tag { display: inline-block; font-size: 9px; font-weight: 600; background: var(--teal-light); color: var(--teal-deeper); border-radius: 10px; padding: 2px 7px; margin-left: 5px; text-transform: uppercase; letter-spacing: 0.05em; vertical-align: middle; }
-    .optional { font-size: 10px; color: var(--text-faint); background: var(--bg-secondary); border-radius: 10px; padding: 1px 7px; margin-left: 5px; vertical-align: middle; }
+    /* STEP HEADER */
+    .step-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--teal-light); color: var(--teal-dark); font-size: 14px; font-weight: 800; border-radius: 20px; padding: 5px 14px; margin-bottom: 12px; }
+    .ot-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+    .screen-title { font-size: 28px; font-weight: 800; color: var(--text); margin-bottom: 8px; line-height: 1.2; }
+    .screen-sub { font-size: 18px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; font-weight: 600; }
 
     /* CARDS */
-    .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.1rem; margin-bottom: 1rem; }
-    .card-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px; }
+    .card { background: var(--bg-soft); border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+    .card-title { font-size: 16px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
 
-    /* FORM ELEMENTS */
-    .field { margin-bottom: 1rem; }
+    /* FIELDS */
+    .field { margin-bottom: 18px; }
     .field:last-child { margin-bottom: 0; }
-    .field label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+    .field label { display: block; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
     .field input, .field select, .field textarea {
-      width: 100%; font-family: inherit; font-size: 14px;
+      width: 100%; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 600;
       background: var(--bg); color: var(--text);
-      border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm);
-      padding: 9px 12px; outline: none; transition: border-color 0.15s;
+      border: 2.5px solid var(--border); border-radius: var(--radius);
+      padding: 14px 18px; outline: none; transition: border-color 0.2s;
+      -webkit-appearance: none;
     }
     .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--teal); }
-    .field textarea { resize: vertical; min-height: 72px; }
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    @media (max-width: 480px) { .two-col { grid-template-columns: 1fr; } }
+    .field textarea { resize: vertical; min-height: 90px; }
+    .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%231D9E75' stroke-width='3'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 48px; }
+    .optional-tag { font-size: 13px; font-weight: 700; color: var(--teal); background: var(--teal-light); border-radius: 10px; padding: 2px 8px; margin-left: 6px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 500px) { .two-col { grid-template-columns: 1fr; } }
 
     /* TAG INPUT */
-    .tag-box { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); padding: 6px 10px; min-height: 42px; cursor: text; background: var(--bg); transition: border-color 0.15s; }
+    .tag-box { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border: 2.5px solid var(--border); border-radius: var(--radius); padding: 10px 14px; min-height: 56px; cursor: text; background: var(--bg); transition: border-color 0.2s; }
     .tag-box:focus-within { border-color: var(--teal); }
-    .tag { background: var(--bg-secondary); border: 0.5px solid var(--border-mid); border-radius: 20px; padding: 3px 10px; font-size: 12px; color: var(--text); display: flex; align-items: center; gap: 5px; }
-    .tag button { background: none; border: none; cursor: pointer; font-size: 13px; color: var(--text-muted); padding: 0; line-height: 1; }
-    .tag-box input { border: none; outline: none; background: transparent; font-size: 14px; flex: 1; min-width: 100px; padding: 0; color: var(--text); box-shadow: none; }
+    .tag { background: var(--teal-light); border: 2px solid var(--teal-mid); border-radius: 20px; padding: 6px 14px; font-size: 16px; font-weight: 700; color: var(--teal-dark); display: flex; align-items: center; gap: 6px; }
+    .tag button { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--teal-dark); padding: 0; line-height: 1; font-weight: 800; }
+    .tag-box input { border: none; outline: none; background: transparent; font-size: 18px; font-weight: 600; flex: 1; min-width: 120px; padding: 4px 0; color: var(--text); box-shadow: none; font-family: 'Nunito', sans-serif; }
+    .tag-hint { font-size: 14px; color: var(--text-muted); font-weight: 600; margin-top: 6px; }
 
-    /* RATING TABLE */
-    .rating-legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-    .legend-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 4px; }
-    .legend-item { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; }
-    .rating-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--border); gap: 10px; }
-    .rating-item:last-child { border-bottom: none; }
-    .rating-item span { font-size: 13px; color: var(--text); flex: 1; }
-    .rating-btns { display: flex; gap: 4px; }
-    .r-btn { width: 32px; height: 32px; border-radius: var(--radius-sm); border: 0.5px solid var(--border-mid); background: transparent; cursor: pointer; font-size: 11px; font-weight: 600; color: var(--text-muted); transition: all 0.12s; font-family: inherit; }
-    .r-btn:hover { background: var(--bg-soft); }
-    .r-btn.r-i { background: var(--teal-light); border-color: var(--teal-mid); color: var(--teal-deeper); }
-    .r-btn.r-d { background: var(--warn-bg); border-color: #EF9F27; color: var(--warn); }
+    /* BIG CHOICE BUTTONS (replaces dropdowns for key questions) */
+    .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .choice-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 480px) { .choice-grid, .choice-grid.three { grid-template-columns: 1fr 1fr; } }
+    .choice-btn { background: var(--bg); border: 2.5px solid var(--border); border-radius: var(--radius); padding: 14px 10px; font-size: 15px; font-weight: 700; color: var(--text); cursor: pointer; font-family: 'Nunito', sans-serif; text-align: center; transition: all 0.15s; line-height: 1.3; }
+    .choice-btn:hover { border-color: var(--teal-mid); background: var(--teal-light); }
+    .choice-btn.selected { background: var(--teal); border-color: var(--teal); color: white; }
+    .choice-btn .choice-icon { font-size: 24px; display: block; margin-bottom: 4px; }
+
+    /* RATING CARDS (ADL/IADL) */
+    .rating-legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 700; color: var(--text-muted); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .rating-card { background: var(--bg); border: 2px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; }
+    .rating-card-label { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+    .rating-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .r-btn { border-radius: var(--radius); border: 2.5px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-size: 12px; font-weight: 800; color: var(--text-muted); transition: all 0.12s; font-family: 'Nunito', sans-serif; padding: 10px 4px; text-align: center; line-height: 1.2; }
+    .r-btn:hover { transform: scale(1.03); }
+    .r-btn.r-i { background: #E1F5EE; border-color: #5DCAA5; color: #085041; }
+    .r-btn.r-d { background: #FAEEDA; border-color: #EF9F27; color: #633806; }
     .r-btn.r-h { background: #FAECE7; border-color: #F0997B; color: #4A1B0C; }
-    .r-btn.r-u { background: var(--danger-bg); border-color: #F09595; color: #501313; }
+    .r-btn.r-u { background: #FCEBEB; border-color: #F09595; color: #501313; }
 
-    /* BUTTONS */
-    .btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 1.25rem; padding-bottom: 1rem; }
-    .btn { font-family: inherit; font-size: 14px; font-weight: 500; padding: 10px 22px; border-radius: var(--radius-sm); cursor: pointer; border: 0.5px solid var(--border-mid); background: transparent; color: var(--text); transition: background 0.15s; }
-    .btn:hover { background: var(--bg-soft); }
-    .btn.primary { background: var(--teal); color: white; border-color: var(--teal); }
-    .btn.primary:hover { background: var(--teal-dark); border-color: var(--teal-dark); }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    /* CHAT */
-    #chat-messages { display: flex; flex-direction: column; gap: 12px; min-height: 300px; max-height: 55vh; overflow-y: auto; margin-bottom: 12px; padding-right: 2px; }
-    .msg { padding: 11px 14px; border-radius: var(--radius); font-size: 14px; line-height: 1.65; max-width: 86%; white-space: pre-wrap; }
-    .msg.ai { background: var(--bg-soft); color: var(--text); align-self: flex-start; border-radius: 4px var(--radius) var(--radius) var(--radius); }
-    .msg.user { background: var(--teal); color: white; align-self: flex-end; border-radius: var(--radius) 4px var(--radius) var(--radius); }
-    .msg.err { background: var(--danger-bg); color: var(--danger); align-self: flex-start; font-size: 13px; }
-    .msg.system { background: var(--warn-bg); color: var(--warn); align-self: flex-start; font-size: 12px; font-style: italic; }
-    .dots span { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--text-muted); margin: 0 2px; animation: pulse 1.2s infinite; }
-    .dots span:nth-child(2) { animation-delay: 0.2s; }
-    .dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes pulse { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-4px)} }
-    .quick-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-    .chip { font-size: 12px; padding: 6px 13px; border-radius: 20px; cursor: pointer; border: 0.5px solid var(--border-mid); background: transparent; color: var(--text-muted); font-family: inherit; transition: all 0.12s; }
-    .chip:hover { background: var(--bg-soft); color: var(--text); }
-    .chat-input-row { display: flex; gap: 8px; }
-    .chat-input-row input { flex: 1; font-family: inherit; font-size: 14px; background: var(--bg); color: var(--text); border: 0.5px solid var(--border-mid); border-radius: var(--radius-sm); padding: 10px 14px; outline: none; }
-    .chat-input-row input:focus { border-color: var(--teal); }
-    .send-btn { background: var(--teal); color: white; border: none; border-radius: var(--radius-sm); padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; }
-    .send-btn:hover { background: var(--teal-dark); }
-    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .profile-pill { display: inline-flex; align-items: center; gap: 6px; background: var(--bg-soft); border: 0.5px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
-
-    /* AI MODE SELECTOR */
-    .mode-tabs { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
-    .mode-tab { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--border-mid); background: transparent; color: var(--text-muted); cursor: pointer; font-family: inherit; transition: all 0.12s; }
-    .mode-tab.active { background: var(--teal-light); border-color: var(--teal-mid); color: var(--teal-deeper); font-weight: 600; }
-    .mode-info { font-size: 12px; color: var(--text-faint); margin-bottom: 1rem; line-height: 1.5; padding: 8px 12px; background: var(--bg-soft); border-radius: var(--radius-sm); border: 0.5px solid var(--border); }
-
-    /* WEBLLM STATUS */
-    #webllm-status { display: none; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-    .progress-text { font-size: 11px; color: var(--teal); font-weight: 500; }
+    /* NAV BUTTONS */
+    .btn-row { display: flex; gap: 12px; justify-content: space-between; margin-top: 20px; }
+    .btn-back { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 700; padding: 16px 28px; border-radius: var(--radius); cursor: pointer; border: 2.5px solid var(--border); background: var(--bg-secondary); color: var(--text-muted); transition: all 0.15s; flex: 1; }
+    .btn-back:hover { border-color: var(--teal); color: var(--teal); }
+    .btn-next { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 800; padding: 18px 32px; border-radius: var(--radius); cursor: pointer; border: none; background: var(--teal); color: white; transition: all 0.15s; flex: 2; box-shadow: 0 4px 16px rgba(29,158,117,0.35); }
+    .btn-next:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(29,158,117,0.4); }
+    .btn-next:active { transform: translateY(0); }
+    .btn-next:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-full { width: 100%; font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 800; padding: 22px; border-radius: var(--radius-lg); cursor: pointer; border: none; background: var(--teal); color: white; transition: all 0.15s; box-shadow: 0 6px 24px rgba(29,158,117,0.4); }
+    .btn-full:hover { background: var(--teal-dark); transform: translateY(-2px); }
 
     /* WELCOME SCREEN */
-    .welcome-hero { text-align: center; padding: 2rem 0 1.5rem; }
-    .welcome-logo { width: 64px; height: 64px; border-radius: 16px; background: var(--teal); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
-    .welcome-hero h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
-    .welcome-hero p { font-size: 15px; color: var(--text-muted); line-height: 1.65; max-width: 400px; margin: 0 auto 1.5rem; }
-    .acronym-pills { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
-    .a-pill { border: 0.5px solid var(--border-mid); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--text-muted); background: var(--bg-soft); }
+    .welcome-logo-wrap { display: flex; justify-content: center; padding: 24px 0 16px; }
+    .welcome-logo-big { width: 110px; height: 110px; border-radius: 0; background: transparent; display: flex; align-items: center; justify-content: center; }
+    .welcome-title { font-size: 34px; font-weight: 800; text-align: center; color: var(--text); margin-bottom: 8px; }
+    .welcome-sub { font-size: 19px; font-weight: 600; text-align: center; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; padding: 0 8px; }
+    .acronym-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .a-pill { border: 2.5px solid var(--teal-mid); border-radius: 20px; padding: 7px 16px; font-size: 15px; font-weight: 800; color: var(--text-muted); background: var(--teal-light); }
     .a-pill b { color: var(--teal); }
+    .welcome-steps { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .welcome-step { display: flex; align-items: center; gap: 14px; background: var(--bg-soft); border: 2px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+    .ws-num { min-width: 40px; height: 40px; border-radius: 50%; background: var(--teal); color: white; font-size: 18px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .ws-text { font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .ws-sub { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
+    .saved-banner { background: var(--teal-light); border: 2.5px solid var(--teal-mid); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .saved-banner p { font-size: 17px; font-weight: 700; color: var(--teal-dark); }
+    .saved-banner button { background: var(--teal); border: none; border-radius: var(--radius); padding: 10px 18px; font-size: 16px; font-weight: 800; color: white; cursor: pointer; font-family: 'Nunito', sans-serif; white-space: nowrap; }
 
-    /* SAVED PROFILE NOTICE */
-    .saved-notice { background: var(--teal-light); border: 0.5px solid var(--teal-mid); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 1rem; font-size: 13px; color: var(--teal-deeper); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-    .saved-notice button { background: transparent; border: 0.5px solid var(--teal-mid); border-radius: 6px; padding: 4px 12px; font-size: 12px; color: var(--teal-deeper); cursor: pointer; font-family: inherit; }
+    /* CHAT SCREEN */
+    .profile-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--teal-light); border: 2px solid var(--teal-mid); border-radius: 20px; padding: 7px 16px; font-size: 15px; font-weight: 700; color: var(--teal-dark); margin-bottom: 14px; }
+    .mode-tabs { display: flex; gap: 8px; margin-bottom: 10px; }
+    .mode-tab { font-size: 15px; font-weight: 800; padding: 10px 18px; border-radius: 20px; border: 2.5px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.15s; }
+    .mode-tab.active { background: var(--teal-light); border-color: var(--teal-mid); color: var(--teal-dark); }
+    .mode-info { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; padding: 10px 14px; background: var(--bg-soft); border-radius: var(--radius); border: 2px solid var(--border); line-height: 1.55; }
+    #cloud-key-section { display: none; margin-bottom: 12px; }
+    #webllm-status { font-size: 15px; font-weight: 700; color: var(--teal); margin-bottom: 10px; padding: 10px 14px; background: var(--teal-light); border-radius: var(--radius); display: none; }
+    .chat-box { background: #f0f7f4; border: 2px solid #c8e6d8; border-radius: var(--radius-lg); padding: 16px; margin-bottom: 14px; }
+    #chat-messages { display: flex; flex-direction: column; gap: 14px; min-height: 260px; max-height: 50vh; overflow-y: auto; }
+    .msg { padding: 14px 18px; border-radius: var(--radius); font-size: 17px; font-weight: 600; line-height: 1.65; max-width: 88%; white-space: pre-wrap; }
+    .msg.ai { background: #ffffff; color: #1a1a1a; align-self: flex-start; border-radius: 6px var(--radius) var(--radius) var(--radius); border: 2px solid #d0e8df; box-shadow: var(--shadow); }
+    .msg.user { background: var(--teal); color: white; align-self: flex-end; border-radius: var(--radius) 6px var(--radius) var(--radius); }
+    .msg.err { background: #FCEBEB; color: #501313; border: 2px solid #F09595; align-self: flex-start; font-size: 15px; }
+    .msg.system { background: var(--teal-light); color: var(--teal-dark); align-self: flex-start; font-size: 14px; border: 2px solid var(--teal-mid); }
+    .dots span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); margin: 0 3px; animation: bop 1.2s infinite; }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bop { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+    .quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .chip { font-size: 15px; font-weight: 700; padding: 10px 16px; border-radius: 20px; cursor: pointer; border: 2.5px solid var(--teal-mid); background: var(--teal-light); color: var(--teal-dark); font-family: 'Nunito', sans-serif; transition: all 0.15s; }
+    .chip:hover { background: var(--teal); color: white; border-color: var(--teal); }
+    .chat-input-row { display: flex; gap: 10px; }
+    .chat-input-row input { flex: 1; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 600; background: var(--bg); color: var(--text); border: 2.5px solid var(--border); border-radius: var(--radius); padding: 14px 18px; outline: none; transition: border-color 0.2s; }
+    .chat-input-row input:focus { border-color: var(--teal); }
+    .send-btn { background: var(--teal); color: white; border: none; border-radius: var(--radius); padding: 14px 22px; font-size: 18px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 4px 14px rgba(29,158,117,0.35); transition: all 0.15s; }
+    .send-btn:hover { background: var(--teal-dark); }
+    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .reset-btn { background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius); padding: 10px 16px; font-size: 15px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-family: 'Nunito', sans-serif; }
   </style>
 </head>
 <body>
 
-  <div id="app-header">
-    <a href="/" class="app-logo">
-      <div class="logo-mark">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+<div id="app-header">
+  <a href="/" class="app-logo">
+    <div class="logo-mark">
+      <img src="/icons/icon-192.png" alt="Agent SCOCI logo" />
+    </div>
+    <div class="logo-text">
+      <span class="logo-agent">Agent</span>
+      <span class="logo-scoci">SCOCI</span>
+    </div>
+  </a>
+  <button class="home-btn" onclick="window.location.href='/'">← Home</button>
+</div>
+
+<div id="progress-wrap" style="display:none">
+  <div id="progress-label">Step 1 of 7</div>
+  <div id="progress-bar"><div id="progress-fill"></div></div>
+</div>
+
+<div id="main">
+
+  <!-- WELCOME -->
+  <div class="screen active" id="screen-welcome">
+    <div class="welcome-logo-wrap">
+      <div class="welcome-logo-big">
+        <img src="/icons/icon-192.png" alt="Agent SCOCI" style="width:110px;height:110px;object-fit:contain;" />
       </div>
-      <div class="logo-text">
-        <span class="logo-agent">Agent</span>
-        <span class="logo-scoci">SCOCI</span>
+    </div>
+    <div class="welcome-title">Hello! I'm Agent SCOCI</div>
+    <div class="welcome-sub">Your personal health companion — here to help you manage your condition and live life on your terms.</div>
+    <div class="acronym-row">
+      <div class="a-pill"><b>S</b>elf-care</div>
+      <div class="a-pill"><b>C</b>are of</div>
+      <div class="a-pill"><b>C</b>hronic</div>
+      <div class="a-pill"><b>I</b>llness</div>
+    </div>
+    <div id="saved-banner" class="saved-banner" style="display:none">
+      <p>👋 Welcome back! Your profile is saved.</p>
+      <button onclick="loadSavedAndChat()">Continue →</button>
+    </div>
+    <div class="welcome-steps">
+      <div class="welcome-step">
+        <div class="ws-num">1</div>
+        <div><div class="ws-text">Tell us about your health</div><div class="ws-sub">Your condition, medications, and daily routine</div></div>
       </div>
-    </a>
-    <div class="header-right">
-      <button class="icon-btn" id="reset-btn" style="display:none" onclick="confirmReset()">Reset profile</button>
-      <button class="icon-btn" onclick="window.location.href='/'">← Home</button>
+      <div class="welcome-step">
+        <div class="ws-num">2</div>
+        <div><div class="ws-text">Rate your daily activities</div><div class="ws-sub">What's easy, what's hard, what you need help with</div></div>
+      </div>
+      <div class="welcome-step">
+        <div class="ws-num">3</div>
+        <div><div class="ws-text">Meet your companion</div><div class="ws-sub">Get personalized guidance every single day</div></div>
+      </div>
+    </div>
+    <button class="btn-full" onclick="startIntake()">Let's Get Started →</button>
+    <p style="text-align:center;font-size:14px;font-weight:600;color:var(--text-muted);margin-top:14px;">Your information stays on your device. Private and secure.</p>
+  </div>
+
+  <!-- STEP 1: DIAGNOSIS -->
+  <div class="screen" id="screen-s1">
+    <div class="step-badge"><div class="ot-dot"></div>Step 1 of 7</div>
+    <div class="screen-title">What health condition are you managing?</div>
+    <div class="screen-sub">Tell us about your diagnosis so we can give you the right support.</div>
+    <div class="card">
+      <div class="field">
+        <label>My main health condition is:</label>
+        <input type="text" id="f-diagnosis" placeholder="e.g. Diabetes, Heart Disease, Arthritis…" />
+      </div>
+      <div class="field">
+        <label>How long have you had this condition?</label>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="selectChoice(this,'duration','Less than 1 year')"><span class="choice-icon">🌱</span>Less than 1 year</button>
+          <button class="choice-btn" onclick="selectChoice(this,'duration','1–3 years')"><span class="choice-icon">📅</span>1 – 3 years</button>
+          <button class="choice-btn" onclick="selectChoice(this,'duration','3–5 years')"><span class="choice-icon">🗓️</span>3 – 5 years</button>
+          <button class="choice-btn" onclick="selectChoice(this,'duration','5–10 years')"><span class="choice-icon">📆</span>5 – 10 years</button>
+          <button class="choice-btn" onclick="selectChoice(this,'duration','More than 10 years')"><span class="choice-icon">⭐</span>10+ years</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Any other health conditions? <span class="optional-tag">Optional</span></label>
+        <div class="tag-box" id="tb-comorbidities"><input id="ti-comorbidities" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: High Blood Pressure, Depression, Osteoporosis</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('welcome')">← Back</button>
+      <button class="btn-next" onclick="goTo('s2')">Next Step →</button>
     </div>
   </div>
-  <div id="progress-bar"><div id="progress-fill"></div></div>
 
-  <div id="main">
-
-    <!-- WELCOME -->
-    <div class="screen active" id="screen-welcome">
-      <div class="welcome-hero">
-        <div class="welcome-logo">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        </div>
-        <h1>Agent SCOCI</h1>
-        <p>Your occupation-centered self-care companion for living well with chronic illness.</p>
-        <div class="acronym-pills">
-          <div class="a-pill"><b>S</b>elf-care</div>
-          <div class="a-pill"><b>C</b>are of</div>
-          <div class="a-pill"><b>C</b>hronic</div>
-          <div class="a-pill"><b>I</b>llness</div>
-        </div>
+  <!-- STEP 2: MEDICATIONS -->
+  <div class="screen" id="screen-s2">
+    <div class="step-badge"><div class="ot-dot"></div>Step 2 of 7</div>
+    <div class="screen-title">What medications do you take?</div>
+    <div class="screen-sub">This helps your companion understand your treatment and watch out for important side effects.</div>
+    <div class="card">
+      <div class="field">
+        <label>My medications (name and dose):</label>
+        <div class="tag-box" id="tb-meds"><input id="ti-meds" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Example: Metformin 500mg, Lisinopril 10mg</div>
       </div>
-      <div id="saved-profile-notice" class="saved-notice" style="display:none">
-        <span>You have a saved profile. Pick up where you left off.</span>
-        <button onclick="loadSavedAndChat()">Continue →</button>
-      </div>
-      <div class="card">
-        <div class="card-label">What to expect</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="min-width:24px;height:24px;border-radius:50%;background:var(--teal-light);color:var(--teal-deeper);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;">7</div>
-            <div style="font-size:13px;color:var(--text-muted);">Quick intake steps covering your diagnosis, ADLs, IADLs, occupational roles, routine, and care team</div>
-          </div>
-          <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="min-width:24px;height:24px;border-radius:50%;background:var(--teal-light);color:var(--teal-deeper);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;">AI</div>
-            <div style="font-size:13px;color:var(--text-muted);">Your personalized SCOCI agent — always available, grounded in OT theory</div>
-          </div>
-          <div style="display:flex;gap:12px;align-items:flex-start;">
-            <div style="min-width:24px;height:24px;border-radius:50%;background:var(--teal-light);color:var(--teal-deeper);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#085041" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            </div>
-            <div style="font-size:13px;color:var(--text-muted);">Everything saved locally on your device — nothing uploaded, completely private</div>
-          </div>
-        </div>
-      </div>
-      <div class="btn-row" style="justify-content:center;">
-        <button class="btn primary" style="width:100%;max-width:320px;font-size:15px;padding:13px;" onclick="goTo('s1')">Begin my profile →</button>
+      <div class="field">
+        <label>Any problems with your medications? <span class="optional-tag">Optional</span></label>
+        <textarea id="f-med-concerns" placeholder="e.g. I forget my evening pill, the morning dose makes me nauseous…"></textarea>
       </div>
     </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s1')">← Back</button>
+      <button class="btn-next" onclick="goTo('s3')">Next Step →</button>
+    </div>
+  </div>
 
-    <!-- STEP 1: DIAGNOSIS -->
-    <div class="screen" id="screen-s1">
-      <div class="screen-label">Step 1 of 7</div>
-      <div class="screen-title">Diagnosis & medical history</div>
-      <div class="screen-sub">Let's start with your health condition so SCOCI can personalize your guidance.</div>
-      <div class="card">
-        <div class="two-col">
-          <div class="field">
-            <label>Primary diagnosis</label>
-            <input type="text" id="f-diagnosis" placeholder="e.g. Type 2 Diabetes, RA, COPD…" />
-          </div>
-          <div class="field">
-            <label>How long have you had this?</label>
-            <select id="f-duration">
-              <option value="">Select…</option>
-              <option>Less than 1 year</option><option>1–3 years</option>
-              <option>3–5 years</option><option>5–10 years</option>
-              <option>More than 10 years</option>
-            </select>
-          </div>
-        </div>
-        <div class="field">
-          <label>Other conditions <span class="optional">optional</span></label>
-          <div class="tag-box" id="tb-comorbidities"><input id="ti-comorbidities" placeholder="Type and press Enter…" /></div>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="goTo('welcome')">← Back</button>
-        <button class="btn primary" onclick="goTo('s2')">Next →</button>
+  <!-- STEP 3: ADLs -->
+  <div class="screen" id="screen-s3">
+    <div class="step-badge"><div class="ot-dot"></div>Step 3 of 7 · Daily Activities</div>
+    <div class="screen-title">How do you manage your daily self-care?</div>
+    <div class="screen-sub">Tap how you feel about each activity. There are no wrong answers — be honest so we can help.</div>
+    <div class="rating-legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>I do it fine</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>A little hard</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#D85A30"></span>I need help</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>Can't do it</span>
+    </div>
+    <div id="adl-table"></div>
+    <div class="card" style="margin-top:16px;">
+      <div class="field" style="margin-bottom:0">
+        <label>Which one is hardest for you right now?</label>
+        <textarea id="f-adl-concern" placeholder="e.g. Getting dressed takes a long time because of pain in my hands…"></textarea>
       </div>
     </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s2')">← Back</button>
+      <button class="btn-next" onclick="goTo('s4')">Next Step →</button>
+    </div>
+  </div>
 
-    <!-- STEP 2: MEDICATIONS -->
-    <div class="screen" id="screen-s2">
-      <div class="screen-label">Step 2 of 7</div>
-      <div class="screen-title">Medications</div>
-      <div class="screen-sub">Your medications help SCOCI factor in side effects, timing, and adherence strategies.</div>
-      <div class="card">
-        <div class="field">
-          <label>Current medications (name + dose)</label>
-          <div class="tag-box" id="tb-meds"><input id="ti-meds" placeholder="e.g. Metformin 500mg, press Enter…" /></div>
-        </div>
-        <div class="field">
-          <label>Medication concerns or side effects <span class="optional">optional</span></label>
-          <textarea id="f-med-concerns" placeholder="e.g. Nausea in the morning, forgetting evening dose…"></textarea>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="goTo('s1')">← Back</button>
-        <button class="btn primary" onclick="goTo('s3')">Next →</button>
+  <!-- STEP 4: IADLs -->
+  <div class="screen" id="screen-s4">
+    <div class="step-badge"><div class="ot-dot"></div>Step 4 of 7 · Home & Community</div>
+    <div class="screen-title">How do you manage at home and in the community?</div>
+    <div class="screen-sub">These are bigger tasks like cooking, driving, and managing your home. Tap how each one feels for you.</div>
+    <div class="rating-legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>I do it fine</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>A little hard</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#D85A30"></span>I need help</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>Can't do it</span>
+    </div>
+    <div id="iadl-table"></div>
+    <div class="card" style="margin-top:16px;">
+      <div class="field" style="margin-bottom:0">
+        <label>Which one matters most to keep doing independently?</label>
+        <textarea id="f-iadl-priority" placeholder="e.g. Driving — without it I can't get to my appointments…"></textarea>
       </div>
     </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s3')">← Back</button>
+      <button class="btn-next" onclick="goTo('s5')">Next Step →</button>
+    </div>
+  </div>
 
-    <!-- STEP 3: ADLs -->
-    <div class="screen" id="screen-s3">
-      <div class="screen-label">Step 3 of 7</div>
-      <div class="screen-title">Activities of daily living <span class="ot-tag">OT</span></div>
-      <div class="screen-sub">How does your condition affect your basic self-care tasks?</div>
-      <div class="card">
-        <div class="rating-legend">
-          <span class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Independent</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>Some difficulty</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#D85A30"></span>Needs help</span>
-          <span class="legend-item"><span class="legend-dot" style="background:var(--danger)"></span>Unable</span>
-        </div>
-        <div id="adl-table"></div>
+  <!-- STEP 5: OCCUPATIONAL PROFILE -->
+  <div class="screen" id="screen-s5">
+    <div class="step-badge"><div class="ot-dot"></div>Step 5 of 7 · Your Life & Roles</div>
+    <div class="screen-title">What matters most in your daily life?</div>
+    <div class="screen-sub">Your roles and activities are at the heart of your care plan. Tell us what gives your days meaning.</div>
+    <div class="card">
+      <div class="field">
+        <label>Activities and roles that matter most to me:</label>
+        <div class="tag-box" id="tb-occupations"><input id="ti-occupations" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: Gardening, cooking for family, attending church, volunteering</div>
       </div>
-      <div class="card">
-        <div class="field" style="margin-bottom:0">
-          <label>Which ADL is most affected by your condition?</label>
-          <textarea id="f-adl-concern" placeholder="e.g. Getting dressed takes twice as long due to joint pain in the morning…"></textarea>
-        </div>
+      <div class="field">
+        <label>Which one has my condition made hardest?</label>
+        <textarea id="f-disrupted" placeholder="e.g. I used to walk my grandchildren to school but fatigue stops me now…"></textarea>
       </div>
-      <div class="btn-row">
-        <button class="btn" onclick="goTo('s2')">← Back</button>
-        <button class="btn primary" onclick="goTo('s4')">Next →</button>
+      <div class="field">
+        <label>My main role at home:</label>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="selectChoice(this,'role','Independent (living alone)')"><span class="choice-icon">🏠</span>I live alone</button>
+          <button class="choice-btn" onclick="selectChoice(this,'role','Partner / spouse')"><span class="choice-icon">👫</span>Partner / Spouse</button>
+          <button class="choice-btn" onclick="selectChoice(this,'role','Parent of young children')"><span class="choice-icon">👶</span>Parent of young kids</button>
+          <button class="choice-btn" onclick="selectChoice(this,'role','Parent of adult children')"><span class="choice-icon">👨‍👩‍👧</span>Parent of adults</button>
+          <button class="choice-btn" onclick="selectChoice(this,'role','Caregiver for elderly parent')"><span class="choice-icon">🤝</span>Caring for a parent</button>
+          <button class="choice-btn" onclick="selectChoice(this,'role','Other caregiver role')"><span class="choice-icon">💛</span>Other caregiver</button>
+        </div>
       </div>
     </div>
-
-    <!-- STEP 4: IADLs -->
-    <div class="screen" id="screen-s4">
-      <div class="screen-label">Step 4 of 7</div>
-      <div class="screen-title">Instrumental ADLs <span class="ot-tag">OT</span></div>
-      <div class="screen-sub">How does your condition affect your ability to manage home and community life?</div>
-      <div class="card">
-        <div class="rating-legend">
-          <span class="legend-item"><span class="legend-dot" style="background:var(--teal)"></span>Independent</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>Some difficulty</span>
-          <span class="legend-item"><span class="legend-dot" style="background:#D85A30"></span>Needs help</span>
-          <span class="legend-item"><span class="legend-dot" style="background:var(--danger)"></span>Unable</span>
-        </div>
-        <div id="iadl-table"></div>
+    <div class="card">
+      <div class="field">
+        <label>Hobbies or activities I enjoy <span class="optional-tag">Optional</span></label>
+        <div class="tag-box" id="tb-leisure"><input id="ti-leisure" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: Reading, swimming, bingo, crafts, watching sports</div>
       </div>
-      <div class="card">
-        <div class="field" style="margin-bottom:0">
-          <label>Which IADL is most important for you to maintain or improve?</label>
-          <textarea id="f-iadl-priority" placeholder="e.g. Driving — without it I can't get to appointments…"></textarea>
+      <div class="field" style="margin-bottom:0">
+        <label>How has my condition affected my social life?</label>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="selectChoice(this,'social','Not affected')"><span class="choice-icon">😊</span>Not affected</button>
+          <button class="choice-btn" onclick="selectChoice(this,'social','Slightly reduced')"><span class="choice-icon">🙂</span>A little less</button>
+          <button class="choice-btn" onclick="selectChoice(this,'social','Moderately reduced')"><span class="choice-icon">😐</span>Quite a bit less</button>
+          <button class="choice-btn" onclick="selectChoice(this,'social','Significantly reduced')"><span class="choice-icon">😔</span>Rarely go out</button>
         </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="goTo('s3')">← Back</button>
-        <button class="btn primary" onclick="goTo('s5')">Next →</button>
       </div>
     </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s4')">← Back</button>
+      <button class="btn-next" onclick="goTo('s6')">Next Step →</button>
+    </div>
+  </div>
 
-    <!-- STEP 5: OCCUPATIONAL PROFILE -->
-    <div class="screen" id="screen-s5">
-      <div class="screen-label">Step 5 of 7</div>
-      <div class="screen-title">Occupational profile <span class="ot-tag">OT</span></div>
-      <div class="screen-sub">Occupation is everything you do that gives your life meaning — work, play, rest, and social participation.</div>
-      <div class="card">
-        <div class="card-label">Meaningful occupations</div>
-        <div class="field">
-          <label>What activities or roles matter most to you?</label>
-          <div class="tag-box" id="tb-occupations"><input id="ti-occupations" placeholder="e.g. Gardening, cooking, volunteering, press Enter…" /></div>
-        </div>
-        <div class="field">
-          <label>Which has your condition most disrupted?</label>
-          <textarea id="f-disrupted" placeholder="e.g. I used to coach my son's soccer team but fatigue makes it impossible now…"></textarea>
-        </div>
-        <div class="two-col">
-          <div class="field">
-            <label>Primary home role</label>
-            <select id="f-role">
-              <option value="">Select…</option>
-              <option>Independent (living alone)</option><option>Partner / spouse</option>
-              <option>Parent of young children</option><option>Parent of adult children</option>
-              <option>Caregiver for elderly parent</option><option>Other caregiver role</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Work / productivity</label>
-            <select id="f-work">
-              <option value="">Select…</option>
-              <option>Full-time (sedentary)</option><option>Full-time (active/physical)</option>
-              <option>Part-time</option><option>Working from home</option>
-              <option>On medical leave</option><option>Retired</option>
-              <option>Student</option><option>On disability</option>
-            </select>
-          </div>
+  <!-- STEP 6: ROUTINE & ENVIRONMENT -->
+  <div class="screen" id="screen-s6">
+    <div class="step-badge"><div class="ot-dot"></div>Step 6 of 7 · Your Routine & Home</div>
+    <div class="screen-title">Tell us about your daily routine and home.</div>
+    <div class="screen-sub">Your environment and daily schedule shape what self-care strategies will actually work for you.</div>
+    <div class="card">
+      <div class="card-title">Your Daily Routine</div>
+      <div class="field">
+        <label>When do you usually wake up and go to bed?</label>
+        <input type="text" id="f-sleep" placeholder="e.g. I wake up at 7am and go to bed by 10pm" />
+      </div>
+      <div class="field">
+        <label>How active are you most days?</label>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="selectChoice(this,'exercise','None currently')"><span class="choice-icon">🛋️</span>Not very active</button>
+          <button class="choice-btn" onclick="selectChoice(this,'exercise','Light (walking, stretching)')"><span class="choice-icon">🚶</span>Light walks or stretching</button>
+          <button class="choice-btn" onclick="selectChoice(this,'exercise','Moderate (30+ min, 3×/week)')"><span class="choice-icon">🏃</span>Regular exercise</button>
+          <button class="choice-btn" onclick="selectChoice(this,'exercise','Active (daily exercise)')"><span class="choice-icon">💪</span>Very active daily</button>
         </div>
       </div>
-      <div class="card">
-        <div class="card-label">Leisure & social participation</div>
-        <div class="field">
-          <label>Leisure activities you do or want to return to</label>
-          <div class="tag-box" id="tb-leisure"><input id="ti-leisure" placeholder="e.g. Swimming, reading, church, press Enter…" /></div>
-        </div>
-        <div class="field" style="margin-bottom:0">
-          <label>How has your condition affected your social life?</label>
-          <select id="f-social">
-            <option value="">Select…</option>
-            <option>Not affected</option>
-            <option>Slightly reduced — still active socially</option>
-            <option>Moderately reduced — pulled back from some activities</option>
-            <option>Significantly reduced — rarely socialize now</option>
-            <option>Isolated — condition prevents most social participation</option>
-          </select>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="goTo('s4')">← Back</button>
-        <button class="btn primary" onclick="goTo('s6')">Next →</button>
+      <div class="field">
+        <label>Any special diet? <span class="optional-tag">Optional</span></label>
+        <input type="text" id="f-diet" placeholder="e.g. Low salt, diabetic diet, no red meat…" />
       </div>
     </div>
-
-    <!-- STEP 6: ROUTINE & ENVIRONMENT -->
-    <div class="screen" id="screen-s6">
-      <div class="screen-label">Step 6 of 7</div>
-      <div class="screen-title">Routine, environment & support</div>
-      <div class="screen-sub">Context shapes what self-care strategies are actually realistic for you.</div>
-      <div class="card">
-        <div class="card-label">Daily routine</div>
-        <div class="two-col">
-          <div class="field">
-            <label>Typical wake / sleep times</label>
-            <input type="text" id="f-sleep" placeholder="e.g. Up 7am, bed 10pm" />
-          </div>
-          <div class="field">
-            <label>Exercise habits</label>
-            <select id="f-exercise">
-              <option value="">Select…</option>
-              <option>None currently</option>
-              <option>Light (walking, stretching)</option>
-              <option>Moderate (30+ min, 3×/week)</option>
-              <option>Active (daily exercise)</option>
-            </select>
-          </div>
-        </div>
-        <div class="field">
-          <label>Diet / nutrition notes <span class="optional">optional</span></label>
-          <input type="text" id="f-diet" placeholder="e.g. Low-sodium, diabetic diet, vegetarian…" />
+    <div class="card">
+      <div class="card-title">Your Home</div>
+      <div class="field">
+        <label>What type of home do you live in?</label>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="selectChoice(this,'living','House (single story)')"><span class="choice-icon">🏡</span>Single story house</button>
+          <button class="choice-btn" onclick="selectChoice(this,'living','House (multi-story)')"><span class="choice-icon">🏠</span>Multi-story house</button>
+          <button class="choice-btn" onclick="selectChoice(this,'living','Apartment / condo')"><span class="choice-icon">🏢</span>Apartment or condo</button>
+          <button class="choice-btn" onclick="selectChoice(this,'living','Assisted living / senior community')"><span class="choice-icon">🏥</span>Senior community</button>
         </div>
       </div>
-      <div class="card">
-        <div class="card-label">Home environment <span class="ot-tag">OT</span></div>
-        <div class="field">
-          <label>Living situation</label>
-          <select id="f-living">
-            <option value="">Select…</option>
-            <option>House (single story)</option><option>House (multi-story)</option>
-            <option>Apartment / condo</option><option>Assisted living / senior community</option>
-            <option>Living with family</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Adaptive equipment in use <span class="optional">optional</span></label>
-          <div class="tag-box" id="tb-equipment"><input id="ti-equipment" placeholder="e.g. Grab bars, raised toilet seat, press Enter…" /></div>
-        </div>
-        <div class="field">
-          <label>Biggest environmental barrier to self-care</label>
-          <textarea id="f-env-barrier" placeholder="e.g. Stairs make it hard to pace myself through the day…"></textarea>
-        </div>
+      <div class="field">
+        <label>Any equipment that helps you at home? <span class="optional-tag">Optional</span></label>
+        <div class="tag-box" id="tb-equipment"><input id="ti-equipment" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: Grab bars, walker, raised toilet seat, shower chair</div>
       </div>
-      <div class="card">
-        <div class="card-label">Support system</div>
-        <div class="field">
-          <label>Who supports you with your health?</label>
-          <div class="tag-box" id="tb-support"><input id="ti-support" placeholder="e.g. Spouse, daughter, neighbor, press Enter…" /></div>
-        </div>
-        <div class="field" style="margin-bottom:0">
-          <label>Biggest challenge your role creates for self-care <span class="optional">optional</span></label>
-          <textarea id="f-challenge" placeholder="e.g. Too busy caring for others to focus on my own needs…"></textarea>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="goTo('s5')">← Back</button>
-        <button class="btn primary" onclick="goTo('s7')">Next →</button>
+      <div class="field">
+        <label>Biggest barrier to taking care of yourself at home:</label>
+        <textarea id="f-env-barrier" placeholder="e.g. The stairs make it hard to get to my bedroom for rest during the day…"></textarea>
       </div>
     </div>
-
-    <!-- STEP 7: CARE TEAM -->
-    <div class="screen" id="screen-s7">
-      <div class="screen-label">Step 7 of 7</div>
-      <div class="screen-title">Your care team <span class="optional">optional</span></div>
-      <div class="screen-sub">Adding your providers helps SCOCI reinforce your clinical goals between visits.</div>
-      <div class="card">
-        <div class="two-col">
-          <div class="field">
-            <label>Primary care provider</label>
-            <input type="text" id="f-pcp" placeholder="Dr. name or clinic" />
-          </div>
-          <div class="field">
-            <label>Occupational therapist <span class="ot-tag">OT</span></label>
-            <input type="text" id="f-ot" placeholder="OT name or clinic" />
-          </div>
-        </div>
-        <div class="field">
-          <label>Specialists</label>
-          <div class="tag-box" id="tb-specialists"><input id="ti-specialists" placeholder="e.g. Cardiologist, Endocrinologist, press Enter…" /></div>
-        </div>
-        <div class="field">
-          <label>Other team members</label>
-          <div class="tag-box" id="tb-other-team"><input id="ti-other-team" placeholder="e.g. Dietitian, PT, Social worker, press Enter…" /></div>
-        </div>
-        <div class="field">
-          <label>Current OT goals <span class="ot-tag">OT</span> <span class="optional">optional</span></label>
-          <textarea id="f-ot-goals" placeholder="e.g. Energy conservation techniques, returning to meal prep independently…"></textarea>
-        </div>
-        <div class="field" style="margin-bottom:0">
-          <label>Next appointment <span class="optional">optional</span></label>
-          <input type="text" id="f-next-appt" placeholder="e.g. OT follow-up in 2 weeks" />
-        </div>
+    <div class="card">
+      <div class="card-title">Your Support Network</div>
+      <div class="field">
+        <label>Who helps you with your health?</label>
+        <div class="tag-box" id="tb-support"><input id="ti-support" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: My daughter, my husband, my neighbor Linda</div>
       </div>
-      <div class="btn-row">
-        <button class="btn" onclick="goTo('s6')">← Back</button>
-        <button class="btn primary" onclick="finishIntake()">Meet Agent SCOCI →</button>
+      <div class="field" style="margin-bottom:0">
+        <label>Does your home role make self-care harder? <span class="optional-tag">Optional</span></label>
+        <textarea id="f-challenge" placeholder="e.g. I'm always looking after everyone else and forget to take my own medications…"></textarea>
       </div>
     </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s5')">← Back</button>
+      <button class="btn-next" onclick="goTo('s7')">Next Step →</button>
+    </div>
+  </div>
 
-    <!-- CHAT SCREEN -->
-    <div class="screen" id="screen-chat">
-      <div class="profile-pill" id="chat-profile-pill"></div>
-
-      <div class="mode-tabs">
-        <button class="mode-tab active" id="tab-local" onclick="setMode('local')">On-device AI</button>
-        <button class="mode-tab" id="tab-cloud" onclick="setMode('cloud')">Cloud AI (Claude)</button>
+  <!-- STEP 7: CARE TEAM -->
+  <div class="screen" id="screen-s7">
+    <div class="step-badge"><div class="ot-dot"></div>Step 7 of 7 · Your Care Team</div>
+    <div class="screen-title">Who is on your health care team?</div>
+    <div class="screen-sub">This is optional but helps your companion support the goals your doctors and therapists have set for you.</div>
+    <div class="card">
+      <div class="two-col">
+        <div class="field">
+          <label>My main doctor:</label>
+          <input type="text" id="f-pcp" placeholder="Doctor's name or clinic" />
+        </div>
+        <div class="field">
+          <label>My occupational therapist:</label>
+          <input type="text" id="f-ot" placeholder="OT name or clinic" />
+        </div>
       </div>
-      <div class="mode-info" id="mode-info">
-        On-device mode: AI runs entirely on your device using WebLLM. Your data never leaves. Requires ~2GB download on first use.
+      <div class="field">
+        <label>Specialists I see: <span class="optional-tag">Optional</span></label>
+        <div class="tag-box" id="tb-specialists"><input id="ti-specialists" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: Heart doctor, lung doctor, bone doctor</div>
       </div>
+      <div class="field">
+        <label>Other team members: <span class="optional-tag">Optional</span></label>
+        <div class="tag-box" id="tb-other-team"><input id="ti-other-team" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: Dietitian, physical therapist, social worker, home health aide</div>
+      </div>
+      <div class="field">
+        <label>Goals I am working on with my OT: <span class="optional-tag">Optional</span></label>
+        <textarea id="f-ot-goals" placeholder="e.g. Learning energy conservation techniques, getting back to cooking my own meals…"></textarea>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>My next appointment: <span class="optional-tag">Optional</span></label>
+        <input type="text" id="f-next-appt" placeholder="e.g. OT follow-up in 2 weeks, cardiologist next month" />
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s6')">← Back</button>
+      <button class="btn-next" style="font-size:18px;" onclick="finishIntake()">Meet Agent SCOCI →</button>
+    </div>
+  </div>
 
-      <!-- WebLLM API key for cloud mode -->
-      <div id="cloud-key-section" style="display:none;margin-bottom:10px;">
-        <div class="card" style="margin-bottom:0;padding:10px 14px;">
-          <div class="field" style="margin-bottom:0;">
-            <label>Your Anthropic API key <span class="optional">stored locally only</span></label>
-            <div style="display:flex;gap:8px;">
-              <input type="password" id="f-api-key" placeholder="sk-ant-…" style="flex:1;" />
-              <button class="btn primary" style="white-space:nowrap;padding:9px 14px;" onclick="saveApiKey()">Save</button>
-            </div>
+  <!-- CHAT SCREEN -->
+  <div class="screen" id="screen-chat">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+      <div class="profile-pill" id="chat-profile-pill">Loading…</div>
+      <button class="reset-btn" onclick="confirmReset()">Start Over</button>
+    </div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tab-local" onclick="setMode('local')">On-Device AI 🔒</button>
+      <button class="mode-tab" id="tab-cloud" onclick="setMode('cloud')">Cloud AI ☁️</button>
+    </div>
+    <div class="mode-info" id="mode-info">On-device mode: AI runs on your device. Your information never leaves. First use downloads the AI model (~2GB).</div>
+    <div id="cloud-key-section">
+      <div class="card" style="margin-bottom:0;padding:14px 16px;">
+        <div class="field" style="margin-bottom:0;">
+          <label style="font-size:16px;">Your Anthropic API Key <span class="optional-tag">Saved on your device only</span></label>
+          <div style="display:flex;gap:8px;">
+            <input type="password" id="f-api-key" placeholder="sk-ant-…" style="flex:1;font-size:16px;" />
+            <button class="send-btn" onclick="saveApiKey()" style="white-space:nowrap;">Save</button>
           </div>
         </div>
       </div>
-
-      <div id="webllm-status"></div>
-      <div class="card" style="padding:1rem;">
-        <div id="chat-messages"></div>
-      </div>
-      <div class="quick-chips" id="quick-chips"></div>
-      <div class="chat-input-row">
-        <input type="text" id="chat-input" placeholder="Ask anything about your health and daily life…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}" />
-        <button class="send-btn" id="send-btn" onclick="sendMessage()">Send</button>
-      </div>
     </div>
+    <div id="webllm-status"></div>
+    <div class="chat-box">
+      <div id="chat-messages"></div>
+    </div>
+    <div class="quick-chips" id="quick-chips"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Type your question here…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}" />
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
 
-  </div><!-- /main -->
+</div>
 
-  <script>
-  // ─── STATE ───────────────────────────────────────────────────────────────
-  const SCREENS = { welcome:0,s1:1,s2:2,s3:3,s4:4,s5:5,s6:6,s7:7,chat:100 };
-  const PROGRESS = { welcome:0,s1:10,s2:24,s3:38,s4:52,s5:64,s6:78,s7:90,chat:100 };
-  const tagData = { comorbidities:[],meds:[],occupations:[],leisure:[],equipment:[],support:[],specialists:[],'other-team':[] };
-  const adlScores = {}, iadlScores = {};
-  let profile = {};
-  let chatHistory = [];
-  let aiMode = 'local';
-  let isLoading = false;
-  let webllmEngine = null;
-  let webllmLoading = false;
+<script>
+const ADL_ITEMS = [
+  {label:'Bathing or showering', icon:'🚿'},
+  {label:'Getting dressed', icon:'👗'},
+  {label:'Grooming and hygiene', icon:'🪥'},
+  {label:'Using the toilet', icon:'🚽'},
+  {label:'Moving around the house', icon:'🚶'},
+  {label:'Eating meals', icon:'🍽️'},
+  {label:'Getting in and out of chairs or bed', icon:'🛏️'},
+  {label:'Sleeping and resting', icon:'😴'}
+];
+const IADL_ITEMS = [
+  {label:'Cooking or preparing meals', icon:'🍳'},
+  {label:'Cleaning and housework', icon:'🧹'},
+  {label:'Doing laundry', icon:'👕'},
+  {label:'Managing medications', icon:'💊'},
+  {label:'Handling money and bills', icon:'💰'},
+  {label:'Shopping for groceries', icon:'🛒'},
+  {label:'Driving or getting around town', icon:'🚗'},
+  {label:'Caring for others or pets', icon:'🐾'},
+  {label:'Managing health appointments', icon:'📋'},
+  {label:'Using a phone or computer', icon:'📱'}
+];
 
-  const ADL_ITEMS = ['Bathing / showering','Dressing','Grooming & hygiene','Toileting','Functional mobility','Eating / feeding','Transfers (bed, chair, car)','Sleep & rest routines'];
-  const IADL_ITEMS = ['Meal preparation','Home management','Laundry','Medication management','Financial management','Shopping','Driving & community mobility','Care of others or pets','Health management','Communication & phone use'];
+const tagData = {comorbidities:[],meds:[],occupations:[],leisure:[],equipment:[],support:[],specialists:[],'other-team':[]};
+const adlScores = {}, iadlScores = {};
+const choiceValues = {};
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+let profile = {}, chatHistory = [], aiMode = isSafari ? 'cloud' : 'local', isLoading = false;
+let webllmEngine = null, webllmLoading = false, db;
 
-  // ─── INDEXEDDB STORAGE ───────────────────────────────────────────────────
-  let db;
-  function openDB() {
-    return new Promise((res, rej) => {
-      const req = indexedDB.open('scoci-db', 1);
-      req.onupgradeneeded = e => {
-        const d = e.target.result;
-        if (!d.objectStoreNames.contains('data')) d.createObjectStore('data');
-      };
-      req.onsuccess = e => { db = e.target.result; res(db); };
-      req.onerror = () => rej(req.error);
+// IndexedDB
+function openDB() {
+  return new Promise((res,rej) => {
+    const req = indexedDB.open('scoci-db',1);
+    req.onupgradeneeded = e => { const d=e.target.result; if(!d.objectStoreNames.contains('data')) d.createObjectStore('data'); };
+    req.onsuccess = e => { db=e.target.result; res(db); };
+    req.onerror = () => rej(req.error);
+  });
+}
+function dbSet(k,v) { return new Promise((res,rej) => { const tx=db.transaction('data','readwrite'); tx.objectStore('data').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }
+function dbGet(k) { return new Promise((res,rej) => { const tx=db.transaction('data','readonly'); const req=tx.objectStore('data').get(k); req.onsuccess=()=>res(req.result); req.onerror=()=>rej(req.error); }); }
+
+async function init() {
+  await openDB();
+  buildRatingCards(ADL_ITEMS, adlScores, 'adl-table');
+  buildRatingCards(IADL_ITEMS, iadlScores, 'iadl-table');
+  Object.keys(tagData).forEach(initTag);
+  const saved = await dbGet('profile');
+  if (saved && saved.diagnosis) document.getElementById('saved-banner').style.display = 'flex';
+  const apiKey = await dbGet('api-key');
+  if (apiKey) document.getElementById('f-api-key').value = apiKey;
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+
+function startIntake() {
+  document.getElementById('progress-wrap').style.display = 'block';
+  goTo('s1');
+}
+
+const SCREENS = ['welcome','s1','s2','s3','s4','s5','s6','s7','chat'];
+const PROG_PCT = {welcome:0,s1:10,s2:24,s3:38,s4:52,s5:64,s6:78,s7:90,chat:100};
+const PROG_LABELS = {s1:'Step 1 of 7 — Your Health Condition',s2:'Step 2 of 7 — Your Medications',s3:'Step 3 of 7 — Daily Activities',s4:'Step 4 of 7 — Home & Community',s5:'Step 5 of 7 — Your Life & Roles',s6:'Step 6 of 7 — Routine & Home',s7:'Step 7 of 7 — Your Care Team',chat:'Your Companion is Ready'};
+
+function goTo(screen) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+screen).classList.add('active');
+  document.getElementById('progress-fill').style.width = (PROG_PCT[screen]||0)+'%';
+  if (PROG_LABELS[screen]) document.getElementById('progress-label').textContent = PROG_LABELS[screen];
+  document.getElementById('progress-wrap').style.display = (screen==='welcome') ? 'none' : 'block';
+  window.scrollTo(0,0);
+}
+
+function selectChoice(btn, key, value) {
+  const parent = btn.closest('.choice-grid');
+  parent.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  choiceValues[key] = value;
+}
+
+function buildRatingCards(items, scores, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'rating-card';
+    card.innerHTML = `<div class="rating-card-label">${item.icon} ${item.label}</div><div class="rating-btns"></div>`;
+    const btns = card.querySelector('.rating-btns');
+    [['✅ I do it fine','r-i','Independent'],['😓 A little hard','r-d','Some difficulty'],['🙋 I need help','r-h','Needs help'],['❌ Can\'t do it','r-u','Unable']].forEach(([label,cls,val]) => {
+      const b = document.createElement('button');
+      b.className = 'r-btn'; b.innerHTML = label; b.title = val;
+      b.onclick = () => { btns.querySelectorAll('.r-btn').forEach(x=>x.className='r-btn'); b.className='r-btn '+cls; scores[item.label]=val; };
+      btns.appendChild(b);
     });
-  }
-  function dbSet(key, val) {
-    return new Promise((res, rej) => {
-      const tx = db.transaction('data', 'readwrite');
-      tx.objectStore('data').put(val, key);
-      tx.oncomplete = res; tx.onerror = () => rej(tx.error);
-    });
-  }
-  function dbGet(key) {
-    return new Promise((res, rej) => {
-      const tx = db.transaction('data', 'readonly');
-      const req = tx.objectStore('data').get(key);
-      req.onsuccess = () => res(req.result);
-      req.onerror = () => rej(req.error);
-    });
-  }
+    container.appendChild(card);
+  });
+}
 
-  // ─── INIT ─────────────────────────────────────────────────────────────────
-  async function init() {
-    await openDB();
-    buildRatingTable(ADL_ITEMS, adlScores, 'adl-table');
-    buildRatingTable(IADL_ITEMS, iadlScores, 'iadl-table');
-    Object.keys(tagData).forEach(initTagInput);
+function initTag(base) {
+  const box = document.getElementById('tb-'+base);
+  const inp = document.getElementById('ti-'+base);
+  if (!box||!inp) return;
+  inp.addEventListener('keydown', e => {
+    if (e.key==='Enter' && inp.value.trim()) { e.preventDefault(); tagData[base].push(inp.value.trim()); inp.value=''; renderTags(base); }
+  });
+  box.addEventListener('click', ()=>inp.focus());
+}
+function renderTags(base) {
+  const box=document.getElementById('tb-'+base), inp=document.getElementById('ti-'+base);
+  box.innerHTML='';
+  tagData[base].forEach((t,i) => {
+    const s=document.createElement('span'); s.className='tag';
+    s.innerHTML=t+`<button onclick="tagData['${base}'].splice(${i},1);renderTags('${base}')">×</button>`;
+    box.appendChild(s);
+  });
+  box.appendChild(inp);
+}
 
-    const saved = await dbGet('profile');
-    if (saved && saved.diagnosis) {
-      document.getElementById('saved-profile-notice').style.display = 'flex';
-    }
+function collectProfile() {
+  return {
+    diagnosis: document.getElementById('f-diagnosis').value.trim(),
+    duration: choiceValues.duration||'',
+    comorbidities: [...tagData.comorbidities],
+    medications: [...tagData.meds],
+    medConcerns: document.getElementById('f-med-concerns').value.trim(),
+    adlScores: {...adlScores},
+    adlConcern: document.getElementById('f-adl-concern').value.trim(),
+    iadlScores: {...iadlScores},
+    iadlPriority: document.getElementById('f-iadl-priority').value.trim(),
+    occupations: [...tagData.occupations],
+    disrupted: document.getElementById('f-disrupted').value.trim(),
+    familyRole: choiceValues.role||'',
+    leisure: [...tagData.leisure],
+    socialImpact: choiceValues.social||'',
+    sleep: document.getElementById('f-sleep').value.trim(),
+    exercise: choiceValues.exercise||'',
+    diet: document.getElementById('f-diet').value.trim(),
+    living: choiceValues.living||'',
+    equipment: [...tagData.equipment],
+    envBarrier: document.getElementById('f-env-barrier').value.trim(),
+    support: [...tagData.support],
+    challenge: document.getElementById('f-challenge').value.trim(),
+    pcp: document.getElementById('f-pcp').value.trim(),
+    ot: document.getElementById('f-ot').value.trim(),
+    specialists: [...tagData.specialists],
+    otherTeam: [...tagData['other-team']],
+    otGoals: document.getElementById('f-ot-goals').value.trim(),
+    nextAppt: document.getElementById('f-next-appt').value.trim(),
+    savedAt: new Date().toISOString()
+  };
+}
 
-    const apiKey = await dbGet('api-key');
-    if (apiKey) document.getElementById('f-api-key').value = apiKey;
+async function finishIntake() {
+  profile = collectProfile();
+  await dbSet('profile', profile);
+  launchChat();
+}
+async function loadSavedAndChat() {
+  profile = await dbGet('profile');
+  if (!profile) return;
+  const saved = await dbGet('chatHistory');
+  if (saved?.length) chatHistory = saved;
+  launchChat();
+}
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
-    }
-  }
+function fmtScores(scores) {
+  const e = Object.entries(scores||{}).filter(([,v])=>v);
+  return e.length ? e.map(([k,v])=>`${k}: ${v}`).join('; ') : 'not assessed';
+}
 
-  // ─── NAVIGATION ───────────────────────────────────────────────────────────
-  function goTo(screen) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('screen-' + screen).classList.add('active');
-    document.getElementById('progress-fill').style.width = (PROGRESS[screen] || 0) + '%';
-    document.getElementById('reset-btn').style.display = screen === 'chat' ? 'block' : 'none';
-    window.scrollTo(0, 0);
-  }
+function buildSystemPrompt(p) {
+  return `You are Agent SCOCI — a warm, caring, occupation-centered chronic illness self-care companion. You were built by an occupational therapist.
 
-  // ─── RATING TABLES ────────────────────────────────────────────────────────
-  function buildRatingTable(items, scores, containerId) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
-    items.forEach(item => {
-      const row = document.createElement('div');
-      row.className = 'rating-item';
-      const label = document.createElement('span');
-      label.textContent = item;
-      row.appendChild(label);
-      const btns = document.createElement('div');
-      btns.className = 'rating-btns';
-      [['I','r-i','Independent'],['D','r-d','Some difficulty'],['H','r-h','Needs help'],['U','r-u','Unable']].forEach(([l,cls,title]) => {
-        const b = document.createElement('button');
-        b.className = 'r-btn'; b.textContent = l; b.title = title;
-        b.onclick = () => {
-          btns.querySelectorAll('.r-btn').forEach(x => x.className = 'r-btn');
-          b.className = 'r-btn ' + cls;
-          scores[item] = title;
-        };
-        btns.appendChild(b);
-      });
-      row.appendChild(btns);
-      container.appendChild(row);
-    });
-  }
+You speak in clear, plain, friendly language. Many of your users are older adults or people who are not medical professionals. Avoid medical jargon. Explain things simply, like you're talking to a trusted friend or family member. Use short sentences and paragraphs. Be encouraging and warm.
 
-  // ─── TAG INPUTS ───────────────────────────────────────────────────────────
-  function initTagInput(base) {
-    const box = document.getElementById('tb-' + base);
-    const inp = document.getElementById('ti-' + base);
-    if (!box || !inp) return;
-    inp.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && inp.value.trim()) {
-        e.preventDefault();
-        tagData[base].push(inp.value.trim());
-        inp.value = '';
-        renderTags(base);
-      }
-    });
-    box.addEventListener('click', () => inp.focus());
-  }
-  function renderTags(base) {
-    const box = document.getElementById('tb-' + base);
-    const inp = document.getElementById('ti-' + base);
-    box.innerHTML = '';
-    tagData[base].forEach((t, i) => {
-      const s = document.createElement('span');
-      s.className = 'tag';
-      s.innerHTML = t + `<button onclick="tagData['${base}'].splice(${i},1);renderTags('${base}')">×</button>`;
-      box.appendChild(s);
-    });
-    box.appendChild(inp);
-  }
-
-  // ─── COLLECT PROFILE ─────────────────────────────────────────────────────
-  function collectProfile() {
-    return {
-      diagnosis: document.getElementById('f-diagnosis').value.trim(),
-      duration: document.getElementById('f-duration').value,
-      comorbidities: [...tagData.comorbidities],
-      medications: [...tagData.meds],
-      medConcerns: document.getElementById('f-med-concerns').value.trim(),
-      adlScores: {...adlScores},
-      adlConcern: document.getElementById('f-adl-concern').value.trim(),
-      iadlScores: {...iadlScores},
-      iadlPriority: document.getElementById('f-iadl-priority').value.trim(),
-      occupations: [...tagData.occupations],
-      disrupted: document.getElementById('f-disrupted').value.trim(),
-      familyRole: document.getElementById('f-role').value,
-      work: document.getElementById('f-work').value,
-      leisure: [...tagData.leisure],
-      socialImpact: document.getElementById('f-social').value,
-      sleep: document.getElementById('f-sleep').value.trim(),
-      exercise: document.getElementById('f-exercise').value,
-      diet: document.getElementById('f-diet').value.trim(),
-      living: document.getElementById('f-living').value,
-      equipment: [...tagData.equipment],
-      envBarrier: document.getElementById('f-env-barrier').value.trim(),
-      support: [...tagData.support],
-      challenge: document.getElementById('f-challenge').value.trim(),
-      pcp: document.getElementById('f-pcp').value.trim(),
-      ot: document.getElementById('f-ot').value.trim(),
-      specialists: [...tagData.specialists],
-      otherTeam: [...tagData['other-team']],
-      otGoals: document.getElementById('f-ot-goals').value.trim(),
-      nextAppt: document.getElementById('f-next-appt').value.trim(),
-      savedAt: new Date().toISOString()
-    };
-  }
-
-  async function finishIntake() {
-    profile = collectProfile();
-    await dbSet('profile', profile);
-    launchChat();
-  }
-
-  async function loadSavedAndChat() {
-    profile = await dbGet('profile');
-    launchChat();
-  }
-
-  // ─── SYSTEM PROMPT ────────────────────────────────────────────────────────
-  function fmtScores(scores) {
-    const entries = Object.entries(scores).filter(([,v]) => v);
-    if (!entries.length) return 'not assessed';
-    return entries.map(([k,v]) => `${k}: ${v}`).join('; ');
-  }
-  function buildSystemPrompt(p) {
-    return `You are Agent SCOCI — a warm, knowledgeable occupation-centered chronic illness self-care companion.
-
-You are built on two frameworks:
-1. Middle-Range Theory of Self-Care of Chronic Illness (Riegel et al.) — Maintenance, Monitoring, Management
-2. Occupational Therapy occupation-centered practice — focusing on how illness affects the person's ADLs, IADLs, work, leisure, rest, and social participation
-
-Think like an OT. Frame advice around function, pacing, energy conservation, activity modification, and meaningful occupations — not just symptoms.
+You are grounded in two frameworks:
+1. The Middle-Range Theory of Self-Care of Chronic Illness (Riegel et al.) — Maintenance, Monitoring, Management
+2. Occupational Therapy occupation-centered practice — focusing on how illness affects what the person does every day: their ADLs, IADLs, work, leisure, rest, and social participation
 
 PATIENT PROFILE:
-Diagnosis: ${p.diagnosis||'not specified'} (${p.duration||'unknown duration'})
+Condition: ${p.diagnosis||'not specified'} (${p.duration||'unknown duration'})
 Other conditions: ${p.comorbidities?.join(', ')||'none'}
 Medications: ${p.medications?.join(', ')||'none listed'}
 Medication concerns: ${p.medConcerns||'none'}
 
-ADL PERFORMANCE: ${fmtScores(p.adlScores||{})}
-Most affected ADL: ${p.adlConcern||'not specified'}
+Daily self-care (ADLs): ${fmtScores(p.adlScores)}
+Hardest ADL: ${p.adlConcern||'not specified'}
 
-IADL PERFORMANCE: ${fmtScores(p.iadlScores||{})}
-Priority IADL: ${p.iadlPriority||'not specified'}
+Home and community tasks (IADLs): ${fmtScores(p.iadlScores)}
+Most important IADL to keep: ${p.iadlPriority||'not specified'}
 
-OCCUPATIONAL PROFILE:
-Meaningful occupations: ${p.occupations?.join(', ')||'not listed'}
-Most disrupted occupation: ${p.disrupted||'not specified'}
+Meaningful activities: ${p.occupations?.join(', ')||'not listed'}
+Most disrupted activity: ${p.disrupted||'not specified'}
 Family role: ${p.familyRole||'not specified'}
-Work/productivity: ${p.work||'not specified'}
-Leisure: ${p.leisure?.join(', ')||'not listed'}
-Social participation: ${p.socialImpact||'not specified'}
+Hobbies: ${p.leisure?.join(', ')||'not listed'}
+Social life impact: ${p.socialImpact||'not specified'}
 
-ENVIRONMENT & CONTEXT:
-Living: ${p.living||'not specified'}
+Home: ${p.living||'not specified'}
 Sleep: ${p.sleep||'not specified'}
 Exercise: ${p.exercise||'not specified'}
 Diet: ${p.diet||'not specified'}
-Adaptive equipment: ${p.equipment?.join(', ')||'none'}
-Environmental barrier: ${p.envBarrier||'not specified'}
-Support system: ${p.support?.join(', ')||'not listed'}
+Equipment used: ${p.equipment?.join(', ')||'none'}
+Home barrier: ${p.envBarrier||'not specified'}
+Support people: ${p.support?.join(', ')||'not listed'}
 Role challenge: ${p.challenge||'not specified'}
 
-CARE TEAM:
-PCP: ${p.pcp||'not listed'}
-OT: ${p.ot||'not listed'}
-Specialists: ${p.specialists?.join(', ')||'none'}
-Other team: ${p.otherTeam?.join(', ')||'none'}
+Care team — Doctor: ${p.pcp||'not listed'}, OT: ${p.ot||'not listed'}, Specialists: ${p.specialists?.join(', ')||'none'}, Other: ${p.otherTeam?.join(', ')||'none'}
 Current OT goals: ${p.otGoals||'not specified'}
 Next appointment: ${p.nextAppt||'not specified'}
 
-GUIDELINES:
-- Be warm, empathetic, practical — acknowledge the person's roles and demands
-- Suggest energy conservation, activity pacing, and adaptive strategies when relevant
-- Help preserve meaningful occupations through adaptation, not elimination
-- Keep responses under 200 words unless asked for more
-- For urgent symptoms, advise contacting their care team or calling 911
-- Never diagnose, prescribe, or replace clinical care
-- Use plain accessible language`;
+HOW TO RESPOND:
+- Use simple, friendly, warm language
+- Keep responses short — 3 to 5 sentences max unless they ask for more detail
+- Focus on what the person can DO, not just what to avoid
+- Suggest practical strategies for energy conservation, pacing, and adapting activities
+- Acknowledge their roles (caregiver, grandparent, spouse) and the real demands of daily life
+- When relevant, encourage them to share findings with their OT or doctor
+- If symptoms sound urgent or dangerous, clearly tell them to call their doctor or 911
+- Never diagnose conditions or prescribe medications
+- Always end with encouragement or an offer to help with something specific`;
+}
+
+function appendMsg(role, text) {
+  const area = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg '+role;
+  div.textContent = text;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+function appendDots() {
+  const area = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg ai'; div.id = 'msg-dots';
+  div.innerHTML = '<span class="dots"><span></span><span></span><span></span></span>';
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+function removeDots() { const el=document.getElementById('msg-dots'); if(el) el.remove(); }
+
+function renderQuickChips() {
+  const p = profile;
+  const hardADL = Object.entries(p.adlScores||{}).find(([,v])=>v&&v!=='Independent');
+  const hardIADL = Object.entries(p.iadlScores||{}).find(([,v])=>v&&v!=='Independent');
+  const chips = [
+    hardADL ? `How can I make ${hardADL[0].toLowerCase()} easier?` : 'Tips for saving energy each day',
+    hardIADL ? `Help me stay independent with ${hardIADL[0].toLowerCase()}` : 'How to manage my home tasks',
+    'What should I watch out for each day?',
+    'How do I balance caring for others and myself?',
+    'Help me prepare for my next appointment',
+    'When should I call my doctor?'
+  ];
+  const el = document.getElementById('quick-chips');
+  el.innerHTML = '';
+  chips.forEach(q => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.textContent = q;
+    b.onclick = () => { document.getElementById('chat-input').value = q; sendMessage(); };
+    el.appendChild(b);
+  });
+}
+
+function launchChat() {
+  goTo('chat');
+  const p = profile;
+  document.getElementById('chat-profile-pill').textContent = '💚 ' + (p.diagnosis||'Your condition') + (p.duration ? ' · '+p.duration : '');
+  chatHistory = [];
+  document.getElementById('chat-messages').innerHTML = '';
+  renderQuickChips();
+  if (isSafari) {
+    document.getElementById('tab-local').classList.remove('active');
+    document.getElementById('tab-cloud').classList.add('active');
+    document.getElementById('mode-info').textContent = 'Cloud AI mode: uses Claude for the best responses. Enter your Anthropic API key below to get started.';
+    document.getElementById('cloud-key-section').style.display = 'block';
   }
 
-  // ─── CHAT LAUNCH ─────────────────────────────────────────────────────────
-  function launchChat() {
-    goTo('chat');
-    const p = profile;
-    const label = (p.diagnosis||'Chronic illness') + (p.duration ? ' · ' + p.duration : '');
-    document.getElementById('chat-profile-pill').textContent = label;
+  const hardADLs = Object.entries(p.adlScores||{}).filter(([,v])=>v&&v!=='Independent').map(([k])=>k);
 
-    chatHistory = [];
-    document.getElementById('chat-messages').innerHTML = '';
-    renderQuickChips();
+  let greeting = `Hello! I'm so glad you're here. I'm Agent SCOCI — your personal self-care companion.\n\nI know you're managing ${p.diagnosis||'a health condition'}${p.duration?' for '+p.duration.toLowerCase():''}. That's not easy, and I want to help make each day a little better.`;
 
-    const affected = Object.entries(p.adlScores||{}).filter(([,v])=>v&&v!=='Independent').map(([k])=>k);
-    let greeting = `Hello! I'm Agent SCOCI — your occupation-centered self-care companion.\n\nYou're managing ${p.diagnosis||'a chronic condition'}${p.duration?' for '+p.duration.toLowerCase():''}. That takes real strength.`;
-    if (affected.length) greeting += `\n\nI can see your condition is affecting some of your daily activities, including ${affected.slice(0,2).join(' and ').toLowerCase()}. Let's work on strategies to help you stay as independent and engaged as possible.`;
-    if (p.occupations?.length) greeting += `\n\nI also know that ${p.occupations[0].toLowerCase()} is meaningful to you — we'll keep that at the center of your plan.`;
-    greeting += `\n\nWhat's on your mind today?`;
-
-    appendMsg('ai', greeting);
-    chatHistory.push({ role: 'assistant', content: greeting });
-
-    if (aiMode === 'local') {
-      initWebLLM();
-    }
+  if (hardADLs.length) {
+    greeting += `\n\nI noticed that ${hardADLs.slice(0,2).join(' and ').toLowerCase()} can be challenging for you. Let's work together on strategies that fit your real life.`;
   }
-
-  function renderQuickChips() {
-    const p = profile;
-    const hard = Object.entries(p.adlScores||{}).filter(([,v])=>v&&v!=='Independent').map(([k])=>k)[0];
-    const hardIADL = Object.entries(p.iadlScores||{}).filter(([,v])=>v&&v!=='Independent').map(([k])=>k)[0];
-    const chips = [
-      hard ? `How can I adapt ${hard.toLowerCase()}?` : 'ADL energy-saving tips',
-      hardIADL ? `Staying independent with ${hardIADL.toLowerCase()}` : 'IADL strategies',
-      'What should I monitor daily?',
-      'Help me build a pacing plan',
-      'Balancing self-care with my role',
-      'When should I call my care team?'
-    ];
-    const el = document.getElementById('quick-chips');
-    el.innerHTML = '';
-    chips.forEach(q => {
-      const b = document.createElement('button');
-      b.className = 'chip'; b.textContent = q;
-      b.onclick = () => { document.getElementById('chat-input').value = q; sendMessage(); };
-      el.appendChild(b);
-    });
+  if (p.occupations?.length) {
+    greeting += `\n\nI also know that ${p.occupations[0].toLowerCase()} is important to you. We'll keep that at the center of everything we plan together.`;
   }
+  greeting += `\n\nWhat can I help you with today? You can tap one of the buttons below or just ask me anything.`;
 
-  // ─── WEBLLM ───────────────────────────────────────────────────────────────
-  async function initWebLLM() {
-    if (webllmEngine || webllmLoading) return;
-    webllmLoading = true;
-    const status = document.getElementById('webllm-status');
-    status.style.display = 'block';
-    status.innerHTML = '<span class="progress-text">Loading on-device AI model… (first load ~2GB, cached after)</span>';
+  appendMsg('ai', greeting);
+  chatHistory.push({ role: 'assistant', content: greeting });
 
-    try {
-      const { CreateMLCEngine } = await import('https://esm.run/@mlc-ai/web-llm');
-      webllmEngine = await CreateMLCEngine('Phi-3.5-mini-instruct-q4f16_1-MLC', {
-        initProgressCallback: info => {
-          const pct = Math.round((info.progress || 0) * 100);
-          status.innerHTML = `<span class="progress-text">Loading AI model: ${pct}% — ${info.text||''}</span>`;
-        }
-      });
-      status.innerHTML = '<span class="progress-text" style="color:var(--teal)">On-device AI ready — your data stays on your device</span>';
-      setTimeout(() => { status.style.display = 'none'; }, 3000);
-    } catch(e) {
-      status.innerHTML = `<span style="color:var(--danger);font-size:12px;">On-device AI unavailable (WebGPU not supported on this device). Switch to Cloud AI mode or try Chrome on desktop. Error: ${e.message}</span>`;
-      webllmLoading = false;
-      webllmEngine = null;
-    }
-  }
+  if (aiMode === 'local') initWebLLM();
+}
 
-  // ─── AI MODE ──────────────────────────────────────────────────────────────
-  function setMode(mode) {
-    aiMode = mode;
-    document.getElementById('tab-local').classList.toggle('active', mode === 'local');
-    document.getElementById('tab-cloud').classList.toggle('active', mode === 'cloud');
-    const info = document.getElementById('mode-info');
-    const keySection = document.getElementById('cloud-key-section');
-    if (mode === 'local') {
-      info.textContent = 'On-device mode: AI runs entirely on your device using WebLLM. Your data never leaves. Requires ~2GB download on first use.';
-      keySection.style.display = 'none';
-      initWebLLM();
-    } else {
-      info.textContent = 'Cloud AI mode: uses Claude via the Anthropic API. Responses are higher quality but your messages are sent to Anthropic\'s servers. Enter your API key below.';
-      keySection.style.display = 'block';
-    }
-  }
-
-  async function saveApiKey() {
-    const key = document.getElementById('f-api-key').value.trim();
-    if (key) {
-      await dbSet('api-key', key);
-      appendMsg('system', 'API key saved locally on your device.');
-    }
-  }
-
-  // ─── MESSAGING ────────────────────────────────────────────────────────────
-  function appendMsg(role, text) {
-    const area = document.getElementById('chat-messages');
-    const div = document.createElement('div');
-    div.className = 'msg ' + role;
-    div.textContent = text;
-    area.appendChild(div);
-    area.scrollTop = area.scrollHeight;
-    return div;
-  }
-
-  function appendDots() {
-    const area = document.getElementById('chat-messages');
-    const div = document.createElement('div');
-    div.className = 'msg ai'; div.id = 'msg-dots';
-    div.innerHTML = '<span class="dots"><span></span><span></span><span></span></span>';
-    area.appendChild(div);
-    area.scrollTop = area.scrollHeight;
-  }
-  function removeDots() { const el = document.getElementById('msg-dots'); if (el) el.remove(); }
-
-  async function sendMessage() {
-    if (isLoading) return;
-    const input = document.getElementById('chat-input');
-    const text = input.value.trim();
-    if (!text) return;
-    input.value = '';
-    isLoading = true;
-    document.getElementById('send-btn').disabled = true;
-
-    appendMsg('user', text);
-    chatHistory.push({ role: 'user', content: text });
-    appendDots();
-
-    try {
-      let reply = '';
-      if (aiMode === 'local') {
-        reply = await sendLocal(text);
-      } else {
-        reply = await sendCloud();
+async function initWebLLM() {
+  if (webllmEngine || webllmLoading) return;
+  webllmLoading = true;
+  const status = document.getElementById('webllm-status');
+  status.style.display = 'block';
+  status.textContent = '⏳ Loading your on-device AI — this takes a moment the first time…';
+  try {
+    const { CreateMLCEngine } = await import('https://esm.run/@mlc-ai/web-llm');
+    webllmEngine = await CreateMLCEngine('Phi-3.5-mini-instruct-q4f16_1-MLC', {
+      initProgressCallback: info => {
+        const pct = Math.round((info.progress||0)*100);
+        status.textContent = `⏳ Loading AI: ${pct}% complete — almost ready!`;
       }
-      removeDots();
-      appendMsg('ai', reply);
-      chatHistory.push({ role: 'assistant', content: reply });
-      if (chatHistory.length > 24) chatHistory = chatHistory.slice(-20);
-      await dbSet('chatHistory', chatHistory);
-    } catch(e) {
-      removeDots();
-      appendMsg('err', 'Error: ' + e.message + '\n\nTry switching AI mode or check your connection.');
-      chatHistory.pop();
-    }
-
-    isLoading = false;
-    document.getElementById('send-btn').disabled = false;
-    document.getElementById('chat-input').focus();
-  }
-
-  async function sendLocal(userText) {
-    if (!webllmEngine) {
-      if (!webllmLoading) initWebLLM();
-      throw new Error('On-device AI is still loading. Please wait a moment and try again.');
-    }
-    const messages = [
-      { role: 'system', content: buildSystemPrompt(profile) },
-      ...chatHistory.slice(-12)
-    ];
-    const resp = await webllmEngine.chat.completions.create({ messages, max_tokens: 512, temperature: 0.7 });
-    return resp.choices[0].message.content;
-  }
-
-  async function sendCloud() {
-    const apiKey = await dbGet('api-key');
-    if (!apiKey) throw new Error('No API key saved. Enter your Anthropic API key in the Cloud AI section above.');
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1000,
-        system: buildSystemPrompt(profile),
-        messages: chatHistory
-      })
     });
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `API error ${resp.status}`);
+    status.textContent = '✅ On-device AI is ready! Your information stays private on your device.';
+    setTimeout(() => { status.style.display='none'; }, 4000);
+  } catch(e) {
+    status.style.background = '#FCEBEB';
+    status.style.color = '#501313';
+    status.textContent = `⚠️ On-device AI couldn't load on this device. Please switch to Cloud AI mode above, or try using Chrome on a computer. (${e.message})`;
+    webllmLoading = false;
+    webllmEngine = null;
+  }
+}
+
+function setMode(mode) {
+  aiMode = mode;
+  document.getElementById('tab-local').classList.toggle('active', mode==='local');
+  document.getElementById('tab-cloud').classList.toggle('active', mode==='cloud');
+  const info = document.getElementById('mode-info');
+  const keySection = document.getElementById('cloud-key-section');
+  if (mode==='local') {
+    info.textContent = 'On-device mode: AI runs on your device. Your information never leaves. First use downloads the AI (~2GB).';
+    keySection.style.display = 'none';
+    initWebLLM();
+  } else {
+    info.textContent = 'Cloud AI mode: uses Claude. Higher quality responses but your messages go to Anthropic\'s secure servers. Enter your API key below.';
+    keySection.style.display = 'block';
+  }
+}
+
+async function saveApiKey() {
+  const key = document.getElementById('f-api-key').value.trim();
+  if (key) { await dbSet('api-key', key); appendMsg('system', '✅ API key saved on your device. You\'re ready to chat!'); }
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+  appendMsg('user', text);
+  chatHistory.push({ role:'user', content:text });
+  appendDots();
+  try {
+    let reply = '';
+    if (aiMode==='local') {
+      if (!webllmEngine) { if(!webllmLoading) initWebLLM(); throw new Error('The AI is still loading. Please wait a moment and try again.'); }
+      const messages = [{ role:'system', content:buildSystemPrompt(profile) }, ...chatHistory.slice(-12)];
+      const resp = await webllmEngine.chat.completions.create({ messages, max_tokens:512, temperature:0.7 });
+      reply = resp.choices[0].message.content;
+    } else {
+      const apiKey = await dbGet('api-key');
+      if (!apiKey) throw new Error('No API key saved. Please enter your Anthropic API key above.');
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'x-api-key':apiKey, 'anthropic-version':'2023-06-01' },
+        body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1000, system:buildSystemPrompt(profile), messages:chatHistory })
+      });
+      if (!resp.ok) { const err=await resp.json().catch(()=>({})); throw new Error(err?.error?.message||`Error ${resp.status}`); }
+      const data = await resp.json();
+      reply = data.content?.find(b=>b.type==='text')?.text || 'I had trouble responding — please try again.';
     }
-    const data = await resp.json();
-    return data.content?.find(b => b.type === 'text')?.text || 'No response received.';
+    removeDots();
+    appendMsg('ai', reply);
+    chatHistory.push({ role:'assistant', content:reply });
+    if (chatHistory.length>24) chatHistory = chatHistory.slice(-20);
+    await dbSet('chatHistory', chatHistory);
+  } catch(e) {
+    removeDots();
+    appendMsg('err', '⚠️ ' + e.message);
+    chatHistory.pop();
   }
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('chat-input').focus();
+}
 
-  // ─── RESET ────────────────────────────────────────────────────────────────
-  function confirmReset() {
-    if (confirm('Reset your profile and start over? This cannot be undone.')) {
-      dbSet('profile', null);
-      dbSet('chatHistory', []);
-      location.reload();
-    }
+function confirmReset() {
+  if (confirm('Start your profile over from the beginning? This will erase your saved information.')) {
+    dbSet('profile', null);
+    dbSet('chatHistory', []);
+    location.reload();
   }
+}
 
-  async function loadSavedAndChat() {
-    profile = await dbGet('profile');
-    if (!profile) return;
-    const saved = await dbGet('chatHistory');
-    if (saved?.length) chatHistory = saved;
-    launchChat();
-  }
-
-  // ─── BOOT ─────────────────────────────────────────────────────────────────
-  init();
-  </script>
+init();
+</script>
 </body>
 </html>
