@@ -146,9 +146,11 @@
     .welcome-logo-big { width: 110px; height: 110px; border-radius: 0; background: transparent; display: flex; align-items: center; justify-content: center; }
     .welcome-title { font-size: 34px; font-weight: 800; text-align: center; color: var(--text); margin-bottom: 8px; }
     .welcome-sub { font-size: 19px; font-weight: 600; text-align: center; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; padding: 0 8px; }
-    .acronym-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
-    .a-pill { border: 2.5px solid var(--teal-mid); border-radius: 20px; padding: 7px 16px; font-size: 15px; font-weight: 800; color: var(--text-muted); background: var(--teal-light); }
-    .a-pill b { color: var(--teal); }
+    .acronym-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
+    .a-pill { border: none; border-radius: 20px; padding: 6px 18px; font-size: 15px; font-weight: 700; color: var(--teal-mid); background: transparent; letter-spacing: 0.03em; position: relative; }
+    .a-pill::after { content: '·'; position: absolute; right: -8px; color: var(--teal-mid); font-size: 18px; top: 50%; transform: translateY(-50%); }
+    .a-pill:last-child::after { display: none; }
+    .a-pill b { color: var(--teal); font-size: 17px; }
     .welcome-steps { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
     .welcome-step { display: flex; align-items: center; gap: 14px; background: var(--bg-soft); border: 2px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
     .ws-num { min-width: 40px; height: 40px; border-radius: 50%; background: var(--teal); color: white; font-size: 18px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
@@ -187,6 +189,86 @@
     .send-btn:hover { background: var(--teal-dark); }
     .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .reset-btn { background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius); padding: 10px 16px; font-size: 15px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-family: 'Nunito', sans-serif; }
+
+    /* MENTAL HEALTH STEP */
+    .mh-scale-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4; }
+    .mh-scale-labels small { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+    .mh-slider-wrap { margin-bottom: 14px; }
+    .mh-slider { width: 100%; -webkit-appearance: none; appearance: none; height: 12px; border-radius: 10px; background: linear-gradient(to right, #E24B4A, #EF9F27 50%, #1D9E75); outline: none; cursor: pointer; }
+    .mh-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 36px; height: 36px; border-radius: 50%; background: white; border: 3px solid var(--teal); box-shadow: 0 2px 10px rgba(0,0,0,0.2); cursor: pointer; }
+    .mh-slider::-moz-range-thumb { width: 36px; height: 36px; border-radius: 50%; background: white; border: 3px solid var(--teal); box-shadow: 0 2px 10px rgba(0,0,0,0.2); cursor: pointer; }
+    .mh-value-display { display: flex; align-items: center; gap: 16px; background: var(--bg-secondary); border-radius: var(--radius); padding: 14px 18px; }
+    .mh-value-display span:first-child { font-size: 36px; }
+    .coping-item { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1.5px solid var(--border); }
+    .coping-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .coping-statement { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+    .coping-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .coping-btn { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; padding: 14px 8px; border-radius: var(--radius); border: 2.5px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; text-align: center; transition: all 0.15s; line-height: 1.2; }
+    .coping-btn:hover { border-color: var(--teal-mid); }
+    .coping-btn.sel-yes { background: #E1F5EE; border-color: #5DCAA5; color: #085041; }
+    .coping-btn.sel-sometimes { background: #FAEEDA; border-color: #EF9F27; color: #633806; }
+    .coping-btn.sel-no { background: #FCEBEB; border-color: #F09595; color: #501313; }
+
+    /* DAILY CHECK-IN */
+    .checkin-nav-btn { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; padding: 10px 14px; border-radius: var(--radius); border: 2.5px solid var(--teal-mid); background: var(--teal-light); color: var(--teal-dark); cursor: pointer; transition: all 0.15s; }
+    .checkin-nav-btn:hover { background: var(--teal); color: white; border-color: var(--teal); }
+
+    /* REPORT SCREEN */
+    .report-preview-wrap { background: white; border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.25rem; color: #1a1a1a; font-family: 'Nunito', sans-serif; }
+    .report-header { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 2px solid #E1F5EE; margin-bottom: 16px; }
+    .report-header img { width: 52px; height: 52px; object-fit: contain; }
+    .report-header-text h2 { font-size: 20px; font-weight: 800; color: #1a1a1a; margin-bottom: 2px; }
+    .report-header-text p { font-size: 13px; color: #6b7280; font-weight: 600; }
+    .report-section { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f0f0f0; }
+    .report-section:last-child { border-bottom: none; margin-bottom: 0; }
+    .report-section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1D9E75; margin-bottom: 10px; }
+    .report-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; font-size: 14px; }
+    .report-row-label { font-weight: 700; color: #4a5568; flex: 1; }
+    .report-row-val { font-weight: 600; color: #1a1a1a; text-align: right; flex: 1; }
+    .report-adl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .report-adl-item { font-size: 13px; font-weight: 600; padding: 5px 10px; border-radius: 8px; }
+    .adl-ok { background: #E1F5EE; color: #085041; }
+    .adl-hard { background: #FAEEDA; color: #633806; }
+    .adl-help { background: #FCEBEB; color: #501313; }
+    .report-mh-bar { height: 12px; border-radius: 6px; background: linear-gradient(to right, #E24B4A, #EF9F27 50%, #1D9E75); position: relative; margin: 8px 0; }
+    .report-mh-marker { position: absolute; top: -4px; width: 20px; height: 20px; border-radius: 50%; background: white; border: 3px solid #1D9E75; transform: translateX(-50%); }
+    .report-trend-mini { display: flex; gap: 4px; align-items: flex-end; height: 50px; margin-top: 8px; }
+    .report-trend-bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 2px; }
+    .report-trend-bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; }
+    .report-trend-label { font-size: 9px; color: #9ca3af; font-weight: 600; }
+    .report-btn-group { margin-bottom: 1rem; }
+    .toggle-switch { position: relative; display: inline-block; width: 52px; height: 28px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-secondary); border-radius: 28px; transition: 0.3s; border: 2px solid var(--border); }
+    .toggle-slider:before { position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+    input:checked + .toggle-slider { background: var(--teal); border-color: var(--teal); }
+    input:checked + .toggle-slider:before { transform: translateX(24px); }
+    .weekly-prompt-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .weekly-prompt-card { background: var(--bg); border-radius: var(--radius-xl); padding: 2rem; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .checkin-q-label { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+    .checkin-scale-labels { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+    .checkin-slider-wrap { margin-bottom: 12px; }
+    .checkin-slider { width: 100%; -webkit-appearance: none; appearance: none; height: 12px; border-radius: 10px; outline: none; cursor: pointer; }
+    #ci-energy { background: linear-gradient(to right, #E24B4A, #EF9F27 50%, #1D9E75); }
+    #ci-pain { background: linear-gradient(to right, #1D9E75, #EF9F27 50%, #E24B4A); }
+    .checkin-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 34px; height: 34px; border-radius: 50%; background: white; border: 3px solid var(--teal); box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; }
+    .checkin-slider::-moz-range-thumb { width: 34px; height: 34px; border-radius: 50%; background: white; border: 3px solid var(--teal); cursor: pointer; }
+    .checkin-val-row { display: flex; align-items: center; gap: 12px; background: var(--bg-secondary); border-radius: var(--radius); padding: 12px 16px; }
+    .checkin-val-row span:first-child { font-size: 32px; }
+    .checkin-adl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .checkin-adl-btn { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; padding: 16px 10px; border-radius: var(--radius); border: 2.5px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; text-align: center; line-height: 1.5; transition: all 0.15s; }
+    .checkin-adl-btn:hover { border-color: var(--teal-mid); background: var(--teal-light); }
+    .checkin-adl-btn.selected { background: var(--teal); border-color: var(--teal); color: white; }
+    .checkin-saved-msg { background: var(--teal-light); border: 2px solid var(--teal-mid); border-radius: var(--radius); padding: 16px 20px; font-size: 17px; font-weight: 700; color: var(--teal-dark); text-align: center; margin-top: 1rem; }
+    .trend-chart-wrap { background: var(--bg); border: 2px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+    .trend-legend { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); }
+    .trend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+    .trend-adl-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .trend-adl-chip { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+    .trend-adl-great { background: #E1F5EE; color: #085041; }
+    .trend-adl-okay { background: #FAEEDA; color: #633806; }
+    .trend-adl-hard { background: #FAECE7; color: #4A1B0C; }
+    .trend-adl-help { background: #FCEBEB; color: #501313; }
   </style>
 </head>
 <body>
@@ -221,8 +303,9 @@
     <div class="welcome-title">Hello! I'm Agent SCOCI</div>
     <div class="welcome-sub">Your personal health companion — here to help you manage your condition and live life on your terms.</div>
     <div class="acronym-row">
-      <div class="a-pill"><b>S</b>elf-care</div>
-      <div class="a-pill"><b>C</b>are of</div>
+      <div class="a-pill"><b>S</b>elf</div>
+      <div class="a-pill"><b>C</b>are</div>
+      <div class="a-pill"><b>O</b>f</div>
       <div class="a-pill"><b>C</b>hronic</div>
       <div class="a-pill"><b>I</b>llness</div>
     </div>
@@ -465,7 +548,7 @@
 
   <!-- STEP 7: CARE TEAM -->
   <div class="screen" id="screen-s7">
-    <div class="step-badge"><div class="ot-dot"></div>Step 7 of 7 · Your Care Team</div>
+    <div class="step-badge"><div class="ot-dot"></div>Step 7 of 8 · Your Care Team</div>
     <div class="screen-title">Who is on your health care team?</div>
     <div class="screen-sub">This is optional but helps your companion support the goals your doctors and therapists have set for you.</div>
     <div class="card">
@@ -500,6 +583,53 @@
     </div>
     <div class="btn-row">
       <button class="btn-back" onclick="goTo('s6')">← Back</button>
+      <button class="btn-next" style="font-size:18px;" onclick="goTo('s8')">Next Step →</button>
+    </div>
+  </div>
+
+  <!-- STEP 8: MENTAL HEALTH -->
+  <div class="screen" id="screen-s8">
+    <div class="step-badge"><div class="ot-dot"></div>Step 8 of 8 · Mental Health</div>
+    <div class="screen-title">How are you doing mentally?</div>
+    <div class="screen-sub">Your mental health matters just as much as your physical health. Be honest — there are no wrong answers here.</div>
+
+    <!-- METER 1: OVERALL MENTAL HEALTH -->
+    <div class="card">
+      <div class="card-title">Overall Mental Health</div>
+      <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:16px;">In general, how would you rate your mental health right now?</div>
+      <div class="mh-scale-labels">
+        <span>1<br><small>Struggling<br>deeply</small></span>
+        <span style="text-align:center;">5<br><small>Getting<br>by</small></span>
+        <span style="text-align:right;">10<br><small>Feeling<br>fantastic</small></span>
+      </div>
+      <div class="mh-slider-wrap">
+        <input type="range" class="mh-slider" id="mh-overall-slider" min="1" max="10" value="5" step="1" oninput="updateOverallMeter(this.value)" />
+      </div>
+      <div class="mh-value-display" id="mh-overall-display">
+        <span id="mh-overall-emoji">🙂</span>
+        <div>
+          <div id="mh-overall-num" style="font-size:28px;font-weight:800;color:var(--teal);">5</div>
+          <div id="mh-overall-label" style="font-size:14px;font-weight:600;color:var(--text-muted);">I am getting by</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METER 2: COPING WITH CHRONIC ILLNESS -->
+    <div class="card">
+      <div class="card-title">Coping with Your Chronic Illness</div>
+      <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;">How are you feeling about your condition right now?</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text-muted);margin-bottom:20px;">Tap the answer that feels most true for you today. There are no right or wrong answers.</div>
+
+      <div id="coping-statements"></div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;">Is there anything else you want Agent SCOCI to know about how you are feeling? <span class="optional-tag">Optional</span></div>
+      <textarea id="f-mh-notes" placeholder="e.g. I've been feeling really isolated lately, or I'm anxious about my upcoming appointment…" style="min-height:80px;"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s7')">← Back</button>
       <button class="btn-next" style="font-size:18px;" onclick="finishIntake()">Meet Agent SCOCI →</button>
     </div>
   </div>
@@ -508,7 +638,11 @@
   <div class="screen" id="screen-chat">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
       <div class="profile-pill" id="chat-profile-pill">Loading…</div>
-      <button class="reset-btn" onclick="confirmReset()">Start Over</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="checkin-nav-btn" onclick="goToCheckin()">📋 Daily Check-In</button>
+        <button class="checkin-nav-btn" onclick="goTo('report')" style="background:var(--bg-secondary);border-color:var(--border);color:var(--text-muted);">📄 My Report</button>
+        <button class="reset-btn" onclick="confirmReset()">Start Over</button>
+      </div>
     </div>
     <div class="mode-tabs">
       <button class="mode-tab active" id="tab-local" onclick="setMode('local')">On-Device AI 🔒</button>
@@ -537,9 +671,203 @@
     </div>
   </div>
 
+  <!-- REPORT SCREEN -->
+  <div class="screen" id="screen-report">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <div class="step-badge"><div class="ot-dot"></div>My Health Report</div>
+        <div class="screen-title" style="margin-bottom:0;">Your personal health summary</div>
+      </div>
+      <button class="reset-btn" onclick="goTo('chat')">← Back to chat</button>
+    </div>
+    <div class="screen-sub">Everything below is saved only on your device. You choose what to share and with whom.</div>
+
+    <!-- REPORT PREVIEW -->
+    <div id="report-preview" class="report-preview-wrap"></div>
+
+    <!-- EXPORT BUTTONS -->
+    <div class="report-btn-group">
+      <button class="btn-full" onclick="generateAndDownloadReport()" style="margin-bottom:12px;font-size:18px;">
+        ⬇️ Download My Report (PDF)
+      </button>
+      <button class="btn-full" onclick="printReport()" style="background:var(--bg-secondary);color:var(--text);border:2px solid var(--border);box-shadow:none;font-size:16px;margin-bottom:12px;">
+        🖨️ Print My Report
+      </button>
+      <p style="text-align:center;font-size:13px;font-weight:600;color:var(--text-muted);">
+        Share this report with your OT, doctor, or care team at your next appointment.
+      </p>
+    </div>
+
+    <!-- WEEKLY PROMPT SETTINGS -->
+    <div class="card" style="margin-top:1.5rem;">
+      <div class="card-title">Weekly Report Reminder</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px;">Remind me every Sunday</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-muted);">A prompt will appear when you open the app each Sunday morning</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="weekly-reminder-toggle" onchange="saveReminderPref(this.checked)" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEKLY REPORT PROMPT (overlay) -->
+  <div id="weekly-prompt" class="weekly-prompt-overlay" style="display:none;">
+    <div class="weekly-prompt-card">
+      <div style="font-size:40px;margin-bottom:12px;">📊</div>
+      <div style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:8px;">Weekly report ready</div>
+      <div style="font-size:16px;font-weight:600;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6;">It's Sunday! Your weekly health summary is ready to download and share with your care team.</div>
+      <button class="btn-full" onclick="dismissWeeklyPrompt(true)" style="margin-bottom:10px;font-size:17px;">⬇️ Download my report</button>
+      <button class="btn-back" onclick="dismissWeeklyPrompt(false)" style="width:100%;text-align:center;">Maybe later</button>
+    </div>
+  </div>
+  <div class="screen" id="screen-checkin">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <div class="step-badge"><div class="ot-dot"></div>Daily Check-In</div>
+        <div class="screen-title" style="margin-bottom:0;">How are you today?</div>
+      </div>
+      <button class="reset-btn" onclick="goTo('chat')">← Back to chat</button>
+    </div>
+    <div class="screen-sub">Three quick questions. Honest answers help Agent SCOCI support you better every day.</div>
+
+    <!-- Q1: Energy -->
+    <div class="card">
+      <div class="checkin-q-label">⚡ Energy level today</div>
+      <div class="checkin-scale-labels"><span>1 — Exhausted</span><span>10 — Full of energy</span></div>
+      <div class="checkin-slider-wrap">
+        <input type="range" class="checkin-slider" id="ci-energy" min="1" max="10" value="5" step="1" oninput="updateCheckinSlider('energy',this.value)" />
+      </div>
+      <div class="checkin-val-row">
+        <span id="ci-energy-emoji">🙂</span>
+        <span id="ci-energy-num" style="font-size:26px;font-weight:800;color:var(--teal);">5</span>
+        <span id="ci-energy-label" style="font-size:14px;font-weight:600;color:var(--text-muted);">Moderate energy</span>
+      </div>
+    </div>
+
+    <!-- Q2: Pain -->
+    <div class="card">
+      <div class="checkin-q-label">🩹 Pain or discomfort level today</div>
+      <div class="checkin-scale-labels"><span>1 — No pain</span><span>10 — Severe pain</span></div>
+      <div class="checkin-slider-wrap">
+        <input type="range" class="checkin-slider" id="ci-pain" min="1" max="10" value="3" step="1" oninput="updateCheckinSlider('pain',this.value)" />
+      </div>
+      <div class="checkin-val-row">
+        <span id="ci-pain-emoji">😊</span>
+        <span id="ci-pain-num" style="font-size:26px;font-weight:800;color:#1D9E75;">3</span>
+        <span id="ci-pain-label" style="font-size:14px;font-weight:600;color:var(--text-muted);">Mild discomfort</span>
+      </div>
+    </div>
+
+    <!-- Q3: ADL Performance -->
+    <div class="card">
+      <div class="checkin-q-label">🏠 How did you manage your daily activities today?</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text-muted);margin-bottom:12px;">Think about getting dressed, moving around, meals, and home tasks.</div>
+      <div class="checkin-adl-grid" id="ci-adl-grid">
+        <button class="checkin-adl-btn" onclick="selectCheckinADL(this,'great')">😊<br>Managed great</button>
+        <button class="checkin-adl-btn" onclick="selectCheckinADL(this,'okay')">🙂<br>Got through it</button>
+        <button class="checkin-adl-btn" onclick="selectCheckinADL(this,'hard')">😓<br>Really struggled</button>
+        <button class="checkin-adl-btn" onclick="selectCheckinADL(this,'help')">🙋<br>Needed extra help</button>
+      </div>
+    </div>
+
+    <!-- Optional note -->
+    <div class="card">
+      <div class="checkin-q-label">💬 Anything else to note? <span class="optional-tag">Optional</span></div>
+      <textarea id="ci-note" placeholder="e.g. Woke up stiff today, skipped my walk, felt anxious about my appointment…" style="min-height:70px;"></textarea>
+    </div>
+
+    <button class="btn-full" onclick="saveCheckin()" style="margin-bottom:1.5rem;">Save today's check-in ✓</button>
+
+    <!-- WEEKLY TREND -->
+    <div id="checkin-trend-wrap" style="display:none;">
+      <div class="card-title" style="margin-bottom:12px;">📊 Your last 7 days</div>
+      <div class="trend-chart-wrap">
+        <div class="trend-legend">
+          <span class="trend-dot" style="background:#1D9E75;"></span><span>Energy</span>
+          <span class="trend-dot" style="background:#E24B4A;"></span><span>Pain</span>
+        </div>
+        <canvas id="trend-canvas" width="600" height="180" style="width:100%;height:180px;"></canvas>
+      </div>
+      <div class="trend-adl-row" id="trend-adl-row"></div>
+      <div style="text-align:center;margin-top:1rem;">
+        <button class="btn-back" style="font-size:15px;padding:10px 20px;" onclick="goTo('chat')">Back to Agent SCOCI</button>
+      </div>
+    </div>
+
+    <div id="checkin-saved-msg" style="display:none;" class="checkin-saved-msg">
+      ✅ Check-in saved! Great job showing up for yourself today.
+    </div>
+  </div>
+
 </div>
 
 <script>
+const MH_EMOJIS = ['😢','😢','😔','😟','😐','🙂','😊','😄','😁','🌟'];
+const MH_LABELS = [
+  'I am really struggling right now',
+  'Things feel very heavy today',
+  'I am having a hard time',
+  'It has been a tough day',
+  'I am getting by',
+  'I am doing okay',
+  'I am feeling pretty good',
+  'I am doing well today',
+  'I am feeling great',
+  'I am feeling fantastic!'
+];
+const MH_COLORS = ['#E24B4A','#E24B4A','#E24B4A','#D85A30','#EF9F27','#1D9E75','#1D9E75','#0F6E56','#0F6E56','#085041'];
+
+const COPING_STATEMENTS = [
+  { id: 'acceptance',  text: '💙 I have come to terms with having this condition' },
+  { id: 'grief',       text: '💔 I find myself mourning the life I had before my diagnosis' },
+  { id: 'control',     text: '💪 I feel like I have some control over how my illness affects my daily life' },
+  { id: 'burden',      text: '😔 My condition makes me feel like a burden to the people I love' },
+  { id: 'hope',        text: '🌱 I believe I can still live a meaningful life with this condition' },
+  { id: 'isolation',   text: '🤝 I feel like people around me truly understand what I am going through' }
+];
+
+const copingAnswers = {};
+let overallMHScore = 5;
+
+function buildCopingStatements() {
+  const container = document.getElementById('coping-statements');
+  if (!container) return;
+  container.innerHTML = '';
+  COPING_STATEMENTS.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'coping-item';
+    div.innerHTML = `
+      <div class="coping-statement">${item.text}</div>
+      <div class="coping-btns">
+        <button class="coping-btn" onclick="selectCoping(this,'${item.id}','Yes')">✅ Yes</button>
+        <button class="coping-btn" onclick="selectCoping(this,'${item.id}','Sometimes')">🤔 Sometimes</button>
+        <button class="coping-btn" onclick="selectCoping(this,'${item.id}','No')">❌ Not really</button>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function selectCoping(btn, id, val) {
+  const btns = btn.closest('.coping-btns').querySelectorAll('.coping-btn');
+  btns.forEach(b => b.className = 'coping-btn');
+  const cls = val === 'Yes' ? 'sel-yes' : val === 'Sometimes' ? 'sel-sometimes' : 'sel-no';
+  btn.className = 'coping-btn ' + cls;
+  copingAnswers[id] = val;
+}
+
+function updateOverallMeter(val) {
+  const v = parseInt(val);
+  overallMHScore = v;
+  document.getElementById('mh-overall-emoji').textContent = MH_EMOJIS[v-1];
+  document.getElementById('mh-overall-num').textContent = v;
+  document.getElementById('mh-overall-num').style.color = MH_COLORS[v-1];
+  document.getElementById('mh-overall-label').textContent = MH_LABELS[v-1];
+}
+
 const ADL_ITEMS = [
   {label:'Bathing or showering', icon:'🚿'},
   {label:'Getting dressed', icon:'👗'},
@@ -600,8 +928,8 @@ function startIntake() {
 }
 
 const SCREENS = ['welcome','s1','s2','s3','s4','s5','s6','s7','chat'];
-const PROG_PCT = {welcome:0,s1:10,s2:24,s3:38,s4:52,s5:64,s6:78,s7:90,chat:100};
-const PROG_LABELS = {s1:'Step 1 of 7 — Your Health Condition',s2:'Step 2 of 7 — Your Medications',s3:'Step 3 of 7 — Daily Activities',s4:'Step 4 of 7 — Home & Community',s5:'Step 5 of 7 — Your Life & Roles',s6:'Step 6 of 7 — Routine & Home',s7:'Step 7 of 7 — Your Care Team',chat:'Your Companion is Ready'};
+const PROG_PCT = {welcome:0,s1:10,s2:22,s3:34,s4:46,s5:58,s6:70,s7:82,s8:92,chat:100,checkin:100,report:100};
+const PROG_LABELS = {s1:'Step 1 of 8 — Your Health Condition',s2:'Step 2 of 8 — Your Medications',s3:'Step 3 of 8 — Daily Activities',s4:'Step 4 of 8 — Home & Community',s5:'Step 5 of 8 — Your Life & Roles',s6:'Step 6 of 8 — Routine & Home',s7:'Step 7 of 8 — Your Care Team',s8:'Step 8 of 8 — Mental Health',chat:'Your Companion is Ready',checkin:'Daily Check-In',report:'My Health Report'};
 
 function goTo(screen) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -609,6 +937,8 @@ function goTo(screen) {
   document.getElementById('progress-fill').style.width = (PROG_PCT[screen]||0)+'%';
   if (PROG_LABELS[screen]) document.getElementById('progress-label').textContent = PROG_LABELS[screen];
   document.getElementById('progress-wrap').style.display = (screen==='welcome') ? 'none' : 'block';
+  if (screen === 's8') buildCopingStatements();
+  if (screen === 'report') { renderReportPreview(); loadReminderPref(); }
   window.scrollTo(0,0);
 }
 
@@ -687,6 +1017,10 @@ function collectProfile() {
     otherTeam: [...tagData['other-team']],
     otGoals: document.getElementById('f-ot-goals').value.trim(),
     nextAppt: document.getElementById('f-next-appt').value.trim(),
+    mentalHealthScore: overallMHScore,
+    mentalHealthLabel: MH_LABELS[overallMHScore-1],
+    copingAnswers: {...copingAnswers},
+    mentalHealthNotes: document.getElementById('f-mh-notes').value.trim(),
     savedAt: new Date().toISOString()
   };
 }
@@ -748,6 +1082,20 @@ Role challenge: ${p.challenge||'not specified'}
 Care team — Doctor: ${p.pcp||'not listed'}, OT: ${p.ot||'not listed'}, Specialists: ${p.specialists?.join(', ')||'none'}, Other: ${p.otherTeam?.join(', ')||'none'}
 Current OT goals: ${p.otGoals||'not specified'}
 Next appointment: ${p.nextAppt||'not specified'}
+
+MENTAL HEALTH:
+Overall mental health score: ${p.mentalHealthScore||'not rated'}/10 — "${p.mentalHealthLabel||''}"
+Coping with chronic illness:
+${p.copingAnswers ? Object.entries(p.copingAnswers).map(([k,v]) => '  - ' + k + ': ' + v).join('\n') : 'not assessed'}
+Additional mental health notes: ${p.mentalHealthNotes||'none'}
+
+IMPORTANT — use the mental health data to shape your tone:
+- Score 1-3: Lead with deep compassion. Acknowledge their pain first before any self-care guidance. Do not jump to tips.
+- Score 4-6: Be warm and encouraging. Acknowledge the difficulty while gently offering practical support.
+- Score 7-10: Be upbeat and energizing. Build on their momentum.
+- If burden=Yes: Gently address caregiver guilt and remind them self-care is not selfish.
+- If isolation=No (they feel misunderstood): Validate their experience and emphasize that Agent SCOCI truly understands.
+- If grief=Yes: Acknowledge their loss with compassion before moving to any practical guidance.
 
 HOW TO RESPOND:
 - Use simple, friendly, warm language
@@ -819,6 +1167,19 @@ function launchChat() {
   const hardADLs = Object.entries(p.adlScores||{}).filter(([,v])=>v&&v!=='Independent').map(([k])=>k);
 
   let greeting = `Hello! I'm so glad you're here. I'm Agent SCOCI — your personal self-care companion.\n\nI know you're managing ${p.diagnosis||'a health condition'}${p.duration?' for '+p.duration.toLowerCase():''}. That's not easy, and I want to help make each day a little better.`;
+
+  const mhScore = p.mentalHealthScore || 5;
+  if (mhScore <= 3) {
+    greeting += `\n\nI can see you're going through a really tough time right now. I want you to know — you don't have to figure this out alone. I'm here, and we'll take this one step at a time.`;
+  } else if (mhScore <= 6) {
+    greeting += `\n\nI know some days are harder than others. I'm here to help you find what works for your life, at your own pace.`;
+  } else {
+    greeting += `\n\nI love that you're in a good headspace right now — let's build on that energy together.`;
+  }
+
+  if (p.copingAnswers?.burden === 'Yes') {
+    greeting += `\n\nOne thing I want you to hear right away: taking care of yourself is not selfish. You matter too.`;
+  }
 
   if (hardADLs.length) {
     greeting += `\n\nI noticed that ${hardADLs.slice(0,2).join(' and ').toLowerCase()} can be challenging for you. Let's work together on strategies that fit your real life.`;
@@ -929,11 +1290,478 @@ function confirmReset() {
   if (confirm('Start your profile over from the beginning? This will erase your saved information.')) {
     dbSet('profile', null);
     dbSet('chatHistory', []);
+    dbSet('checkins', null);
     location.reload();
   }
 }
 
-init();
+// ─── DAILY CHECK-IN ──────────────────────────────────────────────────────────
+
+const ENERGY_DATA = {
+  emojis: ['😴','😴','😪','😔','😐','🙂','😊','💪','🔥','⚡'],
+  labels: ['Completely drained','Severely fatigued','Very low energy','Low energy','Moderate energy','Decent energy','Good energy','Great energy','Very energized','Full of energy'],
+  colors: ['#E24B4A','#E24B4A','#D85A30','#EF9F27','#EF9F27','#1D9E75','#1D9E75','#1D9E75','#0F6E56','#085041']
+};
+
+const PAIN_DATA = {
+  emojis: ['😊','🙂','🙂','😐','😐','😟','😔','😣','😫','😭'],
+  labels: ['No pain at all','Barely noticeable','Very mild','Mild discomfort','Moderate pain','Noticeable pain','Significant pain','Severe pain','Very severe pain','Worst possible pain'],
+  colors: ['#1D9E75','#1D9E75','#1D9E75','#5DCAA5','#EF9F27','#EF9F27','#D85A30','#E24B4A','#E24B4A','#E24B4A']
+};
+
+let checkinADLVal = '';
+
+function updateCheckinSlider(type, val) {
+  const v = parseInt(val) - 1;
+  const data = type === 'energy' ? ENERGY_DATA : PAIN_DATA;
+  document.getElementById('ci-' + type + '-emoji').textContent = data.emojis[v];
+  document.getElementById('ci-' + type + '-num').textContent = parseInt(val);
+  document.getElementById('ci-' + type + '-num').style.color = data.colors[v];
+  document.getElementById('ci-' + type + '-label').textContent = data.labels[v];
+}
+
+function selectCheckinADL(btn, val) {
+  document.querySelectorAll('.checkin-adl-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  checkinADLVal = val;
+}
+
+function goToCheckin() {
+  goTo('checkin');
+  // Reset form
+  document.getElementById('ci-energy').value = 5;
+  document.getElementById('ci-pain').value = 3;
+  updateCheckinSlider('energy', 5);
+  updateCheckinSlider('pain', 3);
+  checkinADLVal = '';
+  document.querySelectorAll('.checkin-adl-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('ci-note').value = '';
+  document.getElementById('checkin-saved-msg').style.display = 'none';
+  document.getElementById('checkin-trend-wrap').style.display = 'none';
+  // Load and show existing trend
+  loadAndRenderTrend();
+}
+
+async function saveCheckin() {
+  const today = new Date().toISOString().split('T')[0];
+  const entry = {
+    date: today,
+    energy: parseInt(document.getElementById('ci-energy').value),
+    pain: parseInt(document.getElementById('ci-pain').value),
+    adl: checkinADLVal || 'not rated',
+    note: document.getElementById('ci-note').value.trim(),
+    ts: Date.now()
+  };
+
+  // Load existing checkins
+  let checkins = [];
+  try {
+    const saved = await dbGet('checkins');
+    if (saved && Array.isArray(saved)) checkins = saved;
+  } catch(e) { checkins = []; }
+
+  // Remove today's entry if already exists (replace with new one)
+  checkins = checkins.filter(c => c.date !== today);
+  checkins.push(entry);
+
+  // Keep last 90 days only
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 90);
+  checkins = checkins.filter(c => new Date(c.date) >= cutoff);
+
+  // Sort by date
+  checkins.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  await dbSet('checkins', checkins);
+
+  // Show saved message and trend
+  document.getElementById('checkin-saved-msg').style.display = 'block';
+  await loadAndRenderTrend();
+  document.getElementById('checkin-trend-wrap').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function loadAndRenderTrend() {
+  let checkins = [];
+  try {
+    const saved = await dbGet('checkins');
+    if (saved && Array.isArray(saved)) checkins = saved;
+  } catch(e) { return; }
+
+  if (checkins.length === 0) return;
+
+  // Get last 7 entries
+  const last7 = checkins.slice(-7);
+  document.getElementById('checkin-trend-wrap').style.display = 'block';
+
+  // Draw canvas chart
+  const canvas = document.getElementById('trend-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 600;
+  const H = 180;
+  canvas.width = W;
+  canvas.height = H;
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = { top: 20, bottom: 30, left: 28, right: 12 };
+  const chartW = W - pad.left - pad.right;
+  const chartH = H - pad.top - pad.bottom;
+  const n = last7.length;
+  const stepX = n > 1 ? chartW / (n - 1) : chartW;
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(128,128,128,0.15)';
+  ctx.lineWidth = 1;
+  [2, 4, 6, 8, 10].forEach(v => {
+    const y = pad.top + chartH - ((v - 1) / 9) * chartH;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(pad.left + chartW, y);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(128,128,128,0.5)';
+    ctx.font = '10px Nunito, sans-serif';
+    ctx.fillText(v, 2, y + 3);
+  });
+
+  // Draw line function
+  function drawLine(data, color) {
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    data.forEach((v, i) => {
+      const x = pad.left + i * stepX;
+      const y = pad.top + chartH - ((v - 1) / 9) * chartH;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Dots
+    data.forEach((v, i) => {
+      const x = pad.left + i * stepX;
+      const y = pad.top + chartH - ((v - 1) / 9) * chartH;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+  }
+
+  drawLine(last7.map(c => c.energy), '#1D9E75');
+  drawLine(last7.map(c => c.pain), '#E24B4A');
+
+  // X axis date labels
+  ctx.fillStyle = 'rgba(128,128,128,0.7)';
+  ctx.font = '10px Nunito, sans-serif';
+  ctx.textAlign = 'center';
+  last7.forEach((c, i) => {
+    const x = pad.left + i * stepX;
+    const d = new Date(c.date + 'T12:00:00');
+    const label = (d.getMonth() + 1) + '/' + d.getDate();
+    ctx.fillText(label, x, H - 5);
+  });
+
+  // ADL chips
+  const adlRow = document.getElementById('trend-adl-row');
+  adlRow.innerHTML = '<span style="font-size:13px;font-weight:700;color:var(--text-muted);margin-right:6px;">Daily activities:</span>';
+  last7.forEach(c => {
+    if (c.adl && c.adl !== 'not rated') {
+      const chip = document.createElement('span');
+      chip.className = 'trend-adl-chip trend-adl-' + c.adl;
+      const d = new Date(c.date + 'T12:00:00');
+      chip.textContent = (d.getMonth()+1) + '/' + d.getDate() + ' — ' + c.adl;
+      adlRow.appendChild(chip);
+    }
+  });
+}
+
+// ─── REPORT GENERATION ───────────────────────────────────────────────────────
+
+async function buildReportData() {
+  const p = await dbGet('profile') || {};
+  let checkins = [];
+  try { const c = await dbGet('checkins'); if (c && Array.isArray(c)) checkins = c; } catch(e) {}
+  return { profile: p, checkins: checkins.slice(-30) };
+}
+
+function fmtDate(iso) {
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function adlClass(val) {
+  if (val === 'Independent') return 'adl-ok';
+  if (val === 'Some difficulty') return 'adl-hard';
+  return 'adl-help';
+}
+
+function buildReportHTML(data, forPrint = false) {
+  const p = data.profile;
+  const checkins = data.checkins;
+  const last7 = checkins.slice(-7);
+  const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  // ADL summary
+  const adlEntries = Object.entries(p.adlScores || {}).filter(([,v]) => v);
+  const iadlEntries = Object.entries(p.iadlScores || {}).filter(([,v]) => v);
+
+  // Coping summary
+  const copingMap = { acceptance:'Accepted condition', grief:'Processing grief', control:'Feels in control', burden:'Feels like a burden', hope:'Has hope', isolation:'Feels understood' };
+
+  // Trend bars HTML
+  let trendBarsHTML = '';
+  if (last7.length) {
+    trendBarsHTML = last7.map(c => {
+      const eH = Math.round((c.energy / 10) * 46);
+      const pH = Math.round((c.pain / 10) * 46);
+      const d = new Date(c.date + 'T12:00:00');
+      const lbl = (d.getMonth()+1) + '/' + d.getDate();
+      return `<div class="report-trend-bar-wrap">
+        <div style="display:flex;gap:2px;align-items:flex-end;height:46px;">
+          <div class="report-trend-bar" style="height:${eH}px;background:#1D9E75;width:10px;"></div>
+          <div class="report-trend-bar" style="height:${pH}px;background:#E24B4A;width:10px;"></div>
+        </div>
+        <div class="report-trend-label">${lbl}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Avg energy and pain
+  const avgEnergy = last7.length ? (last7.reduce((s,c) => s + c.energy, 0) / last7.length).toFixed(1) : 'N/A';
+  const avgPain = last7.length ? (last7.reduce((s,c) => s + c.pain, 0) / last7.length).toFixed(1) : 'N/A';
+
+  const mhPct = ((p.mentalHealthScore || 5) - 1) / 9 * 100;
+
+  return `
+  <div class="report-header">
+    <img src="/icons/icon-192.png" alt="Agent SCOCI" />
+    <div class="report-header-text">
+      <h2>Agent SCOCI Health Report</h2>
+      <p>Generated ${today} &nbsp;·&nbsp; All data stored locally on your device</p>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-section-title">Diagnosis & Medications</div>
+    <div class="report-row"><span class="report-row-label">Primary condition</span><span class="report-row-val">${p.diagnosis || 'Not specified'} ${p.duration ? '(' + p.duration + ')' : ''}</span></div>
+    ${p.comorbidities?.length ? `<div class="report-row"><span class="report-row-label">Other conditions</span><span class="report-row-val">${p.comorbidities.join(', ')}</span></div>` : ''}
+    ${p.medications?.length ? `<div class="report-row"><span class="report-row-label">Medications</span><span class="report-row-val">${p.medications.join(', ')}</span></div>` : ''}
+    ${p.medConcerns ? `<div class="report-row"><span class="report-row-label">Medication concerns</span><span class="report-row-val">${p.medConcerns}</span></div>` : ''}
+  </div>
+
+  ${adlEntries.length ? `
+  <div class="report-section">
+    <div class="report-section-title">Daily Activities (ADLs)</div>
+    <div class="report-adl-grid">
+      ${adlEntries.map(([k,v]) => `<div class="report-adl-item ${adlClass(v)}">${k}: ${v}</div>`).join('')}
+    </div>
+    ${p.adlConcern ? `<div style="margin-top:8px;font-size:13px;font-weight:600;color:#4a5568;">Most affected: ${p.adlConcern}</div>` : ''}
+  </div>` : ''}
+
+  ${iadlEntries.length ? `
+  <div class="report-section">
+    <div class="report-section-title">Home & Community Activities (IADLs)</div>
+    <div class="report-adl-grid">
+      ${iadlEntries.map(([k,v]) => `<div class="report-adl-item ${adlClass(v)}">${k}: ${v}</div>`).join('')}
+    </div>
+    ${p.iadlPriority ? `<div style="margin-top:8px;font-size:13px;font-weight:600;color:#4a5568;">Priority to maintain: ${p.iadlPriority}</div>` : ''}
+  </div>` : ''}
+
+  <div class="report-section">
+    <div class="report-section-title">Mental Health</div>
+    <div class="report-row"><span class="report-row-label">Overall score</span><span class="report-row-val">${p.mentalHealthScore || 'Not rated'} / 10 — ${p.mentalHealthLabel || ''}</span></div>
+    <div class="report-mh-bar"><div class="report-mh-marker" style="left:${mhPct}%"></div></div>
+    ${p.copingAnswers && Object.keys(p.copingAnswers).length ? `
+    <div style="margin-top:10px;">
+      ${Object.entries(p.copingAnswers).map(([k,v]) => `
+        <div class="report-row">
+          <span class="report-row-label">${copingMap[k] || k}</span>
+          <span class="report-row-val" style="color:${v==='Yes'?'#1D9E75':v==='Sometimes'?'#EF9F27':'#E24B4A'}">${v}</span>
+        </div>`).join('')}
+    </div>` : ''}
+    ${p.mentalHealthNotes ? `<div style="margin-top:8px;font-size:13px;font-weight:600;color:#4a5568;font-style:italic;">"${p.mentalHealthNotes}"</div>` : ''}
+  </div>
+
+  ${p.occupations?.length || p.familyRole ? `
+  <div class="report-section">
+    <div class="report-section-title">Occupational Profile</div>
+    ${p.familyRole ? `<div class="report-row"><span class="report-row-label">Home role</span><span class="report-row-val">${p.familyRole}</span></div>` : ''}
+    ${p.occupations?.length ? `<div class="report-row"><span class="report-row-label">Meaningful activities</span><span class="report-row-val">${p.occupations.join(', ')}</span></div>` : ''}
+    ${p.disrupted ? `<div class="report-row"><span class="report-row-label">Most disrupted</span><span class="report-row-val">${p.disrupted}</span></div>` : ''}
+    ${p.socialImpact ? `<div class="report-row"><span class="report-row-label">Social life impact</span><span class="report-row-val">${p.socialImpact}</span></div>` : ''}
+  </div>` : ''}
+
+  ${last7.length ? `
+  <div class="report-section">
+    <div class="report-section-title">Last 7 Days — Check-In Trends</div>
+    <div class="report-row">
+      <span class="report-row-label">Average energy</span>
+      <span class="report-row-val" style="color:#1D9E75;font-weight:800;">${avgEnergy} / 10</span>
+    </div>
+    <div class="report-row">
+      <span class="report-row-label">Average pain</span>
+      <span class="report-row-val" style="color:#E24B4A;font-weight:800;">${avgPain} / 10</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:6px;font-size:11px;font-weight:700;">
+      <span style="color:#1D9E75;">■ Energy</span>
+      <span style="color:#E24B4A;">■ Pain</span>
+    </div>
+    <div class="report-trend-mini">${trendBarsHTML}</div>
+    ${last7.some(c=>c.note) ? `
+    <div style="margin-top:10px;">
+      <div style="font-size:12px;font-weight:800;color:#1D9E75;margin-bottom:6px;">DAILY NOTES</div>
+      ${last7.filter(c=>c.note).map(c=>`<div style="font-size:12px;font-weight:600;color:#4a5568;margin-bottom:4px;"><span style="font-weight:800;">${fmtDate(c.date)}:</span> ${c.note}</div>`).join('')}
+    </div>` : ''}
+  </div>` : ''}
+
+  ${p.pcp || p.ot || p.specialists?.length ? `
+  <div class="report-section">
+    <div class="report-section-title">Care Team</div>
+    ${p.pcp ? `<div class="report-row"><span class="report-row-label">Primary care</span><span class="report-row-val">${p.pcp}</span></div>` : ''}
+    ${p.ot ? `<div class="report-row"><span class="report-row-label">Occupational therapist</span><span class="report-row-val">${p.ot}</span></div>` : ''}
+    ${p.specialists?.length ? `<div class="report-row"><span class="report-row-label">Specialists</span><span class="report-row-val">${p.specialists.join(', ')}</span></div>` : ''}
+    ${p.otGoals ? `<div class="report-row"><span class="report-row-label">Current OT goals</span><span class="report-row-val">${p.otGoals}</span></div>` : ''}
+    ${p.nextAppt ? `<div class="report-row"><span class="report-row-label">Next appointment</span><span class="report-row-val">${p.nextAppt}</span></div>` : ''}
+  </div>` : ''}
+
+  <div style="margin-top:16px;padding:12px;background:#f7faf9;border-radius:10px;font-size:11px;color:#9ca3af;text-align:center;line-height:1.6;">
+    This report was generated by Agent SCOCI and stored only on your personal device.<br>
+    Agent SCOCI is not a medical device and does not provide medical advice, diagnosis, or treatment.<br>
+    Always consult your occupational therapist or physician regarding your health care.
+  </div>`;
+}
+
+async function renderReportPreview() {
+  const data = await buildReportData();
+  const el = document.getElementById('report-preview');
+  if (el) el.innerHTML = buildReportHTML(data);
+}
+
+async function generateAndDownloadReport() {
+  const data = await buildReportData();
+  const reportHTML = buildReportHTML(data, true);
+  const today = new Date().toISOString().split('T')[0];
+
+  const fullHTML = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Agent SCOCI Health Report — ${today}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a1a1a; padding: 40px; max-width: 700px; margin: 0 auto; }
+  .report-header { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 2px solid #E1F5EE; margin-bottom: 16px; }
+  .report-header img { width: 52px; height: 52px; }
+  .report-header-text h2 { font-size: 20px; font-weight: 800; color: #1a1a1a; margin-bottom: 2px; }
+  .report-header-text p { font-size: 12px; color: #6b7280; }
+  .report-section { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f0f0f0; }
+  .report-section:last-child { border-bottom: none; }
+  .report-section-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1D9E75; margin-bottom: 10px; }
+  .report-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; }
+  .report-row-label { font-weight: 700; color: #4a5568; }
+  .report-row-val { font-weight: 600; color: #1a1a1a; text-align: right; }
+  .report-adl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .report-adl-item { font-size: 12px; font-weight: 600; padding: 4px 8px; border-radius: 6px; }
+  .adl-ok { background: #E1F5EE; color: #085041; }
+  .adl-hard { background: #FAEEDA; color: #633806; }
+  .adl-help { background: #FCEBEB; color: #501313; }
+  .report-mh-bar { height: 10px; border-radius: 5px; background: linear-gradient(to right, #E24B4A, #EF9F27 50%, #1D9E75); position: relative; margin: 8px 0; }
+  .report-mh-marker { position: absolute; top: -5px; width: 20px; height: 20px; border-radius: 50%; background: white; border: 3px solid #1D9E75; transform: translateX(-50%); }
+  .report-trend-mini { display: flex; gap: 3px; align-items: flex-end; height: 50px; margin-top: 8px; }
+  .report-trend-bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 2px; }
+  .report-trend-bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 3px; }
+  .report-trend-label { font-size: 9px; color: #9ca3af; }
+  @media print { body { padding: 20px; } }
+</style>
+</head>
+<body>${reportHTML}</body>
+</html>`;
+
+  const blob = new Blob([fullHTML], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'AgentSCOCI-Report-' + today + '.html';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  // Save last export date
+  await dbSet('lastExport', today);
+}
+
+async function printReport() {
+  const data = await buildReportData();
+  const reportHTML = buildReportHTML(data, true);
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Agent SCOCI Health Report</title>
+  <style>
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'Helvetica Neue',Arial,sans-serif; color:#1a1a1a; padding:30px; max-width:700px; margin:0 auto; }
+    .report-header { display:flex; align-items:center; gap:14px; padding-bottom:14px; border-bottom:2px solid #E1F5EE; margin-bottom:14px; }
+    .report-header img { width:48px; height:48px; }
+    .report-header-text h2 { font-size:18px; font-weight:800; }
+    .report-header-text p { font-size:11px; color:#6b7280; }
+    .report-section { margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid #f0f0f0; }
+    .report-section-title { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color:#1D9E75; margin-bottom:8px; }
+    .report-row { display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px; }
+    .report-row-label { font-weight:700; color:#4a5568; }
+    .report-row-val { font-weight:600; }
+    .report-adl-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px; }
+    .report-adl-item { font-size:11px; font-weight:600; padding:3px 7px; border-radius:5px; }
+    .adl-ok { background:#E1F5EE; color:#085041; }
+    .adl-hard { background:#FAEEDA; color:#633806; }
+    .adl-help { background:#FCEBEB; color:#501313; }
+    .report-mh-bar { height:10px; border-radius:5px; background:linear-gradient(to right,#E24B4A,#EF9F27 50%,#1D9E75); position:relative; margin:8px 0; }
+    .report-mh-marker { position:absolute; top:-5px; width:18px; height:18px; border-radius:50%; background:white; border:3px solid #1D9E75; transform:translateX(-50%); }
+    .report-trend-mini { display:flex; gap:3px; align-items:flex-end; height:46px; margin-top:6px; }
+    .report-trend-bar-wrap { display:flex; flex-direction:column; align-items:center; flex:1; gap:2px; }
+    .report-trend-bar { width:100%; border-radius:3px 3px 0 0; }
+    .report-trend-label { font-size:8px; color:#9ca3af; }
+  </style></head><body>${reportHTML}</body></html>`);
+  win.document.close();
+  setTimeout(() => win.print(), 500);
+}
+
+// ─── WEEKLY REPORT PROMPT ────────────────────────────────────────────────────
+
+async function checkWeeklyPrompt() {
+  try {
+    const pref = await dbGet('weeklyReminder');
+    if (!pref) return;
+    const today = new Date();
+    if (today.getDay() !== 0) return; // 0 = Sunday
+    const lastShown = await dbGet('weeklyPromptShown');
+    const todayStr = today.toISOString().split('T')[0];
+    if (lastShown === todayStr) return;
+    // Show prompt
+    document.getElementById('weekly-prompt').style.display = 'flex';
+    await dbSet('weeklyPromptShown', todayStr);
+  } catch(e) {}
+}
+
+async function dismissWeeklyPrompt(download) {
+  document.getElementById('weekly-prompt').style.display = 'none';
+  if (download) await generateAndDownloadReport();
+}
+
+async function saveReminderPref(val) {
+  await dbSet('weeklyReminder', val);
+}
+
+async function loadReminderPref() {
+  try {
+    const pref = await dbGet('weeklyReminder');
+    const toggle = document.getElementById('weekly-reminder-toggle');
+    if (toggle) toggle.checked = !!pref;
+  } catch(e) {}
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+init().then(() => checkWeeklyPrompt());
 </script>
 </body>
 </html>
