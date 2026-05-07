@@ -77,9 +77,11 @@
     h1 { font-size: clamp(28px, 5vw, 42px); font-weight: 800; line-height: 1.15; margin-bottom: 1.25rem; color: var(--text); }
     h1 em { font-style: normal; color: var(--teal); }
     .hero-sub { font-size: 18px; font-weight: 600; color: var(--text-muted); max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.7; }
-    .acronym-row { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem; }
-    .a-pill { border: 2px solid var(--teal-mid); border-radius: 20px; padding: 6px 16px; font-size: 14px; font-weight: 800; color: var(--text-muted); background: var(--teal-light); }
-    .a-pill b { color: var(--teal); }
+    .acronym-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 2rem; }
+    .a-pill { border: none; border-radius: 20px; padding: 6px 18px; font-size: 15px; font-weight: 700; color: var(--teal-mid); background: transparent; letter-spacing: 0.03em; position: relative; }
+    .a-pill::after { content: '·'; position: absolute; right: -8px; color: var(--teal-mid); font-size: 18px; top: 50%; transform: translateY(-50%); }
+    .a-pill:last-child::after { display: none; }
+    .a-pill b { color: var(--teal); font-size: 17px; }
     .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
     .btn-primary { background: var(--teal); color: white; border: none; border-radius: var(--radius); padding: 16px 32px; font-size: 18px; font-weight: 800; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.15s; font-family: 'Nunito', sans-serif; box-shadow: 0 4px 16px rgba(29,158,117,0.35); }
     .btn-primary:hover { background: var(--teal-dark); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(29,158,117,0.4); }
@@ -148,7 +150,22 @@
     .banner-install { background: white; color: var(--teal); border: none; border-radius: 10px; padding: 10px 24px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; }
     .banner-dismiss { background: transparent; color: rgba(255,255,255,0.8); border: 2px solid rgba(255,255,255,0.4); border-radius: 10px; padding: 10px 18px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
 
-    /* FOOTER */
+    /* MENTAL HEALTH METER */
+    .meter-card { background: var(--bg-soft); border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; }
+    .meter-scale-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; line-height: 1.4; }
+    .meter-scale-labels small { font-size: 12px; font-weight: 600; color: var(--text-faint); }
+    .meter-track { margin-bottom: 1rem; }
+    .meter-track input[type=range] { width: 100%; -webkit-appearance: none; appearance: none; height: 10px; border-radius: 10px; background: linear-gradient(to right, #E24B4A, #EF9F27, #1D9E75); outline: none; cursor: pointer; }
+    .meter-track input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 32px; height: 32px; border-radius: 50%; background: white; border: 3px solid var(--teal); box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; }
+    .meter-track input[type=range]::-moz-range-thumb { width: 32px; height: 32px; border-radius: 50%; background: white; border: 3px solid var(--teal); box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; }
+    .meter-value-display { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px; background: var(--bg); border: 2px solid var(--border); border-radius: var(--radius); margin-bottom: 1.25rem; }
+    .meter-value-display span { font-size: 18px; font-weight: 700; color: var(--text-muted); }
+    .meter-followup { background: var(--bg); border: 2px solid var(--teal-mid); border-radius: var(--radius-lg); padding: 1.25rem; margin-top: 1rem; }
+    .followup-q { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 1rem; line-height: 1.5; }
+    .followup-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+    .followup-chip { font-size: 14px; font-weight: 700; padding: 8px 16px; border-radius: 20px; cursor: pointer; border: 2px solid var(--border-mid); background: var(--bg-soft); color: var(--text); font-family: 'Nunito', sans-serif; transition: all 0.15s; }
+    .followup-chip:hover, .followup-chip.selected { background: var(--teal); border-color: var(--teal); color: white; }
+    .meter-followup textarea { width: 100%; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 600; background: var(--bg); color: var(--text); border: 2px solid var(--border); border-radius: var(--radius); padding: 12px 16px; outline: none; resize: vertical; min-height: 80px; }
     footer { border-top: 2px solid var(--teal-light); padding: 2rem 24px; text-align: center; }
     footer p { font-size: 13px; font-weight: 600; color: var(--text-faint); line-height: 1.8; max-width: 600px; margin: 0 auto; }
     footer a { color: var(--text-faint); text-decoration: none; }
@@ -185,8 +202,9 @@
     <h1>Live your life,<br>not just your <em>diagnosis</em></h1>
     <p class="hero-sub">Agent SCOCI is your personal health companion — helping you live better every day, not just manage your symptoms.</p>
     <div class="acronym-row">
-      <div class="a-pill"><b>S</b>elf-care</div>
-      <div class="a-pill"><b>C</b>are of</div>
+      <div class="a-pill"><b>S</b>elf</div>
+      <div class="a-pill"><b>C</b>are</div>
+      <div class="a-pill"><b>O</b>f</div>
       <div class="a-pill"><b>C</b>hronic</div>
       <div class="a-pill"><b>I</b>llness</div>
     </div>
@@ -198,6 +216,37 @@
   </div>
 
   <hr class="divider" />
+
+  <!-- MENTAL HEALTH METER -->
+  <div style="padding:3rem 24px;max-width:680px;margin:0 auto;">
+    <div class="section-label">Mental Health Check-In</div>
+    <h2>How are you feeling today?</h2>
+    <p class="section-sub">Everyone experiences mental health differently. There's no right or wrong answer — just move the slider to where you are right now.</p>
+    <div class="meter-card">
+      <div class="meter-scale-labels">
+        <span>1<br><small>Struggling deeply</small></span>
+        <span style="text-align:center;">5<br><small>Getting by</small></span>
+        <span style="text-align:right;">10<br><small>Feeling fantastic</small></span>
+      </div>
+      <div class="meter-track">
+        <input type="range" id="mental-slider" min="1" max="10" value="5" step="1" oninput="updateMeter(this.value)" />
+      </div>
+      <div class="meter-value-display">
+        <span id="meter-emoji">🙂</span>
+        <span id="meter-label">I'm getting by</span>
+        <span id="meter-number" style="font-size:32px;font-weight:800;color:var(--teal);">5</span>
+      </div>
+      <div id="meter-followup" class="meter-followup" style="display:none;">
+        <p id="followup-question" class="followup-q"></p>
+        <div class="followup-chips" id="followup-chips"></div>
+        <textarea id="followup-text" placeholder="Tell us more in your own words…"></textarea>
+        <a href="/app/" class="btn-primary" style="display:block;text-align:center;margin-top:12px;font-size:17px;padding:16px;">Start with Agent SCOCI →</a>
+      </div>
+      <div id="meter-cta" style="text-align:center;margin-top:1.5rem;">
+        <button class="btn-primary" style="font-size:17px;padding:16px 36px;" onclick="showFollowup()">This is where I am today →</button>
+      </div>
+    </div>
+  </div>
 
   <div class="section" id="features">
     <div class="section-label">Why Agent SCOCI</div>
@@ -332,11 +381,70 @@
   </footer>
 
   <script>
+    // Mental health meter
+    const meterEmojis = ['😢','😢','😔','😟','😐','🙂','😊','😄','😁','🌟'];
+    const meterLabels = [
+      'I am really struggling right now',
+      'Things feel very heavy today',
+      'I am having a hard time',
+      'It has been a tough day',
+      'I am getting by',
+      'I am doing okay',
+      'I am feeling pretty good',
+      'I am doing well today',
+      'I am feeling great',
+      'I am feeling fantastic!'
+    ];
+    const followupData = {
+      low: {
+        question: "We hear you — that takes courage to share. What's been weighing on you most?",
+        chips: ['Feeling lonely or isolated','Pain or physical symptoms','Worry about my health','Stress from caregiving','Financial stress','Trouble sleeping','Loss of independence','Something else']
+      },
+      mid: {
+        question: "Thanks for sharing. What's been getting in the way of feeling better lately?",
+        chips: ['Low energy or fatigue','Managing my medications','Keeping up with daily tasks','Feeling overwhelmed','Missing things I used to do','Needing more support','Not sure yet','Something else']
+      },
+      high: {
+        question: "That's wonderful! What's been helping you feel this way?",
+        chips: ['Staying active','Good support from family','Keeping a routine','Managing my condition well','Connecting with others','Getting good sleep','Taking care of myself','Something else']
+      }
+    };
+
+    function updateMeter(val) {
+      const v = parseInt(val);
+      document.getElementById('meter-emoji').textContent = meterEmojis[v-1];
+      document.getElementById('meter-label').textContent = meterLabels[v-1];
+      document.getElementById('meter-number').textContent = v;
+      // Color the number
+      const colors = ['#E24B4A','#E24B4A','#E24B4A','#D85A30','#EF9F27','#1D9E75','#1D9E75','#1D9E75','#1D9E75','#1D9E75'];
+      document.getElementById('meter-number').style.color = colors[v-1];
+    }
+
+    function showFollowup() {
+      const val = parseInt(document.getElementById('mental-slider').value);
+      const range = val <= 3 ? 'low' : val <= 6 ? 'mid' : 'high';
+      const data = followupData[range];
+      document.getElementById('followup-question').textContent = data.question;
+      const chips = document.getElementById('followup-chips');
+      chips.innerHTML = '';
+      data.chips.forEach(c => {
+        const b = document.createElement('button');
+        b.className = 'followup-chip';
+        b.textContent = c;
+        b.onclick = () => b.classList.toggle('selected');
+        chips.appendChild(b);
+      });
+      document.getElementById('meter-followup').style.display = 'block';
+      document.getElementById('meter-cta').style.display = 'none';
+      document.getElementById('meter-followup').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
       });
     }
+
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();

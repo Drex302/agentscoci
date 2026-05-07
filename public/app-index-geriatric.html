@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Agent SCOCI</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Agent SCOCI" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #1D9E75;
+      --teal-dark: #0F6E56;
+      --teal-light: #E1F5EE;
+      --teal-mid: #5DCAA5;
+      --text: #1a1a1a;
+      --text-muted: #4a5568;
+      --border: rgba(0,0,0,0.12);
+      --bg: #ffffff;
+      --bg-soft: #f7faf9;
+      --bg-secondary: #edf2f0;
+      --radius: 20px;
+      --radius-lg: 28px;
+      --radius-xl: 36px;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --text: #f0faf6;
+        --text-muted: #a0bfb4;
+        --border: rgba(255,255,255,0.12);
+        --bg: #0d1f1a;
+        --bg-soft: #142b23;
+        --bg-secondary: #1a3329;
+        --teal-light: #0a2e22;
+      }
+    }
+    html, body { height: 100%; font-family: 'Nunito', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    body { display: flex; flex-direction: column; }
+
+    /* HEADER */
+    #app-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px; background: var(--bg);
+      border-bottom: 2px solid var(--teal-light);
+    }
+    .app-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-mark { width: 48px; height: 48px; border-radius: 0; background: transparent; display: flex; align-items: center; justify-content: center; }
+    .logo-mark img { width: 48px; height: 48px; object-fit: contain; }
+    .logo-text .logo-agent { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; display: block; }
+    .logo-text .logo-scoci { font-size: 20px; font-weight: 800; color: var(--text); line-height: 1; }
+    .home-btn { background: var(--bg-secondary); border: none; border-radius: var(--radius); padding: 10px 18px; font-size: 16px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-family: inherit; }
+
+    /* PROGRESS */
+    #progress-wrap { padding: 12px 20px 0; background: var(--bg); }
+    #progress-label { font-size: 15px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+    #progress-bar { height: 12px; background: var(--bg-secondary); border-radius: 10px; overflow: hidden; }
+    #progress-fill { height: 100%; background: var(--teal); border-radius: 10px; transition: width 0.4s ease; width: 0%; }
+
+    /* MAIN */
+    #main { flex: 1; overflow-y: auto; padding: 20px 20px 40px; max-width: 680px; margin: 0 auto; width: 100%; }
+
+    /* SCREENS */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* STEP HEADER */
+    .step-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--teal-light); color: var(--teal-dark); font-size: 14px; font-weight: 800; border-radius: 20px; padding: 5px 14px; margin-bottom: 12px; }
+    .ot-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+    .screen-title { font-size: 28px; font-weight: 800; color: var(--text); margin-bottom: 8px; line-height: 1.2; }
+    .screen-sub { font-size: 18px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; font-weight: 600; }
+
+    /* CARDS */
+    .card { background: var(--bg-soft); border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+    .card-title { font-size: 16px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+
+    /* FIELDS */
+    .field { margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
+    .field label { display: block; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+    .field input, .field select, .field textarea {
+      width: 100%; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 600;
+      background: var(--bg); color: var(--text);
+      border: 2.5px solid var(--border); border-radius: var(--radius);
+      padding: 14px 18px; outline: none; transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--teal); }
+    .field textarea { resize: vertical; min-height: 90px; }
+    .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%231D9E75' stroke-width='3'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 48px; }
+    .optional-tag { font-size: 13px; font-weight: 700; color: var(--teal); background: var(--teal-light); border-radius: 10px; padding: 2px 8px; margin-left: 6px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 500px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* TAG INPUT */
+    .tag-box { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border: 2.5px solid var(--border); border-radius: var(--radius); padding: 10px 14px; min-height: 56px; cursor: text; background: var(--bg); transition: border-color 0.2s; }
+    .tag-box:focus-within { border-color: var(--teal); }
+    .tag { background: var(--teal-light); border: 2px solid var(--teal-mid); border-radius: 20px; padding: 6px 14px; font-size: 16px; font-weight: 700; color: var(--teal-dark); display: flex; align-items: center; gap: 6px; }
+    .tag button { background: none; border: none; cursor: pointer; font-size: 18px; color: var(--teal-dark); padding: 0; line-height: 1; font-weight: 800; }
+    .tag-box input { border: none; outline: none; background: transparent; font-size: 18px; font-weight: 600; flex: 1; min-width: 120px; padding: 4px 0; color: var(--text); box-shadow: none; font-family: 'Nunito', sans-serif; }
+    .tag-hint { font-size: 14px; color: var(--text-muted); font-weight: 600; margin-top: 6px; }
+
+    /* BIG CHOICE BUTTONS (replaces dropdowns for key questions) */
+    .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .choice-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 480px) { .choice-grid, .choice-grid.three { grid-template-columns: 1fr 1fr; } }
+    .choice-btn { background: var(--bg); border: 2.5px solid var(--border); border-radius: var(--radius); padding: 14px 10px; font-size: 15px; font-weight: 700; color: var(--text); cursor: pointer; font-family: 'Nunito', sans-serif; text-align: center; transition: all 0.15s; line-height: 1.3; }
+    .choice-btn:hover { border-color: var(--teal-mid); background: var(--teal-light); }
+    .choice-btn.selected { background: var(--teal); border-color: var(--teal); color: white; }
+    .choice-btn .choice-icon { font-size: 24px; display: block; margin-bottom: 4px; }
+
+    /* RATING CARDS (ADL/IADL) */
+    .rating-legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: 700; color: var(--text-muted); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .rating-card { background: var(--bg); border: 2px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; }
+    .rating-card-label { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+    .rating-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .r-btn { border-radius: var(--radius); border: 2.5px solid var(--border); background: var(--bg-secondary); cursor: pointer; font-size: 12px; font-weight: 800; color: var(--text-muted); transition: all 0.12s; font-family: 'Nunito', sans-serif; padding: 10px 4px; text-align: center; line-height: 1.2; }
+    .r-btn:hover { transform: scale(1.03); }
+    .r-btn.r-i { background: #E1F5EE; border-color: #5DCAA5; color: #085041; }
+    .r-btn.r-d { background: #FAEEDA; border-color: #EF9F27; color: #633806; }
+    .r-btn.r-h { background: #FAECE7; border-color: #F0997B; color: #4A1B0C; }
+    .r-btn.r-u { background: #FCEBEB; border-color: #F09595; color: #501313; }
+
+    /* NAV BUTTONS */
+    .btn-row { display: flex; gap: 12px; justify-content: space-between; margin-top: 20px; }
+    .btn-back { font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 700; padding: 16px 28px; border-radius: var(--radius); cursor: pointer; border: 2.5px solid var(--border); background: var(--bg-secondary); color: var(--text-muted); transition: all 0.15s; flex: 1; }
+    .btn-back:hover { border-color: var(--teal); color: var(--teal); }
+    .btn-next { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 800; padding: 18px 32px; border-radius: var(--radius); cursor: pointer; border: none; background: var(--teal); color: white; transition: all 0.15s; flex: 2; box-shadow: 0 4px 16px rgba(29,158,117,0.35); }
+    .btn-next:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(29,158,117,0.4); }
+    .btn-next:active { transform: translateY(0); }
+    .btn-next:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-full { width: 100%; font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 800; padding: 22px; border-radius: var(--radius-lg); cursor: pointer; border: none; background: var(--teal); color: white; transition: all 0.15s; box-shadow: 0 6px 24px rgba(29,158,117,0.4); }
+    .btn-full:hover { background: var(--teal-dark); transform: translateY(-2px); }
+
+    /* WELCOME SCREEN */
+    .welcome-logo-wrap { display: flex; justify-content: center; padding: 24px 0 16px; }
+    .welcome-logo-big { width: 110px; height: 110px; border-radius: 0; background: transparent; display: flex; align-items: center; justify-content: center; }
+    .welcome-title { font-size: 34px; font-weight: 800; text-align: center; color: var(--text); margin-bottom: 8px; }
+    .welcome-sub { font-size: 19px; font-weight: 600; text-align: center; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px; padding: 0 8px; }
+    .acronym-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
+    .a-pill { border: none; border-radius: 20px; padding: 6px 18px; font-size: 15px; font-weight: 700; color: var(--teal-mid); background: transparent; letter-spacing: 0.03em; position: relative; }
+    .a-pill::after { content: '·'; position: absolute; right: -8px; color: var(--teal-mid); font-size: 18px; top: 50%; transform: translateY(-50%); }
+    .a-pill:last-child::after { display: none; }
+    .a-pill b { color: var(--teal); font-size: 17px; }
+    .welcome-steps { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .welcome-step { display: flex; align-items: center; gap: 14px; background: var(--bg-soft); border: 2px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+    .ws-num { min-width: 40px; height: 40px; border-radius: 50%; background: var(--teal); color: white; font-size: 18px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .ws-text { font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .ws-sub { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
+    .saved-banner { background: var(--teal-light); border: 2.5px solid var(--teal-mid); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .saved-banner p { font-size: 17px; font-weight: 700; color: var(--teal-dark); }
+    .saved-banner button { background: var(--teal); border: none; border-radius: var(--radius); padding: 10px 18px; font-size: 16px; font-weight: 800; color: white; cursor: pointer; font-family: 'Nunito', sans-serif; white-space: nowrap; }
+
+    /* CHAT SCREEN */
+    .profile-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--teal-light); border: 2px solid var(--teal-mid); border-radius: 20px; padding: 7px 16px; font-size: 15px; font-weight: 700; color: var(--teal-dark); margin-bottom: 14px; }
+    .mode-tabs { display: flex; gap: 8px; margin-bottom: 10px; }
+    .mode-tab { font-size: 15px; font-weight: 800; padding: 10px 18px; border-radius: 20px; border: 2.5px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.15s; }
+    .mode-tab.active { background: var(--teal-light); border-color: var(--teal-mid); color: var(--teal-dark); }
+    .mode-info { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; padding: 10px 14px; background: var(--bg-soft); border-radius: var(--radius); border: 2px solid var(--border); line-height: 1.55; }
+    #cloud-key-section { display: none; margin-bottom: 12px; }
+    #webllm-status { font-size: 15px; font-weight: 700; color: var(--teal); margin-bottom: 10px; padding: 10px 14px; background: var(--teal-light); border-radius: var(--radius); display: none; }
+    .chat-box { background: #f0f7f4; border: 2px solid #c8e6d8; border-radius: var(--radius-lg); padding: 16px; margin-bottom: 14px; }
+    #chat-messages { display: flex; flex-direction: column; gap: 14px; min-height: 260px; max-height: 50vh; overflow-y: auto; }
+    .msg { padding: 14px 18px; border-radius: var(--radius); font-size: 17px; font-weight: 600; line-height: 1.65; max-width: 88%; white-space: pre-wrap; }
+    .msg.ai { background: #ffffff; color: #1a1a1a; align-self: flex-start; border-radius: 6px var(--radius) var(--radius) var(--radius); border: 2px solid #d0e8df; box-shadow: var(--shadow); }
+    .msg.user { background: var(--teal); color: white; align-self: flex-end; border-radius: var(--radius) 6px var(--radius) var(--radius); }
+    .msg.err { background: #FCEBEB; color: #501313; border: 2px solid #F09595; align-self: flex-start; font-size: 15px; }
+    .msg.system { background: var(--teal-light); color: var(--teal-dark); align-self: flex-start; font-size: 14px; border: 2px solid var(--teal-mid); }
+    .dots span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); margin: 0 3px; animation: bop 1.2s infinite; }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bop { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+    .quick-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .chip { font-size: 15px; font-weight: 700; padding: 10px 16px; border-radius: 20px; cursor: pointer; border: 2.5px solid var(--teal-mid); background: var(--teal-light); color: var(--teal-dark); font-family: 'Nunito', sans-serif; transition: all 0.15s; }
+    .chip:hover { background: var(--teal); color: white; border-color: var(--teal); }
+    .chat-input-row { display: flex; gap: 10px; }
+    .chat-input-row input { flex: 1; font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 600; background: var(--bg); color: var(--text); border: 2.5px solid var(--border); border-radius: var(--radius); padding: 14px 18px; outline: none; transition: border-color 0.2s; }
+    .chat-input-row input:focus { border-color: var(--teal); }
+    .send-btn { background: var(--teal); color: white; border: none; border-radius: var(--radius); padding: 14px 22px; font-size: 18px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; box-shadow: 0 4px 14px rgba(29,158,117,0.35); transition: all 0.15s; }
+    .send-btn:hover { background: var(--teal-dark); }
+    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .reset-btn { background: var(--bg-secondary); border: 2px solid var(--border); border-radius: var(--radius); padding: 10px 16px; font-size: 15px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-family: 'Nunito', sans-serif; }
+
+    /* MENTAL HEALTH STEP */
+    .mh-scale-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; line-height: 1.4; }
+    .mh-scale-labels small { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+    .mh-slider-wrap { margin-bottom: 14px; }
+    .mh-slider { width: 100%; -webkit-appearance: none; appearance: none; height: 12px; border-radius: 10px; background: linear-gradient(to right, #E24B4A, #EF9F27 50%, #1D9E75); outline: none; cursor: pointer; }
+    .mh-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 36px; height: 36px; border-radius: 50%; background: white; border: 3px solid var(--teal); box-shadow: 0 2px 10px rgba(0,0,0,0.2); cursor: pointer; }
+    .mh-slider::-moz-range-thumb { width: 36px; height: 36px; border-radius: 50%; background: white; border: 3px solid var(--teal); box-shadow: 0 2px 10px rgba(0,0,0,0.2); cursor: pointer; }
+    .mh-value-display { display: flex; align-items: center; gap: 16px; background: var(--bg-secondary); border-radius: var(--radius); padding: 14px 18px; }
+    .mh-value-display span:first-child { font-size: 36px; }
+    .coping-item { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1.5px solid var(--border); }
+    .coping-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .coping-statement { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+    .coping-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .coping-btn { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; padding: 14px 8px; border-radius: var(--radius); border: 2.5px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; text-align: center; transition: all 0.15s; line-height: 1.2; }
+    .coping-btn:hover { border-color: var(--teal-mid); }
+    .coping-btn.sel-yes { background: #E1F5EE; border-color: #5DCAA5; color: #085041; }
+    .coping-btn.sel-sometimes { background: #FAEEDA; border-color: #EF9F27; color: #633806; }
+    .coping-btn.sel-no { background: #FCEBEB; border-color: #F09595; color: #501313; }
+
+    /* DAILY CHECK-IN */
+    .checkin-nav-btn { font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; padding: 10px 14px; border-radius: var(--radius); border: 2.5px solid var(--teal-mid); background: var(--teal-light); color: var(--teal-dark); cursor: pointer; transition: all 0.15s; }
+    .checkin-nav-btn:hover { background: var(--teal); color: white; border-color: var(--teal); }
+
+    /* REPORT SCREEN */
+    .report-preview-wrap { background: white; border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.25rem; color: #1a1a1a; font-family: 'Nunito', sans-serif; }
+    .report-header { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 2px solid #E1F5EE; margin-bottom: 16px; }
+    .report-header img { width: 52px; height: 52px; object-fit: contain; }
+    .report-header-text h2 { font-size: 20px; font-weight: 800; color: #1a1a1a; margin-bottom: 2px; }
+    .report-header-text p { font-size: 13px; color: #6b7280; font-weight: 600; }
+    .report-section { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f0f0f0; }
+    .report-section:last-child { border-bottom: none; margin-bottom: 0; }
+    .report-section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1D9E75; margin-bottom: 10px; }
+    .report-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; font-size: 14px; }
+    .report-row-label { font-weight: 700; color: #4a5568; flex: 1; }
+    .report-row-val { font-weight: 600; color: #1a1a1a; text-align: right; flex: 1; }
+    .report-adl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .report-adl-item { font-size: 13px; font-weight: 600; padding: 5px 10px; border-radius: 8px; }
+    .adl-ok { background: #E1F5EE; color: #085041; }
+    .adl-hard { background: #FAEEDA; color: #633806; }
+    .adl-help { background: #FCEBEB; color: #501313; }
+    .report-mh-bar { height: 12px; border-radius: 6px; background: linear-gradient(to right, #E24B4A, #EF9F27 50%, #1D9E75); position: relative; margin: 8px 0; }
+    .report-mh-marker { position: absolute; top: -4px; width: 20px; height: 20px; border-radius: 50%; background: white; border: 3px solid #1D9E75; transform: translateX(-50%); }
+    .report-trend-mini { display: flex; gap: 4px; align-items: flex-end; height: 50px; margin-top: 8px; }
+    .report-trend-bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 2px; }
+    .report-trend-bar { width: 100%; border-radius: 4px 4px 0 0; min-height: 4px; }
+    .report-trend-label { font-size: 9px; color: #9ca3af; font-weight: 600; }
+    .report-btn-group { margin-bottom: 1rem; }
+    .toggle-switch { position: relative; display: inline-block; width: 52px; height: 28px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-secondary); border-radius: 28px; transition: 0.3s; border: 2px solid var(--border); }
+    .toggle-slider:before { position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+    input:checked + .toggle-slider { background: var(--teal); border-color: var(--teal); }
+    input:checked + .toggle-slider:before { transform: translateX(24px); }
+    .weekly-prompt-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .weekly-prompt-card { background: var(--bg); border-radius: var(--radius-xl); padding: 2rem; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .checkin-q-label { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+    .checkin-scale-labels { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
+    .checkin-slider-wrap { margin-bottom: 12px; }
+    .checkin-slider { width: 100%; -webkit-appearance: none; appearance: none; height: 12px; border-radius: 10px; outline: none; cursor: pointer; }
+    #ci-energy { background: linear-gradient(to right, #E24B4A, #EF9F27 50%, #1D9E75); }
+    #ci-pain { background: linear-gradient(to right, #1D9E75, #EF9F27 50%, #E24B4A); }
+    .checkin-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 34px; height: 34px; border-radius: 50%; background: white; border: 3px solid var(--teal); box-shadow: 0 2px 8px rgba(0,0,0,0.2); cursor: pointer; }
+    .checkin-slider::-moz-range-thumb { width: 34px; height: 34px; border-radius: 50%; background: white; border: 3px solid var(--teal); cursor: pointer; }
+    .checkin-val-row { display: flex; align-items: center; gap: 12px; background: var(--bg-secondary); border-radius: var(--radius); padding: 12px 16px; }
+    .checkin-val-row span:first-child { font-size: 32px; }
+    .checkin-adl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .checkin-adl-btn { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; padding: 16px 10px; border-radius: var(--radius); border: 2.5px solid var(--border); background: var(--bg); color: var(--text-muted); cursor: pointer; text-align: center; line-height: 1.5; transition: all 0.15s; }
+    .checkin-adl-btn:hover { border-color: var(--teal-mid); background: var(--teal-light); }
+    .checkin-adl-btn.selected { background: var(--teal); border-color: var(--teal); color: white; }
+    .checkin-saved-msg { background: var(--teal-light); border: 2px solid var(--teal-mid); border-radius: var(--radius); padding: 16px 20px; font-size: 17px; font-weight: 700; color: var(--teal-dark); text-align: center; margin-top: 1rem; }
+    .trend-chart-wrap { background: var(--bg); border: 2px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+    .trend-legend { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); }
+    .trend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+    .trend-adl-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .trend-adl-chip { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+    .trend-adl-great { background: #E1F5EE; color: #085041; }
+    .trend-adl-okay { background: #FAEEDA; color: #633806; }
+    .trend-adl-hard { background: #FAECE7; color: #4A1B0C; }
+    .trend-adl-help { background: #FCEBEB; color: #501313; }
+  </style>
+</head>
+<body>
+
+<div id="app-header">
+  <a href="/" class="app-logo">
+    <div class="logo-mark">
+      <img src="/icons/icon-192.png" alt="Agent SCOCI logo" />
+    </div>
+    <div class="logo-text">
+      <span class="logo-agent">Agent</span>
+      <span class="logo-scoci">SCOCI</span>
+    </div>
+  </a>
+  <button class="home-btn" onclick="window.location.href='/'">← Home</button>
+</div>
+
+<div id="progress-wrap" style="display:none">
+  <div id="progress-label">Step 1 of 7</div>
+  <div id="progress-bar"><div id="progress-fill"></div></div>
+</div>
+
+<div id="main">
+
+  <!-- WELCOME -->
+  <div class="screen active" id="screen-welcome">
+    <div class="welcome-logo-wrap">
+      <div class="welcome-logo-big">
+        <img src="/icons/icon-192.png" alt="Agent SCOCI" style="width:110px;height:110px;object-fit:contain;" />
+      </div>
+    </div>
+    <div class="welcome-title">Hello! I'm Agent SCOCI</div>
+    <div class="welcome-sub">Your personal health companion — here to help you manage your condition and live life on your terms.</div>
+    <div class="acronym-row">
+      <div class="a-pill"><b>S</b>elf</div>
+      <div class="a-pill"><b>C</b>are</div>
+      <div class="a-pill"><b>O</b>f</div>
+      <div class="a-pill"><b>C</b>hronic</div>
+      <div class="a-pill"><b>I</b>llness</div>
+    </div>
+    <div id="saved-banner" class="saved-banner" style="display:none">
+      <p>👋 Welcome back! Your profile is saved.</p>
+      <button onclick="loadSavedAndChat()">Continue →</button>
+    </div>
+    <div class="welcome-steps">
+      <div class="welcome-step">
+        <div class="ws-num">1</div>
+        <div><div class="ws-text">Tell us about your health</div><div class="ws-sub">Your condition, medications, and daily routine</div></div>
+      </div>
+      <div class="welcome-step">
+        <div class="ws-num">2</div>
+        <div><div class="ws-text">Rate your daily activities</div><div class="ws-sub">What's easy, what's hard, what you need help with</div></div>
+      </div>
+      <div class="welcome-step">
+        <div class="ws-num">3</div>
+        <div><div class="ws-text">Meet your companion</div><div class="ws-sub">Get personalized guidance every single day</div></div>
+      </div>
+    </div>
+    <button class="btn-full" onclick="startIntake()">Let's Get Started →</button>
+    <p style="text-align:center;font-size:14px;font-weight:600;color:var(--text-muted);margin-top:14px;">Your information stays on your device. Private and secure.</p>
+  </div>
+
+  <!-- STEP 1: DIAGNOSIS -->
+  <div class="screen" id="screen-s1">
+    <div class="step-badge"><div class="ot-dot"></div>Step 1 of 7</div>
+    <div class="screen-title">What health condition are you managing?</div>
+    <div class="screen-sub">Tell us about your diagnosis so we can give you the right support.</div>
+    <div class="card">
+      <div class="field">
+        <label>My main health condition is:</label>
+        <input type="text" id="f-diagnosis" placeholder="e.g. Diabetes, Heart Disease, Arthritis…" />
+      </div>
+      <div class="field">
+        <label>How long have you had this condition?</label>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="selectChoice(this,'duration','Less than 1 year')"><span class="choice-icon">🌱</span>Less than 1 year</button>
+          <button class="choice-btn" onclick="selectChoice(this,'duration','1–3 years')"><span class="choice-icon">📅</span>1 – 3 years</button>
+          <button class="choice-btn" onclick="selectChoice(this,'duration','3–5 years')"><span class="choice-icon">🗓️</span>3 – 5 years</button>
+          <button class="choice-btn" onclick="selectChoice(this,'duration','5–10 years')"><span class="choice-icon">📆</span>5 – 10 years</button>
+          <button class="choice-btn" onclick="selectChoice(this,'duration','More than 10 years')"><span class="choice-icon">⭐</span>10+ years</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Any other health conditions? <span class="optional-tag">Optional</span></label>
+        <div class="tag-box" id="tb-comorbidities"><input id="ti-comorbidities" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: High Blood Pressure, Depression, Osteoporosis</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('welcome')">← Back</button>
+      <button class="btn-next" onclick="goTo('s2')">Next Step →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: MEDICATIONS -->
+  <div class="screen" id="screen-s2">
+    <div class="step-badge"><div class="ot-dot"></div>Step 2 of 7</div>
+    <div class="screen-title">What medications do you take?</div>
+    <div class="screen-sub">This helps your companion understand your treatment and watch out for important side effects.</div>
+    <div class="card">
+      <div class="field">
+        <label>My medications (name and dose):</label>
+        <div class="tag-box" id="tb-meds"><input id="ti-meds" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Example: Metformin 500mg, Lisinopril 10mg</div>
+      </div>
+      <div class="field">
+        <label>Any problems with your medications? <span class="optional-tag">Optional</span></label>
+        <textarea id="f-med-concerns" placeholder="e.g. I forget my evening pill, the morning dose makes me nauseous…"></textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s1')">← Back</button>
+      <button class="btn-next" onclick="goTo('s3')">Next Step →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: ADLs -->
+  <div class="screen" id="screen-s3">
+    <div class="step-badge"><div class="ot-dot"></div>Step 3 of 7 · Daily Activities</div>
+    <div class="screen-title">How do you manage your daily self-care?</div>
+    <div class="screen-sub">Tap how you feel about each activity. There are no wrong answers — be honest so we can help.</div>
+    <div class="rating-legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>I do it fine</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>A little hard</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#D85A30"></span>I need help</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>Can't do it</span>
+    </div>
+    <div id="adl-table"></div>
+    <div class="card" style="margin-top:16px;">
+      <div class="field" style="margin-bottom:0">
+        <label>Which one is hardest for you right now?</label>
+        <textarea id="f-adl-concern" placeholder="e.g. Getting dressed takes a long time because of pain in my hands…"></textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s2')">← Back</button>
+      <button class="btn-next" onclick="goTo('s4')">Next Step →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: IADLs -->
+  <div class="screen" id="screen-s4">
+    <div class="step-badge"><div class="ot-dot"></div>Step 4 of 7 · Home & Community</div>
+    <div class="screen-title">How do you manage at home and in the community?</div>
+    <div class="screen-sub">These are bigger tasks like cooking, driving, and managing your home. Tap how each one feels for you.</div>
+    <div class="rating-legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#1D9E75"></span>I do it fine</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#EF9F27"></span>A little hard</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#D85A30"></span>I need help</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#E24B4A"></span>Can't do it</span>
+    </div>
+    <div id="iadl-table"></div>
+    <div class="card" style="margin-top:16px;">
+      <div class="field" style="margin-bottom:0">
+        <label>Which one matters most to keep doing independently?</label>
+        <textarea id="f-iadl-priority" placeholder="e.g. Driving — without it I can't get to my appointments…"></textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s3')">← Back</button>
+      <button class="btn-next" onclick="goTo('s5')">Next Step →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: OCCUPATIONAL PROFILE -->
+  <div class="screen" id="screen-s5">
+    <div class="step-badge"><div class="ot-dot"></div>Step 5 of 7 · Your Life & Roles</div>
+    <div class="screen-title">What matters most in your daily life?</div>
+    <div class="screen-sub">Your roles and activities are at the heart of your care plan. Tell us what gives your days meaning.</div>
+    <div class="card">
+      <div class="field">
+        <label>Activities and roles that matter most to me:</label>
+        <div class="tag-box" id="tb-occupations"><input id="ti-occupations" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: Gardening, cooking for family, attending church, volunteering</div>
+      </div>
+      <div class="field">
+        <label>Which one has my condition made hardest?</label>
+        <textarea id="f-disrupted" placeholder="e.g. I used to walk my grandchildren to school but fatigue stops me now…"></textarea>
+      </div>
+      <div class="field">
+        <label>My main role at home:</label>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="selectChoice(this,'role','Independent (living alone)')"><span class="choice-icon">🏠</span>I live alone</button>
+          <button class="choice-btn" onclick="selectChoice(this,'role','Partner / spouse')"><span class="choice-icon">👫</span>Partner / Spouse</button>
+          <button class="choice-btn" onclick="selectChoice(this,'role','Parent of young children')"><span class="choice-icon">👶</span>Parent of young kids</button>
+          <button class="choice-btn" onclick="selectChoice(this,'role','Parent of adult children')"><span class="choice-icon">👨‍👩‍👧</span>Parent of adults</button>
+          <button class="choice-btn" onclick="selectChoice(this,'role','Caregiver for elderly parent')"><span class="choice-icon">🤝</span>Caring for a parent</button>
+          <button class="choice-btn" onclick="selectChoice(this,'role','Other caregiver role')"><span class="choice-icon">💛</span>Other caregiver</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="field">
+        <label>Hobbies or activities I enjoy <span class="optional-tag">Optional</span></label>
+        <div class="tag-box" id="tb-leisure"><input id="ti-leisure" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: Reading, swimming, bingo, crafts, watching sports</div>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>How has my condition affected my social life?</label>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="selectChoice(this,'social','Not affected')"><span class="choice-icon">😊</span>Not affected</button>
+          <button class="choice-btn" onclick="selectChoice(this,'social','Slightly reduced')"><span class="choice-icon">🙂</span>A little less</button>
+          <button class="choice-btn" onclick="selectChoice(this,'social','Moderately reduced')"><span class="choice-icon">😐</span>Quite a bit less</button>
+          <button class="choice-btn" onclick="selectChoice(this,'social','Significantly reduced')"><span class="choice-icon">😔</span>Rarely go out</button>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s4')">← Back</button>
+      <button class="btn-next" onclick="goTo('s6')">Next Step →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6: ROUTINE & ENVIRONMENT -->
+  <div class="screen" id="screen-s6">
+    <div class="step-badge"><div class="ot-dot"></div>Step 6 of 7 · Your Routine & Home</div>
+    <div class="screen-title">Tell us about your daily routine and home.</div>
+    <div class="screen-sub">Your environment and daily schedule shape what self-care strategies will actually work for you.</div>
+    <div class="card">
+      <div class="card-title">Your Daily Routine</div>
+      <div class="field">
+        <label>When do you usually wake up and go to bed?</label>
+        <input type="text" id="f-sleep" placeholder="e.g. I wake up at 7am and go to bed by 10pm" />
+      </div>
+      <div class="field">
+        <label>How active are you most days?</label>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="selectChoice(this,'exercise','None currently')"><span class="choice-icon">🛋️</span>Not very active</button>
+          <button class="choice-btn" onclick="selectChoice(this,'exercise','Light (walking, stretching)')"><span class="choice-icon">🚶</span>Light walks or stretching</button>
+          <button class="choice-btn" onclick="selectChoice(this,'exercise','Moderate (30+ min, 3×/week)')"><span class="choice-icon">🏃</span>Regular exercise</button>
+          <button class="choice-btn" onclick="selectChoice(this,'exercise','Active (daily exercise)')"><span class="choice-icon">💪</span>Very active daily</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Any special diet? <span class="optional-tag">Optional</span></label>
+        <input type="text" id="f-diet" placeholder="e.g. Low salt, diabetic diet, no red meat…" />
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Your Home</div>
+      <div class="field">
+        <label>What type of home do you live in?</label>
+        <div class="choice-grid">
+          <button class="choice-btn" onclick="selectChoice(this,'living','House (single story)')"><span class="choice-icon">🏡</span>Single story house</button>
+          <button class="choice-btn" onclick="selectChoice(this,'living','House (multi-story)')"><span class="choice-icon">🏠</span>Multi-story house</button>
+          <button class="choice-btn" onclick="selectChoice(this,'living','Apartment / condo')"><span class="choice-icon">🏢</span>Apartment or condo</button>
+          <button class="choice-btn" onclick="selectChoice(this,'living','Assisted living / senior community')"><span class="choice-icon">🏥</span>Senior community</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Any equipment that helps you at home? <span class="optional-tag">Optional</span></label>
+        <div class="tag-box" id="tb-equipment"><input id="ti-equipment" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: Grab bars, walker, raised toilet seat, shower chair</div>
+      </div>
+      <div class="field">
+        <label>Biggest barrier to taking care of yourself at home:</label>
+        <textarea id="f-env-barrier" placeholder="e.g. The stairs make it hard to get to my bedroom for rest during the day…"></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Your Support Network</div>
+      <div class="field">
+        <label>Who helps you with your health?</label>
+        <div class="tag-box" id="tb-support"><input id="ti-support" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: My daughter, my husband, my neighbor Linda</div>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Does your home role make self-care harder? <span class="optional-tag">Optional</span></label>
+        <textarea id="f-challenge" placeholder="e.g. I'm always looking after everyone else and forget to take my own medications…"></textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s5')">← Back</button>
+      <button class="btn-next" onclick="goTo('s7')">Next Step →</button>
+    </div>
+  </div>
+
+  <!-- STEP 7: CARE TEAM -->
+  <div class="screen" id="screen-s7">
+    <div class="step-badge"><div class="ot-dot"></div>Step 7 of 8 · Your Care Team</div>
+    <div class="screen-title">Who is on your health care team?</div>
+    <div class="screen-sub">This is optional but helps your companion support the goals your doctors and therapists have set for you.</div>
+    <div class="card">
+      <div class="two-col">
+        <div class="field">
+          <label>My main doctor:</label>
+          <input type="text" id="f-pcp" placeholder="Doctor's name or clinic" />
+        </div>
+        <div class="field">
+          <label>My occupational therapist:</label>
+          <input type="text" id="f-ot" placeholder="OT name or clinic" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Specialists I see: <span class="optional-tag">Optional</span></label>
+        <div class="tag-box" id="tb-specialists"><input id="ti-specialists" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: Heart doctor, lung doctor, bone doctor</div>
+      </div>
+      <div class="field">
+        <label>Other team members: <span class="optional-tag">Optional</span></label>
+        <div class="tag-box" id="tb-other-team"><input id="ti-other-team" placeholder="Type one and press Enter…" /></div>
+        <div class="tag-hint">💡 Examples: Dietitian, physical therapist, social worker, home health aide</div>
+      </div>
+      <div class="field">
+        <label>Goals I am working on with my OT: <span class="optional-tag">Optional</span></label>
+        <textarea id="f-ot-goals" placeholder="e.g. Learning energy conservation techniques, getting back to cooking my own meals…"></textarea>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>My next appointment: <span class="optional-tag">Optional</span></label>
+        <input type="text" id="f-next-appt" placeholder="e.g. OT follow-up in 2 weeks, cardiologist next month" />
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s6')">← Back</button>
+      <button class="btn-next" style="font-size:18px;" onclick="goTo('s8')">Next Step →</button>
+    </div>
+  </div>
+
+  <!-- STEP 8: MENTAL HEALTH -->
+  <div class="screen" id="screen-s8">
+    <div class="step-badge"><div class="ot-dot"></div>Step 8 of 8 · Mental Health</div>
+    <div class="screen-title">How are you doing mentally?</div>
+    <div class="screen-sub">Your mental health matters just as much as your physical health. Be honest — there are no wrong answers here.</div>
+
+    <!-- METER 1: OVERALL MENTAL HEALTH -->
+    <div class="card">
+      <div class="card-title">Overall Mental Health</div>
+      <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:16px;">In general, how would you rate your mental health right now?</div>
+      <div class="mh-scale-labels">
+        <span>1<br><small>Struggling<br>deeply</small></span>
+        <span style="text-align:center;">5<br><small>Getting<br>by</small></span>
+        <span style="text-align:right;">10<br><small>Feeling<br>fantastic</small></span>
+      </div>
+      <div class="mh-slider-wrap">
+        <input type="range" class="mh-slider" id="mh-overall-slider" min="1" max="10" value="5" step="1" oninput="updateOverallMeter(this.value)" />
+      </div>
+      <div class="mh-value-display" id="mh-overall-display">
+        <span id="mh-overall-emoji">🙂</span>
+        <div>
+          <div id="mh-overall-num" style="font-size:28px;font-weight:800;color:var(--teal);">5</div>
+          <div id="mh-overall-label" style="font-size:14px;font-weight:600;color:var(--text-muted);">I am getting by</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METER 2: COPING WITH CHRONIC ILLNESS -->
+    <div class="card">
+      <div class="card-title">Coping with Your Chronic Illness</div>
+      <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;">How are you feeling about your condition right now?</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text-muted);margin-bottom:20px;">Tap the answer that feels most true for you today. There are no right or wrong answers.</div>
+
+      <div id="coping-statements"></div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;">Is there anything else you want Agent SCOCI to know about how you are feeling? <span class="optional-tag">Optional</span></div>
+      <textarea id="f-mh-notes" placeholder="e.g. I've been feeling really isolated lately, or I'm anxious about my upcoming appointment…" style="min-height:80px;"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goTo('s7')">← Back</button>
+      <button class="btn-next" style="font-size:18px;" onclick="finishIntake()">Meet Agent SCOCI →</button>
+    </div>
+  </div>
+
+  <!-- CHAT SCREEN -->
+  <div class="screen" id="screen-chat">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+      <div class="profile-pill" id="chat-profile-pill">Loading…</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="checkin-nav-btn" onclick="goToCheckin()">📋 Daily Check-In</button>
+        <button class="checkin-nav-btn" onclick="goTo('report')" style="background:var(--bg-secondary);border-color:var(--border);color:var(--text-muted);">📄 My Report</button>
+        <button class="reset-btn" onclick="confirmReset()">Start Over</button>
+      </div>
+    </div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tab-local" onclick="setMode('local')">On-Device AI 🔒</button>
+      <button class="mode-tab" id="tab-cloud" onclick="setMode('cloud')">Cloud AI ☁️</button>
+    </div>
+    <div class="mode-info" id="mode-info">On-device mode: AI runs on your device. Your information never leaves. First use downloads the AI model (~2GB).</div>
+    <div id="cloud-key-section">
+      <div class="card" style="margin-bottom:0;padding:14px 16px;">
+        <div class="field" style="margin-bottom:0;">
+          <label style="font-size:16px;">Your Anthropic API Key <span class="optional-tag">Saved on your device only</span></label>
+          <div style="display:flex;gap:8px;">
+            <input type="password" id="f-api-key" placeholder="sk-ant-…" style="flex:1;font-size:16px;" />
+            <button class="send-btn" onclick="saveApiKey()" style="white-space:nowrap;">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="webllm-status"></div>
+    <div class="chat-box">
+      <div id="chat-messages"></div>
+    </div>
+    <div class="quick-chips" id="quick-chips"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Type your question here…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}" />
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <!-- REPORT SCREEN -->
+  <div class="screen" id="screen-report">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <div class="step-badge"><div class="ot-dot"></div>My Health Report</div>
+        <div class="screen-title" style="margin-bottom:0;">Your personal health summary</div>
+      </div>
+      <button class="reset-btn" onclick="goTo('chat')">← Back to chat</button>
+    </div>
+    <div class="screen-sub">Everything below is saved only on your device. You choose what to share and with whom.</div>
+
+    <!-- REPORT PREVIEW -->
+    <div id="report-preview" class="report-preview-wrap"></div>
+
+    <!-- EXPORT BUTTONS -->
+    <div class="report-btn-group">
+      <button class="btn-full" onclick="generateAndDownloadReport()" style="margin-bottom:12px;font-size:18px;">
+        ⬇️ Download My Report (PDF)
+      </button>
+      <button class="btn-full" onclick="printReport()" style="background:var(--bg-secondary);color:var(--text);border:2px solid var(--border);box-shadow:none;font-size:16px;margin-bottom:12px;">
+        🖨️ Print My Report
+      </button>
+      <p style="text-align:center;font-size:13px;font-weight:600;color:var(--text-muted);">
+        Share this report with your OT, doctor, or care team at your next appointment.
+      </p>
+    </div>
+
+    <!-- WEEKLY PROMPT SETTINGS -->
+    <div class="card" style="margin-top:1.5rem;">
+      <div class="card-title">Weekly Report Reminder</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px;">Remind me every Sunday</div>
+          <div style="font-size:13px;font-weight:600;color:var(--text-muted);">A prompt will appear when you open the app each Sunday morning</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="weekly-reminder-toggle" onchange="saveReminderPref(this.checked)" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEKLY REPORT PROMPT (overlay) -->
+  <div id="weekly-prompt" class="weekly-prompt-overlay" style="display:none;">
+    <div class="weekly-prompt-card">
+      <div style="font-size:40px;margin-bottom:12px;">📊</div>
+      <div style="font-size:22px;font-weight:800;color:var(--text);margin-bottom:8px;">Weekly report ready</div>
+      <div style="font-size:16px;font-weight:600;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6;">It's Sunday! Your weekly health summary is ready to download and share with your care team.</div>
+      <button class="btn-full" onclick="dismissWeeklyPrompt(true)" style="margin-bottom:10px;font-size:17px;">⬇️ Download my report</button>
+      <button class="btn-back" onclick="dismissWeeklyPrompt(false)" style="width:100%;text-align:center;">Maybe later</button>
+    </div>
+  </div>
+  <div class="screen" id="screen-checkin">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+      <div>
+        <div class="step-badge"><div class="ot-dot"></div>Daily Check-In</div>
+        <div class="screen-title" style="margin-bottom:0;">How are you today?</div>
+      </div>
+      <button class="reset-btn" onclick="goTo('chat')">← Back to chat</button>
+    </div>
+    <div class="screen-sub">Three quick questions. Honest answers help Agent SCOCI support you better every day.</div>
+
+    <!-- Q1: Energy -->
+    <div class="card">
+      <div class="checkin-q-label">⚡ Energy level today</div>
+      <div class="checkin-scale-labels"><span>1 — Exhausted</span><span>10 — Full of energy</span></div>
+      <div class="checkin-slider-wrap">
+        <input type="range" class="checkin-slider" id="ci-energy" min="1" max="10" value="5" step="1" oninput="updateCheckinSlider('energy',this.value)" />
+      </div>
+      <div class="checkin-val-row">
+        <span id="ci-energy-emoji">🙂</span>
+        <span id="ci-energy-num" style="font-size:26px;font-weight:800;color:var(--teal);">5</span>
+        <span id="ci-energy-label" style="font-size:14px;font-weight:600;color:var(--text-muted);">Moderate energy</span>
+      </div>
+    </div>
+
+    <!-- Q2: Pain -->
+    <div class="card">
+      <div class="checkin-q-label">🩹 Pain or discomfort level today</div>
+      <div class="checkin-scale-labels"><span>1 — No pain</span><span>10 — Severe pain</span></div>
+      <div class="checkin-slider-wrap">
+        <input type="range" class="checkin-slider" id="ci-pain" min="1" max="10" value="3" step="1" oninput="updateCheckinSlider('pain',this.value)" />
+      </div>
+      <div class="checkin-val-row">
+        <span id="ci-pain-emoji">😊</span>
+        <span id="ci-pain-num" style="font-size:26px;font-weight:800;color:#1D9E75;">3</span>
+        <span id="ci-pain-label" style="font-size:14px;font-weight:600;color:var(--text-muted);">Mild discomfort</span>
+      </div>
+    </div>
+
+    <!-- Q3: ADL Performance -->
+    <div class="card">
+      <div class="checkin-q-label">🏠 How did you manage your daily activities today?</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text-muted);margin-bottom:12px;">Think about getting dressed, moving around, meals, and home tasks.</div>
+      <div class="checkin-adl-grid" id="ci-adl-grid">
+        <button class="checkin-adl-btn" onclick="selectCheckinADL(this,'great')">😊<br>Managed great</button>
+        <button class="checkin-adl-btn" onclick="selectCheckinADL(this,'okay')">🙂<br>Got through it</button>
+        <button class="checkin-adl-btn" onclick="selectCheckinADL(this,'hard')">😓<br>Really struggled</button>
+        <button class="checkin-adl-btn" onclick="selectCheckinADL(this,'help')">🙋<br>Needed extra help</button>
+      </div>
+    </div>
+
+    <!-- Optional note -->
+    <div class="card">
+      <div class="checkin-q-label">💬 Anything else to note? <span class="optional-tag">Optional</span></div>
+      <textarea id="ci-note" placeholder="e.g. Woke up stiff today, skipped my walk, felt anxious about my appointment…" style="min-height:70px;"></textarea>
+    </div>
+
+    <button class="btn-full" onclick="saveCheckin()" style="margin-bottom:1.5rem;">Save today's check-in ✓</button>
+
+    <!-- WEEKLY TREND -->
+    <div id="checkin-trend-wrap" style="display:none;">
+      <div class="card-title" style="margin-bottom:12px;">📊 Your last 7 days</div>
+      <div class="trend-chart-wrap">
+        <div class="trend-legend">
+          <span class="trend-dot" style="background:#1D9E75;"></span><span>Energy</span>
+          <span class="trend-dot" style="background:#E24B4A;"></span><span>Pain</span>
+        </div>
+        <canvas id="trend-canvas" width="600" height="180" style="width:100%;height:180px;"></canvas>
+      </div>
+      <div class="trend-adl-row" id="trend-adl-row"></div>
+      <div style="text-align:center;margin-top:1rem;">
+        <button class="btn-back" style="font-size:15px;padding:10px 20px;" onclick="goTo('chat')">Back to Agent SCOCI</button>
+      </div>
+    </div>
+
+    <div id="checkin-saved-msg" style="display:none;" class="checkin-saved-msg">
+      ✅ Check-in saved! Great job showing up for yourself today.
+    </div>
+  </div>
+
+</div>
+
+<script>
+const MH_EMOJIS = ['😢','😢','😔','😟','😐','🙂','😊','😄','😁','🌟'];
+const MH_LABELS = [
+  'I am really struggling right now',
+  'Things feel very heavy today',
+  'I am having a hard time',
+  'It has been a tough day',
+  'I am getting by',
+  'I am doing okay',
+  'I am feeling pretty good',
+  'I am doing well today',
+  'I am feeling great',
+  'I am feeling fantastic!'
+];
+const MH_COLORS = ['#E24B4A','#E24B4A','#E24B4A','#D85A30','#EF9F27','#1D9E75','#1D9E75','#0F6E56','#0F6E56','#085041'];
+
+const COPING_STATEMENTS = [
+  { id: 'acceptance',  text: '💙 I have come to terms with having this condition' },
+  { id: 'grief',       text: '💔 I find myself mourning the life I had before my diagnosis' },
+  { id: 'control',     text: '💪 I feel like I have some control over how my illness affects my daily life' },
+  { id: 'burden',      text: '😔 My condition makes me feel like a burden to the people I love' },
+  { id: 'hope',        text: '🌱 I believe I can still live a meaningful life with this condition' },
+  { id: 'isolation',   text: '🤝 I feel like people around me truly understand what I am going through' }
+];
+
+const copingAnswers = {};
+let overallMHScore = 5;
+
+function buildCopingStatements() {
+  const container = document.getElementById('coping-statements');
+  if (!container) return;
+  container.innerHTML = '';
+  COPING_STATEMENTS.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'coping-item';
+    div.innerHTML = `
+      <div class="coping-statement">${item.text}</div>
+      <div class="coping-btns">
+        <button class="coping-btn" onclick="selectCoping(this,'${item.id}','Yes')">✅ Yes</button>
+        <button class="coping-btn" onclick="selectCoping(this,'${item.id}','Sometimes')">🤔 Sometimes</button>
+        <button class="coping-btn" onclick="selectCoping(this,'${item.id}','No')">❌ Not really</button>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function selectCoping(btn, id, val) {
+  const btns = btn.closest('.coping-btns').querySelectorAll('.coping-btn');
+  btns.forEach(b => b.className = 'coping-btn');
+  const cls = val === 'Yes' ? 'sel-yes' : val === 'Sometimes' ? 'sel-sometimes' : 'sel-no';
+  btn.className = 'coping-btn ' + cls;
+  copingAnswers[id] = val;
+}
+
+function updateOverallMeter(val) {
+  const v = parseInt(val);
+  overallMHScore = v;
+  document.getElementById('mh-overall-emoji').textContent = MH_EMOJIS[v-1];
+  document.getElementById('mh-overall-num').textContent = v;
+  document.getElementById('mh-overall-num').style.color = MH_COLORS[v-1];
+  document.getElementById('mh-overall-label').textContent = MH_LABELS[v-1];
+}
+
+const ADL_ITEMS = [
+  {label:'Bathing or showering', icon:'🚿'},
+  {label:'Getting dressed', icon:'👗'},
+  {label:'Grooming and hygiene', icon:'🪥'},
+  {label:'Using the toilet', icon:'🚽'},
+  {label:'Moving around the house', icon:'🚶'},
+  {label:'Eating meals', icon:'🍽️'},
+  {label:'Getting in and out of chairs or bed', icon:'🛏️'},
+  {label:'Sleeping and resting', icon:'😴'}
+];
+const IADL_ITEMS = [
+  {label:'Cooking or preparing meals', icon:'🍳'},
+  {label:'Cleaning and housework', icon:'🧹'},
+  {label:'Doing laundry', icon:'👕'},
+  {label:'Managing medications', icon:'💊'},
+  {label:'Handling money and bills', icon:'💰'},
+  {label:'Shopping for groceries', icon:'🛒'},
+  {label:'Driving or getting around town', icon:'🚗'},
+  {label:'Caring for others or pets', icon:'🐾'},
+  {label:'Managing health appointments', icon:'📋'},
+  {label:'Using a phone or computer', icon:'📱'}
+];
+
+const tagData = {comorbidities:[],meds:[],occupations:[],leisure:[],equipment:[],support:[],specialists:[],'other-team':[]};
+const adlScores = {}, iadlScores = {};
+const choiceValues = {};
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+let profile = {}, chatHistory = [], aiMode = isSafari ? 'cloud' : 'local', isLoading = false;
+let webllmEngine = null, webllmLoading = false, db;
+
+// IndexedDB
+function openDB() {
+  return new Promise((res,rej) => {
+    const req = indexedDB.open('scoci-db',1);
+    req.onupgradeneeded = e => { const d=e.target.result; if(!d.objectStoreNames.contains('data')) d.createObjectStore('data'); };
+    req.onsuccess = e => { db=e.target.result; res(db); };
+    req.onerror = () => rej(req.error);
+  });
+}
+function dbSet(k,v) { return new Promise((res,rej) => { const tx=db.transaction('data','readwrite'); tx.objectStore('data').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }
+function dbGet(k) { return new Promise((res,rej) => { const tx=db.transaction('data','readonly'); const req=tx.objectStore('data').get(k); req.onsuccess=()=>res(req.result); req.onerror=()=>rej(req.error); }); }
+
+async function init() {
+  await openDB();
+  buildRatingCards(ADL_ITEMS, adlScores, 'adl-table');
+  buildRatingCards(IADL_ITEMS, iadlScores, 'iadl-table');
+  Object.keys(tagData).forEach(initTag);
+  const saved = await dbGet('profile');
+  if (saved && saved.diagnosis) document.getElementById('saved-banner').style.display = 'flex';
+  const apiKey = await dbGet('api-key');
+  if (apiKey) document.getElementById('f-api-key').value = apiKey;
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+
+function startIntake() {
+  document.getElementById('progress-wrap').style.display = 'block';
+  goTo('s1');
+}
+
+const SCREENS = ['welcome','s1','s2','s3','s4','s5','s6','s7','chat'];
+const PROG_PCT = {welcome:0,s1:10,s2:22,s3:34,s4:46,s5:58,s6:70,s7:82,s8:92,chat:100,checkin:100,report:100};
+const PROG_LABELS = {s1:'Step 1 of 8 — Your Health Condition',s2:'Step 2 of 8 — Your Medications',s3:'Step 3 of 8 — Daily Activities',s4:'Step 4 of 8 — Home & Community',s5:'Step 5 of 8 — Your Life & Roles',s6:'Step 6 of 8 — Routine & Home',s7:'Step 7 of 8 — Your Care Team',s8:'Step 8 of 8 — Mental Health',chat:'Your Companion is Ready',checkin:'Daily Check-In',report:'My Health Report'};
+
+function goTo(screen) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+screen).classList.add('active');
+  document.getElementById('progress-fill').style.width = (PROG_PCT[screen]||0)+'%';
+  if (PROG_LABELS[screen]) document.getElementById('progress-label').textContent = PROG_LABELS[screen];
+  document.getElementById('progress-wrap').style.display = (screen==='welcome') ? 'none' : 'block';
+  if (screen === 's8') buildCopingStatements();
+  if (screen === 'report') { renderReportPreview(); loadReminderPref(); }
+  window.scrollTo(0,0);
+}
+
+function selectChoice(btn, key, value) {
+  const parent = btn.closest('.choice-grid');
+  parent.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  choiceValues[key] = value;
+}
+
+function buildRatingCards(items, scores, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'rating-card';
+    card.innerHTML = `<div class="rating-card-label">${item.icon} ${item.label}</div><div class="rating-btns"></div>`;
+    const btns = card.querySelector('.rating-btns');
+    [['✅ I do it fine','r-i','Independent'],['😓 A little hard','r-d','Some difficulty'],['🙋 I need help','r-h','Needs help'],['❌ Can\'t do it','r-u','Unable']].forEach(([label,cls,val]) => {
+      const b = document.createElement('button');
+      b.className = 'r-btn'; b.innerHTML = label; b.title = val;
+      b.onclick = () => { btns.querySelectorAll('.r-btn').forEach(x=>x.className='r-btn'); b.className='r-btn '+cls; scores[item.label]=val; };
+      btns.appendChild(b);
+    });
+    container.appendChild(card);
+  });
+}
+
+function initTag(base) {
+  const box = document.getElementById('tb-'+base);
+  const inp = document.getElementById('ti-'+base);
+  if (!box||!inp) return;
+  inp.addEventListener('keydown', e => {
+    if (e.key==='Enter' && inp.value.trim()) { e.preventDefault(); tagData[base].push(inp.value.trim()); inp.value=''; renderTags(base); }
+  });
+  box.addEventListener('click', ()=>inp.focus());
+}
+function renderTags(base) {
+  const box=document.getElementById('tb-'+base), inp=document.getElementById('ti-'+base);
+  box.innerHTML='';
+  tagData[base].forEach((t,i) => {
+    const s=document.createElement('span'); s.className='tag';
+    s.innerHTML=t+`<button onclick="tagData['${base}'].splice(${i},1);renderTags('${base}')">×</button>`;
+    box.appendChild(s);
+  });
+  box.appendChild(inp);
+}
+
+function collectProfile() {
+  return {
+    diagnosis: document.getElementById('f-diagnosis').value.trim(),
+    duration: choiceValues.duration||'',
+    comorbidities: [...tagData.comorbidities],
+    medications: [...tagData.meds],
+    medConcerns: document.getElementById('f-med-concerns').value.trim(),
+    adlScores: {...adlScores},
+    adlConcern: document.getElementById('f-adl-concern').value.trim(),
+    iadlScores: {...iadlScores},
+    iadlPriority: document.getElementById('f-iadl-priority').value.trim(),
+    occupations: [...tagData.occupations],
+    disrupted: document.getElementById('f-disrupted').value.trim(),
+    familyRole: choiceValues.role||'',
+    leisure: [...tagData.leisure],
+    socialImpact: choiceValues.social||'',
+    sleep: document.getElementById('f-sleep').value.trim(),
+    exercise: choiceValues.exercise||'',
+    diet: document.getElementById('f-diet').value.trim(),
+    living: choiceValues.living||'',
+    equipment: [...tagData.equipment],
+    envBarrier: document.getElementById('f-env-barrier').value.trim(),
+    support: [...tagData.support],
+    challenge: document.getElementById('f-challenge').value.trim(),
+    pcp: document.getElementById('f-pcp').value.trim(),
+    ot: document.getElementById('f-ot').value.trim(),
+    specialists: [...tagData.specialists],
+    otherTeam: [...tagData['other-team']],
+    otGoals: document.getElementById('f-ot-goals').value.trim(),
+    nextAppt: document.getElementById('f-next-appt').value.trim(),
+    mentalHealthScore: overallMHScore,
+    mentalHealthLabel: MH_LABELS[overallMHScore-1],
+    copingAnswers: {...copingAnswers},
+    mentalHealthNotes: document.getElementById('f-mh-notes').value.trim(),
+    savedAt: new Date().toISOString()
+  };
+}
+
+async function finishIntake() {
+  profile = collectProfile();
+  await dbSet('profile', profile);
+  launchChat();
+}
+async function loadSavedAndChat() {
+  profile = await dbGet('profile');
+  if (!profile) return;
+  const saved = await dbGet('chatHistory');
+  if (saved?.length) chatHistory = saved;
+  launchChat();
+}
+
+function fmtScores(scores) {
+  const e = Object.entries(scores||{}).filter(([,v])=>v);
+  return e.length ? e.map(([k,v])=>`${k}: ${v}`).join('; ') : 'not assessed';
+}
+
+function buildSystemPrompt(p) {
+  return `You are Agent SCOCI — a warm, caring, occupation-centered chronic illness self-care companion. You were built by an occupational therapist.
+
+You speak in clear, plain, friendly language. Many of your users are older adults or people who are not medical professionals. Avoid medical jargon. Explain things simply, like you're talking to a trusted friend or family member. Use short sentences and paragraphs. Be encouraging and warm.
+
+You are grounded in two frameworks:
+1. The Middle-Range Theory of Self-Care of Chronic Illness (Riegel et al.) — Maintenance, Monitoring, Management
+2. Occupational Therapy occupation-centered practice — focusing on how illness affects what the person does every day: their ADLs, IADLs, work, leisure, rest, and social participation
+
+PATIENT PROFILE:
+Condition: ${p.diagnosis||'not specified'} (${p.duration||'unknown duration'})
+Other conditions: ${p.comorbidities?.join(', ')||'none'}
+Medications: ${p.medications?.join(', ')||'none listed'}
+Medication concerns: ${p.medConcerns||'none'}
+
+Daily self-care (ADLs): ${fmtScores(p.adlScores)}
+Hardest ADL: ${p.adlConcern||'not specified'}
+
+Home and community tasks (IADLs): ${fmtScores(p.iadlScores)}
+Most important IADL to keep: ${p.iadlPriority||'not specified'}
+
+Meaningful activities: ${p.occupations?.join(', ')||'not listed'}
+Most disrupted activity: ${p.disrupted||'not specified'}
+Family role: ${p.familyRole||'not specified'}
+Hobbies: ${p.leisure?.join(', ')||'not listed'}
+Social life impact: ${p.socialImpact||'not specified'}
+
+Home: ${p.living||'not specified'}
+Sleep: ${p.sleep||'not specified'}
+Exercise: ${p.exercise||'not specified'}
+Diet: ${p.diet||'not specified'}
+Equipment used: ${p.equipment?.join(', ')||'none'}
+Home barrier: ${p.envBarrier||'not specified'}
+Support people: ${p.support?.join(', ')||'not listed'}
+Role challenge: ${p.challenge||'not specified'}
+
+Care team — Doctor: ${p.pcp||'not listed'}, OT: ${p.ot||'not listed'}, Specialists: ${p.specialists?.join(', ')||'none'}, Other: ${p.otherTeam?.join(', ')||'none'}
+Current OT goals: ${p.otGoals||'not specified'}
+Next appointment: ${p.nextAppt||'not specified'}
+
+MENTAL HEALTH:
+Overall mental health score: ${p.mentalHealthScore||'not rated'}/10 — "${p.mentalHealthLabel||''}"
+Coping with chronic illness:
+${p.copingAnswers ? Object.entries(p.copingAnswers).map(([k,v]) => '  - ' + k + ': ' + v).join('\n') : 'not assessed'}
+Additional mental health notes: ${p.mentalHealthNotes||'none'}
+
+IMPORTANT — use the mental health data to shape your tone:
+- Score 1-3: Lead with deep compassion. Acknowledge their pain first before any self-care guidance. Do not jump to tips.
+- Score 4-6: Be warm and encouraging. Acknowledge the difficulty while gently offering practical support.
+- Score 7-10: Be upbeat and energizing. Build on their momentum.
+- If burden=Yes: Gently address caregiver guilt and remind them self-care is not selfish.
+- If isolation=No (they feel misunderstood): Validate their experience and emphasize that Agent SCOCI truly understands.
+- If grief=Yes: Acknowledge their loss with compassion before moving to any practical guidance.
+
+HOW TO RESPOND:
+- Use simple, friendly, warm language
+- Keep responses short — 3 to 5 sentences max unless they ask for more detail
+- Focus on what the person can DO, not just what to avoid
+- Suggest practical strategies for energy conservation, pacing, and adapting activities
+- Acknowledge their roles (caregiver, grandparent, spouse) and the real demands of daily life
+- When relevant, encourage them to share findings with their OT or doctor
+- If symptoms sound urgent or dangerous, clearly tell them to call their doctor or 911
+- Never diagnose conditions or prescribe medications
+- Always end with encouragement or an offer to help with something specific`;
+}
+
+function appendMsg(role, text) {
+  const area = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg '+role;
+  div.textContent = text;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+function appendDots() {
+  const area = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg ai'; div.id = 'msg-dots';
+  div.innerHTML = '<span class="dots"><span></span><span></span><span></span></span>';
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+function removeDots() { const el=document.getElementById('msg-dots'); if(el) el.remove(); }
+
+function renderQuickChips() {
+  const p = profile;
+  const hardADL = Object.entries(p.adlScores||{}).find(([,v])=>v&&v!=='Independent');
+  const hardIADL = Object.entries(p.iadlScores||{}).find(([,v])=>v&&v!=='Independent');
+  const chips = [
+    hardADL ? `How can I make ${hardADL[0].toLowerCase()} easier?` : 'Tips for saving energy each day',
+    hardIADL ? `Help me stay independent with ${hardIADL[0].toLowerCase()}` : 'How to manage my home tasks',
+    'What should I watch out for each day?',
+    'How do I balance caring for others and myself?',
+    'Help me prepare for my next appointment',
+    'When should I call my doctor?'
+  ];
+  const el = document.getElementById('quick-chips');
+  el.innerHTML = '';
+  chips.forEach(q => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.textContent = q;
+    b.onclick = () => { document.getElementById('chat-input').value = q; sendMessage(); };
+    el.appendChild(b);
+  });
+}
+
+function launchChat() {
+  goTo('chat');
+  const p = profile;
+  document.getElementById('chat-profile-pill').textContent = '💚 ' + (p.diagnosis||'Your condition') + (p.duration ? ' · '+p.duration : '');
+  chatHistory = [];
+  document.getElementById('chat-messages').innerHTML = '';
+  renderQuickChips();
+  if (isSafari) {
+    document.getElementById('tab-local').classList.remove('active');
+    document.getElementById('tab-cloud').classList.add('active');
+    document.getElementById('mode-info').textContent = 'Cloud AI mode: uses Claude for the best responses. Enter your Anthropic API key below to get started.';
+    document.getElementById('cloud-key-section').style.display = 'block';
+  }
+
+  const hardADLs = Object.entries(p.adlScores||{}).filter(([,v])=>v&&v!=='Independent').map(([k])=>k);
+
+  let greeting = `Hello! I'm so glad you're here. I'm Agent SCOCI — your personal self-care companion.\n\nI know you're managing ${p.diagnosis||'a health condition'}${p.duration?' for '+p.duration.toLowerCase():''}. That's not easy, and I want to help make each day a little better.`;
+
+  const mhScore = p.mentalHealthScore || 5;
+  if (mhScore <= 3) {
+    greeting += `\n\nI can see you're going through a really tough time right now. I want you to know — you don't have to figure this out alone. I'm here, and we'll take this one step at a time.`;
+  } else if (mhScore <= 6) {
+    greeting += `\n\nI know some days are harder than others. I'm here to help you find what works for your life, at your own pace.`;
+  } else {
+    greeting += `\n\nI love that you're in a good headspace right now — let's build on that energy together.`;
+  }
+
+  if (p.copingAnswers?.burden === 'Yes') {
+    greeting += `\n\nOne thing I want you to hear right away: taking care of yourself is not selfish. You matter too.`;
+  }
+
+  if (hardADLs.length) {
+    greeting += `\n\nI noticed that ${hardADLs.slice(0,2).join(' and ').toLowerCase()} can be challenging for you. Let's work together on strategies that fit your real life.`;
+  }
+  if (p.occupations?.length) {
+    greeting += `\n\nI also know that ${p.occupations[0].toLowerCase()} is important to you. We'll keep that at the center of everything we plan together.`;
+  }
+  greeting += `\n\nWhat can I help you with today? You can tap one of the buttons below or just ask me anything.`;
+
+  appendMsg('ai', greeting);
+  chatHistory.push({ role: 'assistant', content: greeting });
+
+  if (aiMode === 'local') initWebLLM();
+}
+
+async function initWebLLM() {
+  if (webllmEngine || webllmLoading) return;
+  webllmLoading = true;
+  const status = document.getElementById('webllm-status');
+  status.style.display = 'block';
+  status.textContent = '⏳ Loading your on-device AI — this takes a moment the first time…';
+  try {
+    const { CreateMLCEngine } = await import('https://esm.run/@mlc-ai/web-llm');
+    webllmEngine = await CreateMLCEngine('Phi-3.5-mini-instruct-q4f16_1-MLC', {
+      initProgressCallback: info => {
+        const pct = Math.round((info.progress||0)*100);
+        status.textContent = `⏳ Loading AI: ${pct}% complete — almost ready!`;
+      }
+    });
+    status.textContent = '✅ On-device AI is ready! Your information stays private on your device.';
+    setTimeout(() => { status.style.display='none'; }, 4000);
+  } catch(e) {
+    status.style.background = '#FCEBEB';
+    status.style.color = '#501313';
+    status.textContent = `⚠️ On-device AI couldn't load on this device. Please switch to Cloud AI mode above, or try using Chrome on a computer. (${e.message})`;
+    webllmLoading = false;
+    webllmEngine = null;
+  }
+}
+
+function setMode(mode) {
+  aiMode = mode;
+  document.getElementById('tab-local').classList.toggle('active', mode==='local');
+  document.getElementById('tab-cloud').classList.toggle('active', mode==='cloud');
+  const info = document.getElementById('mode-info');
+  const keySection = document.getElementById('cloud-key-section');
+  if (mode==='local') {
+    info.textContent = 'On-device mode: AI runs on your device. Your information never leaves. First use downloads the AI (~2GB).';
+    keySection.style.display = 'none';
+    initWebLLM();
+  } else {
+    info.textContent = 'Cloud AI mode: uses Claude. Higher quality responses but your messages go to Anthropic\'s secure servers. Enter your API key below.';
+    keySection.style.display = 'block';
+  }
+}
+
+async function saveApiKey() {
+  const key = document.getElementById('f-api-key').value.trim();
+  if (key) { await dbSet('api-key', key); appendMsg('system', '✅ API key saved on your device. You\'re ready to chat!'); }
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+  appendMsg('user', text);
+  chatHistory.push({ role:'user', content:text });
+  appendDots();
+  try {
+    let reply = '';
+    if (aiMode==='local') {
+      if (!webllmEngine) { if(!webllmLoading) initWebLLM(); throw new Error('The AI is still loading. Please wait a moment and try again.'); }
+      const messages = [{ role:'system', content:buildSystemPrompt(profile) }, ...chatHistory.slice(-12)];
+      const resp = await webllmEngine.chat.completions.create({ messages, max_tokens:512, temperature:0.7 });
+      reply = resp.choices[0].message.content;
+    } else {
+      const apiKey = await dbGet('api-key');
+      if (!apiKey) throw new Error('No API key saved. Please enter your Anthropic API key above.');
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'x-api-key':apiKey, 'anthropic-version':'2023-06-01' },
+        body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:1000, system:buildSystemPrompt(profile), messages:chatHistory })
+      });
+      if (!resp.ok) { const err=await resp.json().catch(()=>({})); throw new Error(err?.error?.message||`Error ${resp.status}`); }
+      const data = await resp.json();
+      reply = data.content?.find(b=>b.type==='text')?.text || 'I had trouble responding — please try again.';
+    }
+    removeDots();
+    appendMsg('ai', reply);
+    chatHistory.push({ role:'assistant', content:reply });
+    if (chatHistory.length>24) chatHistory = chatHistory.slice(-20);
+    await dbSet('chatHistory', chatHistory);
+  } catch(e) {
+    removeDots();
+    appendMsg('err', '⚠️ ' + e.message);
+    chatHistory.pop();
+  }
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('chat-input').focus();
+}
+
+function confirmReset() {
+  if (confirm('Start your profile over from the beginning? This will erase your saved information.')) {
+    dbSet('profile', null);
+    dbSet('chatHistory', []);
+    dbSet('checkins', null);
+    location.reload();
+  }
+}
+
+// ─── DAILY CHECK-IN ──────────────────────────────────────────────────────────
+
+const ENERGY_DATA = {
+  emojis: ['😴','😴','😪','😔','😐','🙂','😊','💪','🔥','⚡'],
+  labels: ['Completely drained','Severely fatigued','Very low energy','Low energy','Moderate energy','Decent energy','Good energy','Great energy','Very energized','Full of energy'],
+  colors: ['#E24B4A','#E24B4A','#D85A30','#EF9F27','#EF9F27','#1D9E75','#1D9E75','#1D9E75','#0F6E56','#085041']
+};
+
+const PAIN_DATA = {
+  emojis: ['😊','🙂','🙂','😐','😐','😟','😔','😣','😫','😭'],
+  labels: ['No pain at all','Barely noticeable','Very mild','Mild discomfort','Moderate pain','Noticeable pain','Significant pain','Severe pain','Very severe pain','Worst possible pain'],
+  colors: ['#1D9E75','#1D9E75','#1D9E75','#5DCAA5','#EF9F27','#EF9F27','#D85A30','#E24B4A','#E24B4A','#E24B4A']
+};
+
+let checkinADLVal = '';
+
+function updateCheckinSlider(type, val) {
+  const v = parseInt(val) - 1;
+  const data = type === 'energy' ? ENERGY_DATA : PAIN_DATA;
+  document.getElementById('ci-' + type + '-emoji').textContent = data.emojis[v];
+  document.getElementById('ci-' + type + '-num').textContent = parseInt(val);
+  document.getElementById('ci-' + type + '-num').style.color = data.colors[v];
+  document.getElementById('ci-' + type + '-label').textContent = data.labels[v];
+}
+
+function selectCheckinADL(btn, val) {
+  document.querySelectorAll('.checkin-adl-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  checkinADLVal = val;
+}
+
+function goToCheckin() {
+  goTo('checkin');
+  // Reset form
+  document.getElementById('ci-energy').value = 5;
+  document.getElementById('ci-pain').value = 3;
+  updateCheckinSlider('energy', 5);
+  updateCheckinSlider('pain', 3);
+  checkinADLVal = '';
+  document.querySelectorAll('.checkin-adl-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('ci-note').value = '';
+  document.getElementById('checkin-saved-msg').style.display = 'none';
+  document.getElementById('checkin-trend-wrap').style.display = 'none';
+  // Load and show existing trend
+  loadAndRenderTrend();
+}
+
+async function saveCheckin() {
+  const today = new Date().toISOString().split('T')[0];
+  const entry = {
+    date: today,
+    energy: parseInt(document.getElementById('ci-energy').value),
+    pain: parseInt(document.getElementById('ci-pain').value),
+    adl: checkinADLVal || 'not rated',
+    note: document.getElementById('ci-note').value.trim(),
+    ts: Date.now()
+  };
+
+  // Load existing checkins
+  let checkins = [];
+  try {
+    const saved = await dbGet('checkins');
+    if (saved && Array.isArray(saved)) checkins = saved;
+  } catch(e) { checkins = []; }
+
+  // Remove today's entry if already exists (replace with new one)
+  checkins = checkins.filter(c => c.date !== today);
+  checkins.push(entry);
+
+  // Keep last 90 days only
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 90);
+  checkins = checkins.filter(c => new Date(c.date) >= cutoff);
+
+  // Sort by date
+  checkins.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  await dbSet('checkins', checkins);
+
+  // Show saved message and trend
+  document.getElementById('checkin-saved-msg').style.display = 'block';
+  await loadAndRenderTrend();
+  document.getElementById('checkin-trend-wrap').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function loadAndRenderTrend() {
+  let checkins = [];
+  try {
+    const saved = await dbGet('checkins');
+    if (saved && Array.isArray(saved)) checkins = saved;
+  } catch(e) { return; }
+
+  if (checkins.length === 0) return;
+
+  // Get last 7 entries
+  const last7 = checkins.slice(-7);
+  document.getElementById('checkin-trend-wrap').style.display = 'block';
+
+  // Draw canvas chart
+  const canvas = document.getElementById('trend-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 600;
+  const H = 180;
+  canvas.width = W;
+  canvas.height = H;
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = { top: 20, bottom: 30, left: 28, right: 12 };
+  const chartW = W - pad.left - pad.right;
+  const chartH = H - pad.top - pad.bottom;
+  const n = last7.length;
+  const stepX = n > 1 ? chartW / (n - 1) : chartW;
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(128,128,128,0.15)';
+  ctx.lineWidth = 1;
+  [2, 4, 6, 8, 10].forEach(v => {
+    const y = pad.top + chartH - ((v - 1) / 9) * chartH;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(pad.left + chartW, y);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(128,128,128,0.5)';
+    ctx.font = '10px Nunito, sans-serif';
+    ctx.fillText(v, 2, y + 3);
+  });
+
+  // Draw line function
+  function drawLine(data, color) {
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    data.forEach((v, i) => {
+      const x = pad.left + i * stepX;
+      const y = pad.top + chartH - ((v - 1) / 9) * chartH;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Dots
+    data.forEach((v, i) => {
+      const x = pad.left + i * stepX;
+      const y = pad.top + chartH - ((v - 1) / 9) * chartH;
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+  }
+
+  drawLine(last7.map(c => c.energy), '#1D9E75');
+  drawLine(last7.map(c => c.pain), '#E24B4A');
+
+  // X axis date labels
+  ctx.fillStyle = 'rgba(128,128,128,0.7)';
+  ctx.font = '10px Nunito, sans-serif';
+  ctx.textAlign = 'center';
+  last7.forEach((c, i) => {
+    const x = pad.left + i * stepX;
+    const d = new Date(c.date + 'T12:00:00');
+    const label = (d.getMonth() + 1) + '/' + d.getDate();
+    ctx.fillText(label, x, H - 5);
+  });
+
+  // ADL chips
+  const adlRow = document.getElementById('trend-adl-row');
+  adlRow.innerHTML = '<span style="font-size:13px;font-weight:700;color:var(--text-muted);margin-right:6px;">Daily activities:</span>';
+  last7.forEach(c => {
+    if (c.adl && c.adl !== 'not rated') {
+      const chip = document.createElement('span');
+      chip.className = 'trend-adl-chip trend-adl-' + c.adl;
+      const d = new Date(c.date + 'T12:00:00');
+      chip.textContent = (d.getMonth()+1) + '/' + d.getDate() + ' — ' + c.adl;
+      adlRow.appendChild(chip);
+    }
+  });
+}
+
+// ─── REPORT GENERATION ───────────────────────────────────────────────────────
+
+async function buildReportData() {
+  const p = await dbGet('profile') || {};
+  let checkins = [];
+  try { const c = await dbGet('checkins'); if (c && Array.isArray(c)) checkins = c; } catch(e) {}
+  return { profile: p, checkins: checkins.slice(-30) };
+}
+
+function fmtDate(iso) {
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function adlClass(val) {
+  if (val === 'Independent') return 'adl-ok';
+  if (val === 'Some difficulty') return 'adl-hard';
+  return 'adl-help';
+}
+
+function buildReportHTML(data, forPrint = false) {
+  const p = data.profile;
+  const checkins = data.checkins;
+  const last7 = checkins.slice(-7);
+  const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  // ADL summary
+  const adlEntries = Object.entries(p.adlScores || {}).filter(([,v]) => v);
+  const iadlEntries = Object.entries(p.iadlScores || {}).filter(([,v]) => v);
+
+  // Coping summary
+  const copingMap = { acceptance:'Accepted condition', grief:'Processing grief', control:'Feels in control', burden:'Feels like a burden', hope:'Has hope', isolation:'Feels understood' };
+
+  // Trend bars HTML
+  let trendBarsHTML = '';
+  if (last7.length) {
+    trendBarsHTML = last7.map(c => {
+      const eH = Math.round((c.energy / 10) * 46);
+      const pH = Math.round((c.pain / 10) * 46);
+      const d = new Date(c.date + 'T12:00:00');
+      const lbl = (d.getMonth()+1) + '/' + d.getDate();
+      return `<div class="report-trend-bar-wrap">
+        <div style="display:flex;gap:2px;align-items:flex-end;height:46px;">
+          <div class="report-trend-bar" style="height:${eH}px;background:#1D9E75;width:10px;"></div>
+          <div class="report-trend-bar" style="height:${pH}px;background:#E24B4A;width:10px;"></div>
+        </div>
+        <div class="report-trend-label">${lbl}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Avg energy and pain
+  const avgEnergy = last7.length ? (last7.reduce((s,c) => s + c.energy, 0) / last7.length).toFixed(1) : 'N/A';
+  const avgPain = last7.length ? (last7.reduce((s,c) => s + c.pain, 0) / last7.length).toFixed(1) : 'N/A';
+
+  const mhPct = ((p.mentalHealthScore || 5) - 1) / 9 * 100;
+
+  return `
+  <div class="report-header">
+    <img src="/icons/icon-192.png" alt="Agent SCOCI" />
+    <div class="report-header-text">
+      <h2>Agent SCOCI Health Report</h2>
+      <p>Generated ${today} &nbsp;·&nbsp; All data stored locally on your device</p>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-section-title">Diagnosis & Medications</div>
+    <div class="report-row"><span class="report-row-label">Primary condition</span><span class="report-row-val">${p.diagnosis || 'Not specified'} ${p.duration ? '(' + p.duration + ')' : ''}</span></div>
+    ${p.comorbidities?.length ? `<div class="report-row"><span class="report-row-label">Other conditions</span><span class="report-row-val">${p.comorbidities.join(', ')}</span></div>` : ''}
+    ${p.medications?.length ? `<div class="report-row"><span class="report-row-label">Medications</span><span class="report-row-val">${p.medications.join(', ')}</span></div>` : ''}
+    ${p.medConcerns ? `<div class="report-row"><span class="report-row-label">Medication concerns</span><span class="report-row-val">${p.medConcerns}</span></div>` : ''}
+  </div>
+
+  ${adlEntries.length ? `
+  <div class="report-section">
+    <div class="report-section-title">Daily Activities (ADLs)</div>
+    <div class="report-adl-grid">
+      ${adlEntries.map(([k,v]) => `<div class="report-adl-item ${adlClass(v)}">${k}: ${v}</div>`).join('')}
+    </div>
+    ${p.adlConcern ? `<div style="margin-top:8px;font-size:13px;font-weight:600;color:#4a5568;">Most affected: ${p.adlConcern}</div>` : ''}
+  </div>` : ''}
+
+  ${iadlEntries.length ? `
+  <div class="report-section">
+    <div class="report-section-title">Home & Community Activities (IADLs)</div>
+    <div class="report-adl-grid">
+      ${iadlEntries.map(([k,v]) => `<div class="report-adl-item ${adlClass(v)}">${k}: ${v}</div>`).join('')}
+    </div>
+    ${p.iadlPriority ? `<div style="margin-top:8px;font-size:13px;font-weight:600;color:#4a5568;">Priority to maintain: ${p.iadlPriority}</div>` : ''}
+  </div>` : ''}
+
+  <div class="report-section">
+    <div class="report-section-title">Mental Health</div>
+    <div class="report-row"><span class="report-row-label">Overall score</span><span class="report-row-val">${p.mentalHealthScore || 'Not rated'} / 10 — ${p.mentalHealthLabel || ''}</span></div>
+    <div class="report-mh-bar"><div class="report-mh-marker" style="left:${mhPct}%"></div></div>
+    ${p.copingAnswers && Object.keys(p.copingAnswers).length ? `
+    <div style="margin-top:10px;">
+      ${Object.entries(p.copingAnswers).map(([k,v]) => `
+        <div class="report-row">
+          <span class="report-row-label">${copingMap[k] || k}</span>
+          <span class="report-row-val" style="color:${v==='Yes'?'#1D9E75':v==='Sometimes'?'#EF9F27':'#E24B4A'}">${v}</span>
+        </div>`).join('')}
+    </div>` : ''}
+    ${p.mentalHealthNotes ? `<div style="margin-top:8px;font-size:13px;font-weight:600;color:#4a5568;font-style:italic;">"${p.mentalHealthNotes}"</div>` : ''}
+  </div>
+
+  ${p.occupations?.length || p.familyRole ? `
+  <div class="report-section">
+    <div class="report-section-title">Occupational Profile</div>
+    ${p.familyRole ? `<div class="report-row"><span class="report-row-label">Home role</span><span class="report-row-val">${p.familyRole}</span></div>` : ''}
+    ${p.occupations?.length ? `<div class="report-row"><span class="report-row-label">Meaningful activities</span><span class="report-row-val">${p.occupations.join(', ')}</span></div>` : ''}
+    ${p.disrupted ? `<div class="report-row"><span class="report-row-label">Most disrupted</span><span class="report-row-val">${p.disrupted}</span></div>` : ''}
+    ${p.socialImpact ? `<div class="report-row"><span class="report-row-label">Social life impact</span><span class="report-row-val">${p.socialImpact}</span></div>` : ''}
+  </div>` : ''}
+
+  ${last7.length ? `
+  <div class="report-section">
+    <div class="report-section-title">Last 7 Days — Check-In Trends</div>
+    <div class="report-row">
+      <span class="report-row-label">Average energy</span>
+      <span class="report-row-val" style="color:#1D9E75;font-weight:800;">${avgEnergy} / 10</span>
+    </div>
+    <div class="report-row">
+      <span class="report-row-label">Average pain</span>
+      <span class="report-row-val" style="color:#E24B4A;font-weight:800;">${avgPain} / 10</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:6px;font-size:11px;font-weight:700;">
+      <span style="color:#1D9E75;">■ Energy</span>
+      <span style="color:#E24B4A;">■ Pain</span>
+    </div>
+    <div class="report-trend-mini">${trendBarsHTML}</div>
+    ${last7.some(c=>c.note) ? `
+    <div style="margin-top:10px;">
+      <div style="font-size:12px;font-weight:800;color:#1D9E75;margin-bottom:6px;">DAILY NOTES</div>
+      ${last7.filter(c=>c.note).map(c=>`<div style="font-size:12px;font-weight:600;color:#4a5568;margin-bottom:4px;"><span style="font-weight:800;">${fmtDate(c.date)}:</span> ${c.note}</div>`).join('')}
+    </div>` : ''}
+  </div>` : ''}
+
+  ${p.pcp || p.ot || p.specialists?.length ? `
+  <div class="report-section">
+    <div class="report-section-title">Care Team</div>
+    ${p.pcp ? `<div class="report-row"><span class="report-row-label">Primary care</span><span class="report-row-val">${p.pcp}</span></div>` : ''}
+    ${p.ot ? `<div class="report-row"><span class="report-row-label">Occupational therapist</span><span class="report-row-val">${p.ot}</span></div>` : ''}
+    ${p.specialists?.length ? `<div class="report-row"><span class="report-row-label">Specialists</span><span class="report-row-val">${p.specialists.join(', ')}</span></div>` : ''}
+    ${p.otGoals ? `<div class="report-row"><span class="report-row-label">Current OT goals</span><span class="report-row-val">${p.otGoals}</span></div>` : ''}
+    ${p.nextAppt ? `<div class="report-row"><span class="report-row-label">Next appointment</span><span class="report-row-val">${p.nextAppt}</span></div>` : ''}
+  </div>` : ''}
+
+  <div style="margin-top:16px;padding:12px;background:#f7faf9;border-radius:10px;font-size:11px;color:#9ca3af;text-align:center;line-height:1.6;">
+    This report was generated by Agent SCOCI and stored only on your personal device.<br>
+    Agent SCOCI is not a medical device and does not provide medical advice, diagnosis, or treatment.<br>
+    Always consult your occupational therapist or physician regarding your health care.
+  </div>`;
+}
+
+async function renderReportPreview() {
+  const data = await buildReportData();
+  const el = document.getElementById('report-preview');
+  if (el) el.innerHTML = buildReportHTML(data);
+}
+
+async function generateAndDownloadReport() {
+  const data = await buildReportData();
+  const reportHTML = buildReportHTML(data, true);
+  const today = new Date().toISOString().split('T')[0];
+
+  const fullHTML = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Agent SCOCI Health Report — ${today}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a1a1a; padding: 40px; max-width: 700px; margin: 0 auto; }
+  .report-header { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 2px solid #E1F5EE; margin-bottom: 16px; }
+  .report-header img { width: 52px; height: 52px; }
+  .report-header-text h2 { font-size: 20px; font-weight: 800; color: #1a1a1a; margin-bottom: 2px; }
+  .report-header-text p { font-size: 12px; color: #6b7280; }
+  .report-section { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #f0f0f0; }
+  .report-section:last-child { border-bottom: none; }
+  .report-section-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #1D9E75; margin-bottom: 10px; }
+  .report-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 13px; }
+  .report-row-label { font-weight: 700; color: #4a5568; }
+  .report-row-val { font-weight: 600; color: #1a1a1a; text-align: right; }
+  .report-adl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .report-adl-item { font-size: 12px; font-weight: 600; padding: 4px 8px; border-radius: 6px; }
+  .adl-ok { background: #E1F5EE; color: #085041; }
+  .adl-hard { background: #FAEEDA; color: #633806; }
+  .adl-help { background: #FCEBEB; color: #501313; }
+  .report-mh-bar { height: 10px; border-radius: 5px; background: linear-gradient(to right, #E24B4A, #EF9F27 50%, #1D9E75); position: relative; margin: 8px 0; }
+  .report-mh-marker { position: absolute; top: -5px; width: 20px; height: 20px; border-radius: 50%; background: white; border: 3px solid #1D9E75; transform: translateX(-50%); }
+  .report-trend-mini { display: flex; gap: 3px; align-items: flex-end; height: 50px; margin-top: 8px; }
+  .report-trend-bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 2px; }
+  .report-trend-bar { width: 100%; border-radius: 3px 3px 0 0; min-height: 3px; }
+  .report-trend-label { font-size: 9px; color: #9ca3af; }
+  @media print { body { padding: 20px; } }
+</style>
+</head>
+<body>${reportHTML}</body>
+</html>`;
+
+  const blob = new Blob([fullHTML], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'AgentSCOCI-Report-' + today + '.html';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  // Save last export date
+  await dbSet('lastExport', today);
+}
+
+async function printReport() {
+  const data = await buildReportData();
+  const reportHTML = buildReportHTML(data, true);
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Agent SCOCI Health Report</title>
+  <style>
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'Helvetica Neue',Arial,sans-serif; color:#1a1a1a; padding:30px; max-width:700px; margin:0 auto; }
+    .report-header { display:flex; align-items:center; gap:14px; padding-bottom:14px; border-bottom:2px solid #E1F5EE; margin-bottom:14px; }
+    .report-header img { width:48px; height:48px; }
+    .report-header-text h2 { font-size:18px; font-weight:800; }
+    .report-header-text p { font-size:11px; color:#6b7280; }
+    .report-section { margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid #f0f0f0; }
+    .report-section-title { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color:#1D9E75; margin-bottom:8px; }
+    .report-row { display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px; }
+    .report-row-label { font-weight:700; color:#4a5568; }
+    .report-row-val { font-weight:600; }
+    .report-adl-grid { display:grid; grid-template-columns:1fr 1fr; gap:4px; }
+    .report-adl-item { font-size:11px; font-weight:600; padding:3px 7px; border-radius:5px; }
+    .adl-ok { background:#E1F5EE; color:#085041; }
+    .adl-hard { background:#FAEEDA; color:#633806; }
+    .adl-help { background:#FCEBEB; color:#501313; }
+    .report-mh-bar { height:10px; border-radius:5px; background:linear-gradient(to right,#E24B4A,#EF9F27 50%,#1D9E75); position:relative; margin:8px 0; }
+    .report-mh-marker { position:absolute; top:-5px; width:18px; height:18px; border-radius:50%; background:white; border:3px solid #1D9E75; transform:translateX(-50%); }
+    .report-trend-mini { display:flex; gap:3px; align-items:flex-end; height:46px; margin-top:6px; }
+    .report-trend-bar-wrap { display:flex; flex-direction:column; align-items:center; flex:1; gap:2px; }
+    .report-trend-bar { width:100%; border-radius:3px 3px 0 0; }
+    .report-trend-label { font-size:8px; color:#9ca3af; }
+  </style></head><body>${reportHTML}</body></html>`);
+  win.document.close();
+  setTimeout(() => win.print(), 500);
+}
+
+// ─── WEEKLY REPORT PROMPT ────────────────────────────────────────────────────
+
+async function checkWeeklyPrompt() {
+  try {
+    const pref = await dbGet('weeklyReminder');
+    if (!pref) return;
+    const today = new Date();
+    if (today.getDay() !== 0) return; // 0 = Sunday
+    const lastShown = await dbGet('weeklyPromptShown');
+    const todayStr = today.toISOString().split('T')[0];
+    if (lastShown === todayStr) return;
+    // Show prompt
+    document.getElementById('weekly-prompt').style.display = 'flex';
+    await dbSet('weeklyPromptShown', todayStr);
+  } catch(e) {}
+}
+
+async function dismissWeeklyPrompt(download) {
+  document.getElementById('weekly-prompt').style.display = 'none';
+  if (download) await generateAndDownloadReport();
+}
+
+async function saveReminderPref(val) {
+  await dbSet('weeklyReminder', val);
+}
+
+async function loadReminderPref() {
+  try {
+    const pref = await dbGet('weeklyReminder');
+    const toggle = document.getElementById('weekly-reminder-toggle');
+    if (toggle) toggle.checked = !!pref;
+  } catch(e) {}
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+init().then(() => checkWeeklyPrompt());
+</script>
+</body>
+</html>
