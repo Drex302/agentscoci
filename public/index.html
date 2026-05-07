@@ -1245,7 +1245,7 @@ async function sendMessage() {
       const resp = await webllmEngine.chat.completions.create({ messages, max_tokens:512, temperature:0.7 });
       reply = resp.choices[0].message.content;
     } else {
-      const resp = await fetch('/api/chat', {
+      const resp = await fetch('https://agentscoci-proxy.drexton11.workers.dev', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
