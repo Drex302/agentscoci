@@ -1094,8 +1094,26 @@ function normalizeDrugName(tag) {
   return tag.replace(/\s*[\d.]+\s*(mg|mcg|ml|g|iu|units?|tabs?|caps?|patch(es)?|spray|drop)\b.*/i, '').trim();
 }
 
+function cleanFDAText(raw) {
+  if (!raw) return null;
+  return raw
+    .replace(/\s+/g, ' ')
+    .replace(/^\d+\s+[A-Z][A-Z\s&]+\s+/g, '')
+    .replace(/\(\s*\d+(\.\d+)*\s*\)/g, '')
+    .replace(/\b[A-Z]{4,}\b/g, w => w[0] + w.slice(1).toLowerCase())
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+function truncateSentences(text, maxChars) {
+  if (!text || text.length <= maxChars) return text;
+  const cut = text.substring(0, maxChars);
+  const lastPeriod = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('! '), cut.lastIndexOf('? '));
+  return lastPeriod > maxChars * 0.5
+    ? cut.substring(0, lastPeriod + 1)
+    : cut + '…';
+}
 async function fetchMedInfo(drugName) {
-  if (medInfoCache[drugName]) return medInfoCache[drugName];
+  if (medInfoCache[drugName] !== undefined) return medInfoCache[drugName];
   const encoded = encodeURIComponent(drugName);
   const url = `https://api.fda.gov/drug/label.json?search=openfda.brand_name:"${encoded}"+openfda.generic_name:"${encoded}"&limit=1`;
   try {
@@ -1105,13 +1123,10 @@ async function fetchMedInfo(drugName) {
     const result = data.results?.[0];
     if (!result) throw new Error('empty');
     const info = {
-      purpose: result.purpose?.[0] || result.indications_and_usage?.[0] || null,
-      timing: result.dosage_and_administration?.[0] || null,
-      warnings: result.warnings?.[0] || result.warnings_and_cautions?.[0] || null
+      purpose:  truncateSentences(cleanFDAText(result.purpose?.[0] || result.indications_and_usage?.[0]), 300),
+      timing:   truncateSentences(cleanFDAText(result.dosage_and_administration?.[0]), 300),
+      warnings: truncateSentences(cleanFDAText(result.warnings?.[0] || result.warnings_and_cautions?.[0] || result.boxed_warning?.[0]), 400)
     };
-    if (info.purpose) info.purpose = info.purpose.replace(/\s+/g,' ').substring(0,200);
-    if (info.timing) info.timing = info.timing.replace(/\s+/g,' ').substring(0,200);
-    if (info.warnings) info.warnings = info.warnings.replace(/\s+/g,' ').substring(0,180);
     medInfoCache[drugName] = info;
     return info;
   } catch(e) {
