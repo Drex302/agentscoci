@@ -269,6 +269,27 @@
     .trend-adl-okay { background: #FAEEDA; color: #633806; }
     .trend-adl-hard { background: #FAECE7; color: #4A1B0C; }
     .trend-adl-help { background: #FCEBEB; color: #501313; }
+
+    /* INSTALL BANNER */
+    #install-banner {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
+      background: var(--bg); border-top: 2px solid var(--teal-light);
+      padding: 14px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.10);
+    }
+    #install-banner.visible { display: flex; align-items: center; gap: 12px; }
+    .install-banner-icon { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; }
+    .install-banner-text { flex: 1; }
+    .install-banner-text strong { font-size: 15px; font-weight: 800; color: var(--text); display: block; }
+    .install-banner-text span { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+    .install-banner-btn { font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; padding: 10px 18px; border-radius: var(--radius); border: none; background: var(--teal); color: white; cursor: pointer; white-space: nowrap; }
+    .install-banner-dismiss { background: none; border: none; font-size: 22px; color: var(--text-muted); cursor: pointer; padding: 4px; line-height: 1; flex-shrink: 0; }
+
+    /* iOS INSTALL INSTRUCTIONS */
+    #ios-install-overlay { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 1001; background: var(--bg); border-top: 3px solid var(--teal); padding: 20px; box-shadow: 0 -8px 32px rgba(0,0,0,0.18); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+    #ios-install-overlay.visible { display: block; }
+    .ios-steps { display: flex; flex-direction: column; gap: 12px; margin: 14px 0; }
+    .ios-step { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 700; color: var(--text); }
+    .ios-step-num { min-width: 30px; height: 30px; border-radius: 50%; background: var(--teal); color: white; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
   </style>
 </head>
 <body>
@@ -333,7 +354,7 @@
 
   <!-- STEP 1: DIAGNOSIS -->
   <div class="screen" id="screen-s1">
-    <div class="step-badge"><div class="ot-dot"></div>Step 1 of 7</div>
+    <div class="step-badge"><div class="ot-dot"></div>Step 1 of 8</div>
     <div class="screen-title">What health condition are you managing?</div>
     <div class="screen-sub">Tell us about your diagnosis so we can give you the right support.</div>
     <div class="card">
@@ -365,7 +386,7 @@
 
   <!-- STEP 2: MEDICATIONS -->
   <div class="screen" id="screen-s2">
-    <div class="step-badge"><div class="ot-dot"></div>Step 2 of 7</div>
+    <div class="step-badge"><div class="ot-dot"></div>Step 2 of 8</div>
     <div class="screen-title">What medications do you take?</div>
     <div class="screen-sub">This helps your companion understand your treatment and watch out for important side effects.</div>
     <div class="card">
@@ -387,7 +408,7 @@
 
   <!-- STEP 3: ADLs -->
   <div class="screen" id="screen-s3">
-    <div class="step-badge"><div class="ot-dot"></div>Step 3 of 7 · Daily Activities</div>
+    <div class="step-badge"><div class="ot-dot"></div>Step 3 of 8 · Daily Activities</div>
     <div class="screen-title">How do you manage your daily self-care?</div>
     <div class="screen-sub">Tap how you feel about each activity. There are no wrong answers — be honest so we can help.</div>
     <div class="rating-legend">
@@ -411,7 +432,7 @@
 
   <!-- STEP 4: IADLs -->
   <div class="screen" id="screen-s4">
-    <div class="step-badge"><div class="ot-dot"></div>Step 4 of 7 · Home & Community</div>
+    <div class="step-badge"><div class="ot-dot"></div>Step 4 of 8 · Home & Community</div>
     <div class="screen-title">How do you manage at home and in the community?</div>
     <div class="screen-sub">These are bigger tasks like cooking, driving, and managing your home. Tap how each one feels for you.</div>
     <div class="rating-legend">
@@ -435,7 +456,7 @@
 
   <!-- STEP 5: OCCUPATIONAL PROFILE -->
   <div class="screen" id="screen-s5">
-    <div class="step-badge"><div class="ot-dot"></div>Step 5 of 7 · Your Life & Roles</div>
+    <div class="step-badge"><div class="ot-dot"></div>Step 5 of 8 · Your Life & Roles</div>
     <div class="screen-title">What matters most in your daily life?</div>
     <div class="screen-sub">Your roles and activities are at the heart of your care plan. Tell us what gives your days meaning.</div>
     <div class="card">
@@ -484,7 +505,7 @@
 
   <!-- STEP 6: ROUTINE & ENVIRONMENT -->
   <div class="screen" id="screen-s6">
-    <div class="step-badge"><div class="ot-dot"></div>Step 6 of 7 · Your Routine & Home</div>
+    <div class="step-badge"><div class="ot-dot"></div>Step 6 of 8 · Your Routine & Home</div>
     <div class="screen-title">Tell us about your daily routine and home.</div>
     <div class="screen-sub">Your environment and daily schedule shape what self-care strategies will actually work for you.</div>
     <div class="card">
@@ -794,6 +815,31 @@
 
 </div>
 
+<!-- ANDROID/DESKTOP INSTALL BANNER -->
+<div id="install-banner">
+  <img src="/icons/icon-192.png" class="install-banner-icon" alt="Agent SCOCI" />
+  <div class="install-banner-text">
+    <strong>Add Agent SCOCI to your home screen</strong>
+    <span>Works offline · No app store needed</span>
+  </div>
+  <button class="install-banner-btn" onclick="triggerInstall()">Install</button>
+  <button class="install-banner-dismiss" onclick="dismissInstallBanner()" aria-label="Dismiss">×</button>
+</div>
+
+<!-- iOS INSTALL INSTRUCTIONS -->
+<div id="ios-install-overlay">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+    <div style="font-size:18px;font-weight:800;color:var(--text);">Add to Home Screen</div>
+    <button onclick="document.getElementById('ios-install-overlay').classList.remove('visible')" style="background:none;border:none;font-size:24px;color:var(--text-muted);cursor:pointer;">×</button>
+  </div>
+  <div style="font-size:14px;font-weight:600;color:var(--text-muted);margin-bottom:4px;">Install Agent SCOCI for the best experience:</div>
+  <div class="ios-steps">
+    <div class="ios-step"><div class="ios-step-num">1</div>Tap the <strong>Share</strong> button <span style="font-size:18px;">⎋</span> at the bottom of your browser</div>
+    <div class="ios-step"><div class="ios-step-num">2</div>Scroll down and tap <strong>"Add to Home Screen"</strong></div>
+    <div class="ios-step"><div class="ios-step-num">3</div>Tap <strong>"Add"</strong> — done! Open it like any app</div>
+  </div>
+</div>
+
 <script>
 const MH_EMOJIS = ['😢','😢','😔','😟','😐','🙂','😊','😄','😁','🌟'];
 const MH_LABELS = [
@@ -916,7 +962,7 @@ function startIntake() {
   goTo('s1');
 }
 
-const SCREENS = ['welcome','s1','s2','s3','s4','s5','s6','s7','chat'];
+const SCREENS = ['welcome','s1','s2','s3','s4','s5','s6','s7','s8','chat'];
 const PROG_PCT = {welcome:0,s1:10,s2:22,s3:34,s4:46,s5:58,s6:70,s7:82,s8:92,chat:100,checkin:100,report:100};
 const PROG_LABELS = {s1:'Step 1 of 8 — Your Health Condition',s2:'Step 2 of 8 — Your Medications',s3:'Step 3 of 8 — Daily Activities',s4:'Step 4 of 8 — Home & Community',s5:'Step 5 of 8 — Your Life & Roles',s6:'Step 6 of 8 — Routine & Home',s7:'Step 7 of 8 — Your Care Team',s8:'Step 8 of 8 — Mental Health',chat:'Your Companion is Ready',checkin:'Daily Check-In',report:'My Health Report'};
 
@@ -1245,7 +1291,7 @@ async function sendMessage() {
       const resp = await webllmEngine.chat.completions.create({ messages, max_tokens:512, temperature:0.7 });
       reply = resp.choices[0].message.content;
     } else {
-      const resp = await fetch('https://agentscoci-proxy.drexton11.workers.dev', {
+      const resp = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1253,7 +1299,7 @@ async function sendMessage() {
           messages: chatHistory
         })
       });
-      if (!resp.ok) { const err=await resp.json().catch(()=>({})); throw new Error(err?.error||`Error ${resp.status}`); }
+      if (!resp.ok) { const err=await resp.json().catch(()=>({})); throw new Error(err?.error?.message||`Error ${resp.status}`); }
       const data = await resp.json();
       reply = data.reply || 'I had trouble responding — please try again.';
     }
@@ -1743,6 +1789,46 @@ async function loadReminderPref() {
     const toggle = document.getElementById('weekly-reminder-toggle');
     if (toggle) toggle.checked = !!pref;
   } catch(e) {}
+}
+
+// ─── PWA INSTALL PROMPT ──────────────────────────────────────────────────────
+
+let deferredInstallPrompt = null;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (!sessionStorage.getItem('installBannerDismissed')) {
+    document.getElementById('install-banner').classList.add('visible');
+  }
+});
+
+function triggerInstall() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(() => {
+    deferredInstallPrompt = null;
+    document.getElementById('install-banner').classList.remove('visible');
+  });
+}
+
+function dismissInstallBanner() {
+  document.getElementById('install-banner').classList.remove('visible');
+  sessionStorage.setItem('installBannerDismissed', '1');
+}
+
+function checkIOSInstall() {
+  if (isIOS && !isInStandaloneMode && !sessionStorage.getItem('iosInstallDismissed')) {
+    setTimeout(() => {
+      document.getElementById('ios-install-overlay').classList.add('visible');
+      sessionStorage.setItem('iosInstallDismissed', '1');
+    }, 3000);
+  }
+}
+
+window.addEventListener('load', checkIOSInstall);
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
