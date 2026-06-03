@@ -1185,7 +1185,7 @@ function renderMedsScreen() {
     return `<div class="med-price-card">
       <div class="med-price-name">💊 ${tag}</div>
       <div class="med-price-links">
-        <a class="med-price-link" href="https://costplusdrugs.com/medications/search/?q=${q}" target="_blank" rel="noopener">
+        <a class="med-price-link" href="https://costplusdrugs.com/medications/?q=${q}" target="_blank" rel="noopener">
           <span class="price-logo">🏭</span>
           <span class="price-label"><strong>Cost Plus Drugs</strong><br><small style="font-weight:600;color:var(--text-muted);">Mark Cuban's pharmacy — often 80–90% cheaper</small></span>
           <span class="price-arrow">→</span>
@@ -1195,7 +1195,7 @@ function renderMedsScreen() {
           <span class="price-label"><strong>GoodRx</strong><br><small style="font-weight:600;color:var(--text-muted);">Compare prices at pharmacies near you</small></span>
           <span class="price-arrow">→</span>
         </a>
-        <a class="med-price-link" href="https://trumprx.gov/?q=${q}" target="_blank" rel="noopener">
+        <a class="med-price-link" href="https://trumprx.gov/search?query=${q}" target="_blank" rel="noopener">
           <span class="price-logo">🇺🇸</span>
           <span class="price-label"><strong>TrumpRx</strong><br><small style="font-weight:600;color:var(--text-muted);">Federal drug pricing program</small></span>
           <span class="price-arrow">→</span>
