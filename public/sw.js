@@ -1,4 +1,4 @@
-const CACHE = 'scoci-v1';
+const CACHE = 'scoci-v2';
 const ASSETS = [
   '/',
   '/app/',

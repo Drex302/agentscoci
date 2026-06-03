@@ -1004,7 +1004,8 @@ async function init() {
   const saved = await dbGet('profile');
   if (saved && saved.diagnosis) document.getElementById('saved-banner').style.display = 'flex';
   const apiKey = await dbGet('api-key');
-  if (apiKey) document.getElementById('f-api-key').value = apiKey;
+  const apiKeyEl = document.getElementById('f-api-key');
+  if (apiKey && apiKeyEl) apiKeyEl.value = apiKey;
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
 }
 
