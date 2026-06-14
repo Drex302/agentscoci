@@ -1398,7 +1398,7 @@ function launchChat() {
   if (isSafari) {
     document.getElementById('tab-local').classList.remove('active');
     document.getElementById('tab-cloud').classList.add('active');
-    document.getElementById('mode-info').textContent = 'Cloud AI mode: uses Claude for the best responses. Enter your Anthropic API key below to get started.';
+    document.getElementById('mode-info').innerHTML = 'Cloud AI mode: uses Claude for the best responses. Enter your Anthropic API key below to get started.<br><span style="color:var(--text-muted);font-weight:600;">🔐 Privacy notice: Your health information is shared with Anthropic\'s AI to generate responses. No name or contact information is ever collected or transmitted.</span>';
     document.getElementById('cloud-key-section').style.display = 'block';
   }
 
@@ -1469,7 +1469,7 @@ function setMode(mode) {
     keySection.style.display = 'none';
     initWebLLM();
   } else {
-    info.textContent = 'Cloud AI mode: uses Claude. Higher quality responses but your messages go to Anthropic\'s secure servers. Enter your API key below.';
+    info.innerHTML = 'Cloud AI mode: uses Claude. Higher quality responses but your messages go to Anthropic\'s secure servers. Enter your API key below.<br><span style="color:var(--text-muted);font-weight:600;">🔐 Privacy notice: Your health information is shared with Anthropic\'s AI to generate responses. No name or contact information is ever collected or transmitted.</span>';
     keySection.style.display = 'block';
   }
 }

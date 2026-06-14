@@ -1394,7 +1394,7 @@ function launchChat() {
   if (isSafari) {
     document.getElementById('tab-local').classList.remove('active');
     document.getElementById('tab-cloud').classList.add('active');
-    document.getElementById('mode-info').textContent = 'Cloud AI mode: Uses Claude via Agent SCOCI — fast, warm, and fully personalized to your profile.';
+    document.getElementById('mode-info').innerHTML = 'Cloud AI mode: Uses Claude via Agent SCOCI — fast, warm, and fully personalized to your profile.<br><span style="color:var(--text-muted);font-weight:600;">🔐 Privacy notice: Your health information is shared with Anthropic\'s AI to generate responses. No name or contact information is ever collected or transmitted.</span>';
   }
 
   const hardADLs = Object.entries(p.adlScores||{}).filter(([,v])=>v&&v!=='Independent').map(([k])=>k);
@@ -1462,7 +1462,7 @@ function setMode(mode) {
     info.textContent = 'On-device mode: AI runs on your device. Your information never leaves. First use downloads the AI (~2GB).';
     initWebLLM();
   } else {
-    info.textContent = 'Cloud AI mode: Uses Claude via Agent SCOCI — fast, warm, and fully personalized to your profile.';
+    info.innerHTML = 'Cloud AI mode: Uses Claude via Agent SCOCI — fast, warm, and fully personalized to your profile.<br><span style="color:var(--text-muted);font-weight:600;">🔐 Privacy notice: Your health information is shared with Anthropic\'s AI to generate responses. No name or contact information is ever collected or transmitted.</span>';
   }
 }
 
