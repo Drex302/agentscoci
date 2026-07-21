@@ -1,4 +1,8 @@
 {
+  "outputDirectory": "public",
+  "functions": {
+    "api/chat.js": { "runtime": "nodejs20.x" }
+  },
   "rewrites": [
     { "source": "/app", "destination": "/app/index.html" },
     { "source": "/app/(.*)", "destination": "/app/index.html" }
